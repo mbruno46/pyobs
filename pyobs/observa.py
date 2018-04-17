@@ -221,6 +221,8 @@ class observa:
         -------
         value : float or array
         error : float or array
+        tau : float or array
+        dtau : float or array
 
         Examples
         --------
@@ -239,12 +241,13 @@ class observa:
         sigma_tot = numpy.zeros(self.dims)
         for ed in self.edata:
             if (errinfo==None):
-                sigma.append( ed.uwerr(plot, pfile) )
+                res = ed.uwerr(plot, pfile)
             else:
                 if (errinfo.Tail(ed.id)==True):
-                    sigma.append( ed.uwerr_texp(plot, pfile, errinfo.getUWerrTexp(ed.id)) )
+                    res = ed.uwerr_texp(plot, pfile, errinfo.getUWerrTexp(ed.id))
                 else:
-                    sigma.append( ed.uwerr(plot, pfile, errinfo.getUWerr(ed.id)) )
+                    res = ed.uwerr(plot, pfile, errinfo.getUWerr(ed.id))
+            sigma.append(res[0])
             sigma_tot += sigma[-1]
         
         # add cdata
@@ -269,7 +272,55 @@ class observa:
                     return [self.mean[0,:], error[0,:]]
             else:
                 return [self.mean, error]
-    
+   
+    def tauint(self,eid=None,errinfo=None):
+        """ Computes the autocorrelation time and its error 
+
+        Parameters
+        ----------
+        eid: int, optional
+            ensemble id; if not given a list of the tauints of all ensembles
+            is returned
+        errinfo: einfo, optional
+            einfo class with additional information on the error calculation
+
+        Returns
+        -------
+        tau: list of arrays with dimension equal to the observable
+        dtau: list of arrays with dimension equal to the observable
+        """
+
+        tau = []
+        dtau = []
+        if isinstance(eid,int):
+            try:
+                ie = self.eid.index(eid)
+            except:
+                raise TypeError("ensemble id not found")
+
+            ed = self.edata[eid]
+            if (errinfo==None):
+                res = ed.uwerr(False, None)
+            else:
+                if (errinfo.Tail(ed.id)==True):
+                    res = ed.uwerr_texp(False, None, errinfo.getUWerrTexp(ed.id))
+                else:
+                    res = ed.uwerr(False, None, errinfo.getUWerr(ed.id))
+            tau.append(res[1])
+            dtau.append(res[2])
+        else:
+            for ed in self.edata:
+                if (errinfo==None):
+                    res = ed.uwerr(False, None)
+                else:
+                    if (errinfo.Tail(ed.id)==True):
+                        res = ed.uwerr_texp(False, None, errinfo.getUWerrTexp(ed.id))
+                    else:
+                        res = ed.uwerr(False, None, errinfo.getUWerr(ed.id))
+                tau.append(res[1])
+                dtau.append(res[2])
+        return [tau,dtau]
+
     def naive_err(self):
         """ Compute the standard deviation assuming zero autocorrelations
 
@@ -579,7 +630,14 @@ class observa:
             ed.plotter()
 
     #########################################################
-   
+  
+    # when numpy finds the following element defined in a class
+    # it automally lets the class handle operations such as rmul or radd
+    # note that using __array_ufunc__ = None would not solve the problem
+    # because numpy would still try to perform the rmul or radd operation
+    # element-by-element
+    __array_priority__ = 1000
+
     def check_dims(self,y):
         if isinstance(y,observa):
             if (self.dims!=y.dims):
@@ -601,7 +659,6 @@ class observa:
             return fast_math_scalar(self,31,y)
 
     def __radd__(self,y):
-        print y
         return (self+y)
 
     def __mul__(self,y):
@@ -813,7 +870,7 @@ def det(x):
     [f, df] = math_det(x.mean)
     return derobs([x], f, df)
     
-def inv(x,numeric=True):
+def inv(x):
     """
     Compute the inverse of an observable
 
@@ -821,15 +878,11 @@ def inv(x,numeric=True):
     ----------
     x : observa
         must be a square matrix
-    numeric : bool, optional
-        flag to use the numeric or analytic function to perform
-        the inverse. The numeric inverse is in general faster, especially
-        for large matrices. Default is True.
     """
     
     if (x.dims[0]!=x.dims[1]):
         raise InputError('unsupported operation for non-square matrices')
-    [f, df] = math_inv(x.mean,numeric)
+    [f, df] = math_inv(x.mean)
     return derobs([x], f, df)
 
 

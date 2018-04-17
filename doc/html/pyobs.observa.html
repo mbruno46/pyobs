@@ -219,6 +219,32 @@ by specifying the extensions <cite>.pyobs.dat</cite></td>
 </dd></dl>
 
 <dl class="method">
+<dt id="pyobs.observa.observa.tauint">
+<code class="descname">tauint</code><span class="sig-paren">(</span><em>eid=None</em>, <em>errinfo=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.observa.tauint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the autocorrelation time and its error</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>eid</strong> (<em>int</em><em>, </em><em>optional</em>) – ensemble id; if not given a list of the tauints of all ensembles
+is returned</li>
+<li><strong>errinfo</strong> (<em>einfo</em><em>, </em><em>optional</em>) – einfo class with additional information on the error calculation</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>tau</strong> (<em>list of arrays with dimension equal to the observable</em>)</li>
+<li><strong>dtau</strong> (<em>list of arrays with dimension equal to the observable</em>)</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="pyobs.observa.observa.vwerr">
 <code class="descname">vwerr</code><span class="sig-paren">(</span><em>plot=False</em>, <em>pfile=None</em>, <em>errinfo=None</em>, <em>simplify=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.observa.vwerr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the error of each element</p>
@@ -244,6 +270,8 @@ returns objects in 2D</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
 <li><strong>value</strong> (<em>float or array</em>)</li>
 <li><strong>error</strong> (<em>float or array</em>)</li>
+<li><strong>tau</strong> (<em>float or array</em>)</li>
+<li><strong>dtau</strong> (<em>float or array</em>)</li>
 </ul>
 </p>
 </td>

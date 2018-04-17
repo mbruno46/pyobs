@@ -62,19 +62,27 @@ class edata:
 
     def uwerr(self,plot,pfile,pars=(1.5,None)):
         sigma = numpy.zeros(self.dims)
+        tau = numpy.zeros(self.dims)
+        dtau = numpy.zeros(self.dims)
         for i in range(self.dims[0]):
             for j in range(self.dims[1]):
                 res = uwerr([rd.data[i,j] for rd in self.rdata], [rd.ncnfg for rd in self.rdata], plot, (self.name,i,j,pfile), pars[0], pars[1])
                 sigma[i,j] = res[0]
-        return sigma
+                tau[i,j] = res[1]
+                dtau[i,j] = res[2]
+        return [sigma, tau, dtau]
 
     def uwerr_texp(self,plot,pfile,pars=(1.5,0.0,2,0,None)):
         sigma = numpy.zeros(self.dims)
+        tau = numpy.zeros(self.dims)
+        dtau = numpy.zeros(self.dims)
         for i in range(self.dims[0]):
             for j in range(self.dims[1]):
                 res = uwerr_texp([rd.data[i,j] for rd in self.rdata], [rd.ncnfg for rd in self.rdata], plot, (self.name,i,j,pfile), pars[0], pars[1], pars[2], pars[3], pars[4])
                 sigma[i,j] = res[0]
-        return sigma
+                tau[i,j] = res[1]
+                dtau[i,j] = res[2]
+        return [sigma, tau, dtau]
 
     def naive_err(self):
         sigma = numpy.zeros(self.dims)
