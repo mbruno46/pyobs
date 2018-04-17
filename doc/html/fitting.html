@@ -1,0 +1,324 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Fitting &#8212; PyObs 0.5.1(alpha) documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Eigenvalue problem" href="eigen.html" />
+    <link rel="prev" title="Basics" href="basics.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="eigen.html" title="Eigenvalue problem"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="basics.html" title="Basics"
+             accesskey="P">previous</a> |</li>
+    <li class="nav-item nav-item-0"><a href="index.html">home</a> |</li>
+    <li class="nav-item nav-item-1"><a href="tutorials.html">tutorials</a> |</li>
+    <li class="nav-item nav-item-2"><a href="pyobs.html">documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="tutorials.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Fitting</a><ul>
+<li><a class="reference internal" href="#fitting-a-correlator">Fitting a correlator</a></li>
+<li><a class="reference internal" href="#plotting-the-fitted-function">Plotting the fitted function</a></li>
+<li><a class="reference internal" href="#fitting-two-correlators-simulateneously">Fitting two correlators simulateneously</a></li>
+<li><a class="reference internal" href="#fitting-observables-from-different-ensembles">Fitting observables from different ensembles</a></li>
+<li><a class="reference internal" href="#fitting-observables-from-different-ensembles-ii">Fitting observables from different ensembles - II</a></li>
+<li><a class="reference internal" href="#most-generic-fit">Most generic fit</a></li>
+<li><a class="reference internal" href="#polynomial-fits">Polynomial fits</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="basics.html"
+                        title="previous chapter">Basics</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="eigen.html"
+                        title="next chapter">Eigenvalue problem</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="fitting">
+<h1>Fitting<a class="headerlink" href="#fitting" title="Permalink to this headline">¶</a></h1>
+<p>The library PyObs provides the class <cite>mfit</cite> to
+perform fits to observables. The class is pretty generic
+allowing also for combined/global fits.
+The minimization algorithm is the Levenberg-Marquardt
+and the gradient and hessian of the fitted function w.r.t.
+the parameters are computed analytically: they are used in the
+LM algorithm and also in the propagation of the error from
+input (y) observables, which is also analytical.
+Let us illustrate a few possible ways to use this class.</p>
+<div class="section" id="fitting-a-correlator">
+<h2>Fitting a correlator<a class="headerlink" href="#fitting-a-correlator" title="Permalink to this headline">¶</a></h2>
+<p>The first example concerns the fitting of observables defined
+on a unique ensembles, such as a correlation function measured
+on all time slices.
+Assuming that the <cite>coor</cite> observable is defined to be a vector
+observable with size <cite>(1,T)</cite>, we want to perform a single exponential
+fit.</p>
+<p>The free parameters of the fit are always defined using the notation
+<cite>p[i]</cite>, with <cite>i</cite> an integer number.
+For the single exponential fit</p>
+<div class="math notranslate">
+\[f(x) = A \exp (-m x)\]</div>
+<p>we first defined a new <cite>mfit</cite> class:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">mfit</span><span class="p">(</span><span class="s1">&#39;p[0] * exp(-p[1]*x)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that the function is passed as a string!
+The minimization of an un-correlated <span class="math notranslate">\(\chi^2\)</span>
+is obtained simply by:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xdata</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">corr</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">fit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">fit</span><span class="o">.</span><span class="n">pars</span>
+</pre></div>
+</div>
+<p>where the first <cite>print</cite> command prints out some useful information
+on the minimization procedure, such as the final value of the
+<span class="math notranslate">\(\chi^2\)</span>, the number of iterations of the minimizator, etc…</p>
+</div>
+<div class="section" id="plotting-the-fitted-function">
+<h2>Plotting the fitted function<a class="headerlink" href="#plotting-the-fitted-function" title="Permalink to this headline">¶</a></h2>
+<p>The results of the fit, the parameters, are stored inside
+the class <cite>fit</cite> and can be accessed by typing <cite>fit.pars</cite>.
+However we provide a useful routine to evaluate the fit function
+at some given points using the results of the fit:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xax</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">yax</span><span class="p">,</span> <span class="n">dyax</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">xax</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">errorbar</span><span class="p">(</span><span class="n">xax</span><span class="p">,</span> <span class="n">yax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">dyax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Note the presence of the <cite>[0,0]</cite> in both <cite>yax</cite> and <cite>dyax</cite>. This point will
+be clarified in the next examples.</p>
+</div>
+<div class="section" id="fitting-two-correlators-simulateneously">
+<h2>Fitting two correlators simulateneously<a class="headerlink" href="#fitting-two-correlators-simulateneously" title="Permalink to this headline">¶</a></h2>
+<p>Let us assume to have two (2-point) correlators
+with different operators at the source and sink,
+<cite>corr1</cite> and <cite>corr2</cite>.</p>
+<p>In order to fit them simulateneously the first step is to
+combine them in a single observable:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">corr3</span> <span class="o">=</span> <span class="n">corr1</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">corr3</span><span class="o">.</span><span class="n">addrow</span><span class="p">(</span> <span class="n">corr2</span> <span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The observables must be merged row by row: this is crucial
+because the programs automatically assumes that the columns
+correspond to the (y) data points of the fit.
+Note also that his operation is meaningful only if
+both <cite>corr1</cite> and <cite>corr2</cite> are defined on the same ensemble.</p>
+</div>
+<p>At this point we have an observable with dimensions <cite>(2,T)</cite>. Therefore
+we need to specify two functions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">mfit</span><span class="p">([</span><span class="s1">&#39;p[0]*exp(-p[2]*x)&#39;</span><span class="p">,</span><span class="s1">&#39;p[1]*exp(-p[2]*x)&#39;</span><span class="p">])</span> <span class="c1"># p[2] is common parameter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xdata</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="c1"># 1D fit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">corr3</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">fit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="s1">&#39;mass = &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">pars</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fitting-observables-from-different-ensembles">
+<h2>Fitting observables from different ensembles<a class="headerlink" href="#fitting-observables-from-different-ensembles" title="Permalink to this headline">¶</a></h2>
+<p>Good examples for fits of (derived) observables from
+different ensembles are the chiral and continuum extrapolations.</p>
+<p>Let us take the latter for simplicity:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">asq</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.06</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="c1"># lat spacing in fm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span> <span class="o">=</span> <span class="p">[</span><span class="n">obs1</span><span class="p">,</span> <span class="n">obs2</span><span class="p">,</span> <span class="n">obs3</span><span class="p">]</span> <span class="c1"># a generic scalar observable defined on the 3 ensembles</span>
+</pre></div>
+</div>
+<p>In this case the observables measured on each ensemble are patched together
+in a <em>list</em>. We assume to take the continuum limit in <span class="math notranslate">\(a^2\)</span>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">mfit</span><span class="p">(</span><span class="s1">&#39;p[0] + p[1]*x&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">asq</span><span class="p">,</span> <span class="n">obs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">fit</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note the importance of patching together the observables in a list</p>
+</div>
+</div>
+<div class="section" id="fitting-observables-from-different-ensembles-ii">
+<h2>Fitting observables from different ensembles - II<a class="headerlink" href="#fitting-observables-from-different-ensembles-ii" title="Permalink to this headline">¶</a></h2>
+<p>Let us now suppose to have measured two different quantities
+<span class="math notranslate">\(\phi_1\)</span> and <span class="math notranslate">\(\phi_2\)</span> both with a well defined and unique
+continuum limit: in this case we want to perform a constrained extrapolation.
+As before, we first patch together the observables ensemble by ensemble
+(without the constraint of having to use <cite>rows</cite>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phi1</span> <span class="o">=</span> <span class="p">[</span><span class="n">phi1_E0</span><span class="p">,</span> <span class="n">phi1_E1</span><span class="p">,</span> <span class="n">phi1_E2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phi2</span> <span class="o">=</span> <span class="p">[</span><span class="n">phi2_E0</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phi3</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">tmp</span> <span class="o">=</span> <span class="n">phi1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">tmp</span><span class="o">.</span><span class="n">addcol</span><span class="p">(</span><span class="n">phi2</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="c1"># or equivalently tmp.addrow(phi2[i])</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">phi3</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then we can perform the fit by defining the correct list of functions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">mfit</span><span class="p">([[</span><span class="s1">&#39;p[0]+p[1]*x&#39;</span><span class="p">,</span><span class="s1">&#39;p[0]+p[2]*x&#39;</span><span class="p">]])</span> <span class="c1"># if we used addcol</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">mfit</span><span class="p">([[</span><span class="s1">&#39;p[0]+p[1]*x&#39;</span><span class="p">],[</span><span class="s1">&#39;p[0]+p[2]*x&#39;</span><span class="p">]])</span> <span class="c1"># if we used addrow</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">asq</span><span class="p">,</span> <span class="n">phi3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">fit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">fit</span><span class="o">.</span><span class="n">pars</span>
+</pre></div>
+</div>
+<p>We can also imagine the situation where we have computed <span class="math notranslate">\(\phi_1\)</span>
+and <span class="math notranslate">\(\phi_2\)</span> on 6 different ensembles:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phi1</span> <span class="o">=</span> <span class="p">[</span><span class="n">phi1_E0</span><span class="p">,</span> <span class="n">phi1_E1</span><span class="p">,</span> <span class="n">phi1_E2</span><span class="p">,</span> <span class="n">phi1_E3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">asq1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.06</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phi2</span> <span class="o">=</span> <span class="p">[</span><span class="n">phi2_E4</span><span class="p">,</span> <span class="n">phi2_E5</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">asq2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.09</span><span class="p">,</span> <span class="mf">0.065</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+</pre></div>
+</div>
+<p>In this case the constrained fit can be implemented by performing
+a bi-dimensional fit, where the slope parameter now explicitly depends
+on the second coordinate <cite>c</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phi3</span> <span class="o">=</span> <span class="n">phi1</span> <span class="o">+</span> <span class="n">phi2</span> <span class="c1"># simply join the two lists</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xdata</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">xdata</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">asq1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">xdata</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">asq2</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xdata</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xdata</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">mfit</span><span class="p">(</span><span class="s1">&#39;p[0]+p[1]*x*c1 + p[2]*x*c2&#39;</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="s1">&#39;x, c1, c2&#39;</span><span class="p">)</span> <span class="c1"># c1 and c2 select the function</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">phi3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="most-generic-fit">
+<h2>Most generic fit<a class="headerlink" href="#most-generic-fit" title="Permalink to this headline">¶</a></h2>
+<p>The most generic case that the <cite>mfit</cite> function can handle
+is defined from the minimization
+of a <span class="math notranslate">\(\chi^2\)</span> where
+the functions can be matrices
+with indices <span class="math notranslate">\((\alpha \beta)\)</span>
+and the coordinates <span class="math notranslate">\(x\)</span> can have multiple dimensions <span class="math notranslate">\(x^i_\mu\)</span></p>
+<div class="math notranslate">
+\[\chi^2 = \sum_\alpha \sum_{\beta \rho} \sum_{ij}
+(f_{\alpha\beta}(x^i_\mu) - y_{\alpha \beta}^i)
+W_{\beta \rho}^{ij} (f_{\rho \alpha}(x^j_\mu) - y_{\rho \alpha}^j)\]</div>
+<p>If the weight matrix is block-diagonal w.r.t. the <span class="math notranslate">\(\beta \rho\)</span>
+indices, the <span class="math notranslate">\(\chi^2\)</span> defined above simply reduces to
+a sum of <span class="math notranslate">\(\chi^2\)</span>, each defined by the function <span class="math notranslate">\(f_{\alpha\beta}\)</span></p>
+<div class="math notranslate">
+\[\chi^2 = \sum_{\alpha \beta} \sum_{ij} (f_{\alpha\beta}(x^i_\mu) - y_{\alpha \beta}^i)
+W_\beta^{ij}
+(f_{\beta \alpha}(x^j_\mu) - y_{\beta \alpha}^j)\]</div>
+<p>Let’s examine again the case where we fit
+two correlators simulatenously, which we
+label <span class="math notranslate">\(C_\alpha(i)\)</span>, with <span class="math notranslate">\(alpha=1,2\)</span>
+labels the correlator and the index <span class="math notranslate">\(i\)</span>
+the time slice.
+In this case all data is correlated and
+from the covariance matrix the weight matrix
+<span class="math notranslate">\(W\)</span> can be defined as</p>
+<div class="math notranslate">
+\[\mathrm{Cov}_{\alpha \beta}^{ij} = \langle \delta C_\alpha(i) \delta C_\beta(j) \rangle
+\quad \to \quad W \equiv \mathrm{Cov}^{-1}\]</div>
+<p><span class="math notranslate">\(W\)</span> in this case is a dense matrix, with all entries being non-zero.
+If instead we fit together two observables
+defined on different ensembles, such as
+<span class="math notranslate">\(\phi_1\)</span> and <span class="math notranslate">\(\phi_2\)</span> introduced above,
+we can use a weight matrix that takes
+into account correlations among the two
+for a fixed ensemble. In this case
+<span class="math notranslate">\(\alpha=1,2\)</span> refers to <span class="math notranslate">\(\phi_1, \phi_2\)</span>
+while the index <span class="math notranslate">\(i\)</span> refers to the
+ensemble (which is the data point).
+Therefore the covariance matrix
+is block-diagonal in the <span class="math notranslate">\(ij\)</span> indices
+and still dense in <span class="math notranslate">\(\alpha \beta\)</span>.</p>
+<p>If the user decides to manually pass the matrix <span class="math notranslate">\(W\)</span>
+the following structure must be followed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">W</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">Nalpha</span><span class="o">*</span><span class="n">Npt</span><span class="p">,</span> <span class="n">Nalpha</span><span class="o">*</span><span class="n">Npt</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Nalpha number of observables</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Npt number of data points</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nalpha</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nalpha</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Npt</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Npt</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">W</span><span class="p">[</span><span class="n">a</span><span class="o">*</span><span class="n">Npt</span><span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="n">b</span><span class="o">*</span><span class="n">Npt</span><span class="o">+</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">#</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="polynomial-fits">
+<h2>Polynomial fits<a class="headerlink" href="#polynomial-fits" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="eigen.html" title="Eigenvalue problem"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="basics.html" title="Basics"
+             >previous</a> |</li>
+    <li class="nav-item nav-item-0"><a href="index.html">home</a> |</li>
+    <li class="nav-item nav-item-1"><a href="tutorials.html">tutorials</a> |</li>
+    <li class="nav-item nav-item-2"><a href="pyobs.html">documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Mattia Bruno.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+    </div>
+  </body>
+</html>

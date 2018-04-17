@@ -1,0 +1,263 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyobs.fit package &#8212; PyObs 0.5.1(alpha) documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pyobs.fit package" href="pyobs.vwerr.html" />
+    <link rel="prev" title="Built-in functions" href="mathfuncs.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyobs.vwerr.html" title="pyobs.fit package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mathfuncs.html" title="Built-in functions"
+             accesskey="P">previous</a> |</li>
+    <li class="nav-item nav-item-0"><a href="index.html">home</a> |</li>
+    <li class="nav-item nav-item-1"><a href="tutorials.html">tutorials</a> |</li>
+    <li class="nav-item nav-item-2"><a href="pyobs.html">documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="pyobs.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pyobs.fit package</a><ul>
+<li><a class="reference internal" href="#mfit-class">mfit class</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="mathfuncs.html"
+                        title="previous chapter">Built-in functions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pyobs.vwerr.html"
+                        title="next chapter">pyobs.fit package</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyobs-fit-package">
+<h1>pyobs.fit package<a class="headerlink" href="#pyobs-fit-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="mfit-class">
+<h2>mfit class<a class="headerlink" href="#mfit-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyobs.fit.mfit">
+<em class="property">class </em><code class="descclassname">pyobs.fit.</code><code class="descname">mfit</code><span class="sig-paren">(</span><em>func</em>, <em>var='x'</em>, <em>debug=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.fit.mfit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to fit a function to observables</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>func</strong> (<em>list of list of str</em><em> or </em><em>str</em>) – <p>func can be a string or a list of strings containing the definition
+of the function to be fitted. The following syntax must be used in the definition
+of these functions</p>
+<blockquote>
+<div><ul>
+<li>for the parameters of the fit use <cite>p[0], p[1], …</cite></li>
+<li>for the variable of a 1D fit always use <cite>x</cite></li>
+<li>for a multi-dimensional fit the user can adopt arbitrary names for the variables such as <cite>a</cite> or <cite>y</cite> or <cite>z</cite>; in this case the argument var must be passed</li>
+</ul>
+</div></blockquote>
+<p>If the observables that are fitted are vectors or matrices then func must be a
+list of lists of strings, matching exactly the dimensions of the input observables.
+In this case for a pair of indices (i,j) corresponding to the (i,j) components
+of the input observables, func[i][j] is the associated function.
+Note that different components can share the same parameters thus allowing for
+combined fits.</p>
+</li>
+<li><strong>var</strong> (<em>str</em><em>, </em><em>optional</em>) – specifies the names of the variables of the fit. For a multi-dimensional fit
+such as func=`p[0]*x + p[1]*y`, the argument var must be <cite>x, y</cite>. Note the comma
+used to separate the variables. If not specified the fit is automatically assumed
+to be 1-dimensional and dependent on the variable <cite>x</cite>. The argument var
+can also be specified in 1D fit, e.g. func=`p[0] + p[1]*y` requires var=`y`</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">mfit</span><span class="p">(</span><span class="s1">&#39;p[0] + p[1]*x&#39;</span><span class="p">)</span> <span class="c1"># linear 1D fit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">mfit</span><span class="p">(</span><span class="s1">&#39;p[0]*x + p[1]*a&#39;</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="s1">&#39;x, a&#39;</span><span class="p">)</span> <span class="c1"># 2D fit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">mfit</span><span class="p">(</span><span class="s1">&#39;p[0]*x + p[1]*x*y*z&#39;</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="s1">&#39;x, y, z&#39;</span><span class="p">)</span> <span class="c1"># 3D fit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">mfit</span><span class="p">([[</span><span class="s1">&#39;p[0] + p[1]*x&#39;</span><span class="p">,</span> <span class="s1">&#39;p[2] + p[1]*x&#39;</span><span class="p">]])</span> <span class="c1"># combined 1D fit with common slope</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="pyobs.fit.mfit.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>xax</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.fit.mfit.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluates the function at given points using the results of the fit</p>
+<p>This function is very useful for plotting the fitted function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xax</strong> (<em>list/array</em><em> or </em><em>2D array</em>) – similarly to xdata xax is now the list of points where the function
+is evaluated. For multidimensional fits xax[i,mu] corresponds to the
+mu component of the ith point</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>yax</strong> (<em>3D array</em>) – central values of the function evaluated on the points specified by xax. The result is
+always a 3D fit where the first 2 indices correspond to the (a,b) components
+of the function and the third one to the ith point</li>
+<li><strong>dyax</strong> (<em>3D array</em>) – error of the function evaluated at the points specified by xax</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xax</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span><span class="mf">4.</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">yax</span><span class="p">,</span> <span class="n">dyax</span><span class="p">,</span> <span class="n">_</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">xax</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">errorbar</span><span class="p">(</span><span class="n">xax</span><span class="p">,</span> <span class="n">yax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">yerr</span><span class="o">=</span><span class="n">dyax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyobs.fit.mfit.eval_obs">
+<code class="descname">eval_obs</code><span class="sig-paren">(</span><em>xax</em>, <em>var</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.fit.mfit.eval_obs" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the function at a given point using the results of the fit</p>
+<dl class="docutils">
+<dt>xax: list</dt>
+<dd>contains the coordinates where the function is evaluated. If the mu
+coordinate is an observa the errors are propagated accordingly. In this
+case the observa must be a scalar</dd>
+<dt>var: list</dt>
+<dd>contains the name of the variables corresponding to elements of xax</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span><span class="o">.</span><span class="n">mfit</span><span class="p">(</span><span class="s1">&#39;p[0]*x + p[1]*b&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x0</span> <span class="o">=</span> <span class="p">[</span><span class="n">obs0</span><span class="p">,</span> <span class="mf">3.4</span><span class="p">]</span> <span class="c1"># the fluctuations of obs0 are propagated</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y0</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">eval_obs</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyobs.fit.mfit.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>xdata</em>, <em>obs</em>, <em>initp=None</em>, <em>W=None</em>, <em>cuts=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.fit.mfit.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the minimum of the chi^2 and the parameters of the fit</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xdata</strong> (<em>list/array of 2D array</em>) – specifies the value of the coordinates where the functions
+are evaluated. For multidimensional fits the ith data point
+with mu coordinate is specified by xdata[i,mu]</li>
+<li><strong>obs</strong> (<em>an observa</em><em> or </em><em>a list of observa</em>) – if obs is an observa then it must be a vector with dimensions (1,D);
+in this case the length of the vector specifies the number of points
+in the fit and func must be either a str or [[<cite>function</cite>]]. This feature
+is useful to fit observables defined on the same ensembles, such as correlation
+functions.
+Instead if obs is a list of observa it is assumed that the ith data point
+correspond to the ith element of the list. In this case func must be a
+list of lists of strings whose dimensions should match the observables.
+The observables are fitted together and a unique chi^2 (which is the sum
+of the chi^2 of each component of the observables) is minimized.</li>
+<li><strong>initp</strong> (<em>list/array</em><em>, </em><em>optional</em>) – initial values of the parameters</li>
+<li><strong>W</strong> (<em>4D array</em><em>, </em><em>optional</em>) – W is a tensor that specifies the weights in the chi^2 for each data point.
+For a pairs of data points (i,j) and for a component (a,b) of the fitted observable
+W[a,b,i,j] specifies the weight of (func[a][b](xdata[i])-obs[i][a,b]) multiplied
+by (func[a][b](xdata[j])-obs[j][a,b]).
+If not given then W is set to 1/sigma_i^2, with sigma_i being the error of the
+(a,b) component of the ith data point (practically an uncorrelated chi^2)</li>
+<li><strong>cuts</strong> (<em>list of int</em><em>, </em><em>optional</em>) – specifies which data points are included in the fit from xdata and obs.
+Allowed values go from 0 to the total length of obs/xdata - 1.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xdata</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span> <span class="o">=</span> <span class="p">[</span><span class="n">obs1</span><span class="p">,</span> <span class="n">obs2</span><span class="p">,</span> <span class="n">obs3</span><span class="p">]</span> <span class="c1"># 3 scalar observables defined on 3 ensembles</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">mfit</span><span class="p">(</span><span class="s1">&#39;p[0]+p[1]*x&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">obs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">fit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">fit</span><span class="o">.</span><span class="n">pars</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyobs.vwerr.html" title="pyobs.fit package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mathfuncs.html" title="Built-in functions"
+             >previous</a> |</li>
+    <li class="nav-item nav-item-0"><a href="index.html">home</a> |</li>
+    <li class="nav-item nav-item-1"><a href="tutorials.html">tutorials</a> |</li>
+    <li class="nav-item nav-item-2"><a href="pyobs.html">documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Mattia Bruno.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+    </div>
+  </body>
+</html>

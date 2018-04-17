@@ -1,0 +1,230 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Introduction &#8212; PyObs 0.5.1(alpha) documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="First Steps with PyObs" href="first.html" />
+    <link rel="prev" title="PyObs" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="first.html" title="First Steps with PyObs"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="PyObs"
+             accesskey="P">previous</a> |</li>
+    <li class="nav-item nav-item-0"><a href="index.html">home</a> |</li>
+    <li class="nav-item nav-item-1"><a href="tutorials.html">tutorials</a> |</li>
+    <li class="nav-item nav-item-2"><a href="pyobs.html">documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#the-gamma-method">The Gamma Method</a></li>
+<li><a class="reference internal" href="#automatic-window">Automatic Window</a></li>
+<li><a class="reference internal" href="#exponential-tail">Exponential tail</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">PyObs</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="first.html"
+                        title="next chapter">First Steps with PyObs</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>Below we give a brief introduction on the notion of autocorrelations in
+Markov Chains and we set the notation for the rest of the documentation.
+More details can be found in Ref <a class="footnote-reference" href="#id5" id="id1">[1]</a> which has been the base for
+many of the routines implemented in this library.</p>
+<div class="section" id="the-gamma-method">
+<h2>The Gamma Method<a class="headerlink" href="#the-gamma-method" title="Permalink to this headline">¶</a></h2>
+<p>Let us imagine to have a generic set of primary observables
+<span class="math notranslate">\(\{A_\alpha\}\)</span> measured on <span class="math notranslate">\(R\)</span> replicas of the same ensemble,
+each having <span class="math notranslate">\(N_r\)</span> configurations with index <span class="math notranslate">\(i\)</span>.</p>
+<p>We denote with <span class="math notranslate">\(N\)</span> the total of configurations per ensemble
+<span class="math notranslate">\(N=\sum_r N_r\)</span>.
+The measurements are called <span class="math notranslate">\(a_{\alpha}^{i,r}\)</span> and their
+mean value and fluctuations are defined as</p>
+<div class="math notranslate">
+\[\bar a_\alpha^r = \frac{1}{N_r} \sum_{i=1}^{N_r} a_\alpha^{i,r} \quad
+\bar{\bar a}_\alpha  = \frac{1}{N} \sum_{r=1}^R N_r \bar a_\alpha^r =
+\frac{1}{N} \sum_{r=1}^R \sum_{i=1}^{N_r} a_\alpha^{i,r} \quad
+\quad
+\delta a_\alpha^{i,r} = (a_\alpha^{i,r} - A_\alpha)\]</div>
+<p>and the autocorrelation function is defined as</p>
+<div class="math notranslate">
+\[\langle \delta a_\alpha^{i,r} \ \delta a_\beta^{j,s} \rangle =
+\delta_{rs} \Gamma_{\alpha \beta} (j-i)\]</div>
+<p>At the practical level the autocorrelation function is computed as</p>
+<div class="math notranslate">
+\[\Gamma_{\alpha \beta} (t) = \frac{1}{N-Rt} \sum_{r=1}^R \sum_{i=1}^{N_r -t}
+(a_\alpha^{i,r} - \bar{\bar a}_\alpha)(a_\beta^{i+t,r} - \bar{\bar a}_\beta)  + O(1/N)\]</div>
+<p>To be as general as possible we also need to account for situations where the measurements
+are taken on irregular Monte-Carlo series, e.g. with holes and missing configurations.
+For this reason it is convenient to consider the normalized fluctuations</p>
+<div class="math notranslate">
+\[\begin{split}\pi_\alpha^{i,r} = \left\lbrace \begin{array}{ll}
+0 &amp; \mbox{if } a_\alpha^{i,r} \mbox{ on config } i \mbox{ is missing} \\
+\frac{N_r}{N_m} (a_\alpha^{i,r} - \bar{\bar a}_\alpha) &amp; \mbox{otherwise}
+\end{array} \right. \quad\end{split}\]</div>
+<p>where <span class="math notranslate">\(N_m\)</span> is the number of measurements at disposal. Note however
+that in the end <span class="math notranslate">\(N_r\)</span> is going to be the total number of configurations, including
+the zero fluctuations, such that the time series given by
+<span class="math notranslate">\(\pi_\alpha^{i,r}\)</span> is now contiguous.</p>
+<p>The calculation of the autocorrelation function therefore becomes</p>
+<div class="math notranslate">
+\[\Gamma_{\alpha \beta} (t) = \frac{1}{N-Rt} \sum_{r=1}^R \sum_{i=1}^{N_r -t}
+\pi_\alpha^{i,r} \pi_\beta^{i+t,r}\]</div>
+<p>and its integral defines the covariance matrix</p>
+<div class="math notranslate">
+\[C_{\alpha \beta} = \sum_{t=-\infty}^\infty \Gamma_{\alpha \beta} (t)\]</div>
+<p>The error of a given observable can be read off from the diagonal
+elements of the covariance matrix, which can be re-expressed in terms
+of the integrated autocorrelation time</p>
+<div class="math notranslate">
+\[\sigma^2 (a_\alpha) = \frac{C_{\alpha \alpha}}{N} = \frac{ 2 \tau_\mathrm{int} }{N}
+\Gamma_{\alpha \alpha}(0)\]</div>
+<div class="math notranslate">
+\[\tau_\mathrm{int\,, \alpha} = \frac{1}{2 \Gamma_{\alpha \alpha}(0)}
+\sum_{t=-\infty}^\infty \Gamma_{\alpha \alpha} (t)\]</div>
+<p>It is often convenient to think in terms of the normalized autocorrelation function
+<span class="math notranslate">\(\rho(t) = \Gamma(t) / \Gamma(0)\)</span>, whose error can be computed
+according to <a class="footnote-reference" href="#id6" id="id2">[2]</a> (for the case <span class="math notranslate">\(\alpha=\beta\)</span>)</p>
+<div class="math notranslate">
+\[\mathrm{var} \rho (t) \simeq \frac{1}{N} \sum_{k=1}^\infty
+\big[ \rho(k+t) + \rho(k-t) - 2 \rho(k) \rho(t) \big]^2\]</div>
+<p>Note that for a derived observable, <span class="math notranslate">\(F(\{a\})\)</span>, the same equations
+hold with the only difference being in the fluctuations</p>
+<div class="math notranslate">
+\[\pi_F^{i,r} \equiv \sum_\alpha
+\frac{\partial F(\{a\})}{\partial a_\alpha} \bigg|_{a=\bar{\bar a}}
+\pi_\alpha^{i,r}\]</div>
+</div>
+<div class="section" id="automatic-window">
+<h2>Automatic Window<a class="headerlink" href="#automatic-window" title="Permalink to this headline">¶</a></h2>
+<p>In practice with a finite number of configurations
+it is not possible to sum the autocorrelation function up to
+infinity.
+Moreover the noise of <span class="math notranslate">\(\Gamma(t)\)</span> grows
+with <span class="math notranslate">\(t\)</span>. As a compromise an optimal summation window
+<span class="math notranslate">\(W\)</span> is chosen such that the error estimate is reliable.</p>
+<p>In fact, it is possible to demonstrate that <span class="math notranslate">\(\Gamma\)</span> is
+expected to be a sum of exponentials whose coefficients
+are observable dependent and whose arguments depend
+instead on the Markov Transition Matrix.</p>
+<p>The automatic windowing procedure introduced in <a class="footnote-reference" href="#id5" id="id3">[1]</a>
+defines a criterion for the optimal window <span class="math notranslate">\(W\)</span>,
+which is the first value for which <span class="math notranslate">\(g(W)\)</span> is negative</p>
+<div class="math notranslate">
+\[g(W) = \exp [-W / \tau_W] -  \tau_W /\sqrt{W N}\]</div>
+<div class="math notranslate">
+\[\tau_W = S_\tau \bigg[ \ln \bigg( \frac{\sum_W \rho(W) + 1}{\sum_W \rho(W)-1} \bigg)
+\bigg]^{-1}\]</div>
+<p>A standard choice for the parameter <span class="math notranslate">\(S_\tau\)</span> is 1.5</p>
+</div>
+<div class="section" id="exponential-tail">
+<h2>Exponential tail<a class="headerlink" href="#exponential-tail" title="Permalink to this headline">¶</a></h2>
+<p><a class="footnote-reference" href="#id8" id="id4">[3]</a></p>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<table class="docutils footnote" frame="void" id="id5" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id3">2</a>)</em> U. Wolff “Monte Carlo errors with less errors”
+<a class="reference external" href="https://arxiv.org/abs/hep-lat/0306017">Link to article</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id6" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>M. Luscher “Schwarz-preconditioned HMC algorithm for two-flavour lattice QCD”
+<a class="reference external" href="https://arxiv.org/abs/hep-lat/0409106">Link to article</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id8" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[3]</a></td><td>S. Schaefer, R. Sommer and F. Virotta “Investigating the critical slowing down of QCD simulations”
+<a class="reference external" href="https://arxiv.org/abs/0910.1465">Link to article</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="first.html" title="First Steps with PyObs"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="PyObs"
+             >previous</a> |</li>
+    <li class="nav-item nav-item-0"><a href="index.html">home</a> |</li>
+    <li class="nav-item nav-item-1"><a href="tutorials.html">tutorials</a> |</li>
+    <li class="nav-item nav-item-2"><a href="pyobs.html">documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Mattia Bruno.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+    </div>
+  </body>
+</html>

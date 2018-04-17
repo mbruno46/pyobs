@@ -1,0 +1,40 @@
+First Steps with PyObs
+======================
+
+Getting PyObs
+-------------
+
+You can download the latest stable release 
+from this link :download:`latest-release-pyobs <../tar/pyobs-0.5.1.tar.gz>`
+
+Install PyObs
+-------------
+
+Usage w/o installation PyObs
+----------------------------
+
+PyObs can be used also without installing
+it in the python library, by following these steps
+
+ 1. untar the latest release in a directory, for example `/home/analysis/`::
+
+    $ cd /home/analysis
+    $ tar -zxvf pyobs-x.y.z.tar.gz 
+
+ 2. execute the file `maker.sh` to compile a fast c library of core functions used in the package; 
+    this script requires one argument which is the location of the C compiler::
+     
+    $ cd /home/analysics/pyobs/pyobs/core
+    $ sh maker.sh /usr/bin/gcc
+
+ 3. finally, to use the package in a python script simply add the path with::
+
+    >>> import sys
+    >>> sys.path.insert(0,'/home/analysis/pyobs')
+    >>> from pyobs import * 
+
+.. warning::
+   Make sure to add the path that points to the directory that
+   contains the subfolder named ``pyobs``, which is the true package 
+   loaded by ``import``. In our example above do not use `/home/analysis/pyobs/pyobs`
+

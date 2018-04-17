@@ -1,0 +1,164 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>PyObs &#8212; PyObs 0.5.1(alpha) documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Introduction" href="intro.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="intro.html" title="Introduction"
+             accesskey="N">next</a> |</li>
+    <li class="nav-item nav-item-0"><a href="#">home</a> |</li>
+    <li class="nav-item nav-item-1"><a href="tutorials.html">tutorials</a> |</li>
+    <li class="nav-item nav-item-2"><a href="pyobs.html">documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">PyObs</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#todo">TODO</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="intro.html"
+                        title="next chapter">Introduction</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyobs">
+<h1>PyObs<a class="headerlink" href="#pyobs" title="Permalink to this headline">¶</a></h1>
+<p>A Python library to analyze lattice observables.</p>
+<blockquote>
+<div><ul class="simple">
+<li>entirely based on the <cite>numpy</cite> library, with some additional modules written in c</li>
+<li>objected-oriented with wide basis of overloaded operations</li>
+<li>flexible calculation of the error with the <cite>Gamma method</cite></li>
+<li>analytic propagation of the error for all built-in functions, including fitting routines</li>
+<li>support for <span class="math notranslate">\(\chi^2_\mathrm{exp}\)</span></li>
+</ul>
+</div></blockquote>
+<p>Current stable version is 0.5.1(alpha)</p>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#the-gamma-method">The Gamma Method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#automatic-window">Automatic Window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#exponential-tail">Exponential tail</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="first.html">First Steps with PyObs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="first.html#getting-pyobs">Getting PyObs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="first.html#install-pyobs">Install PyObs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="first.html#usage-w-o-installation-pyobs">Usage w/o installation PyObs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">PyObs license</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="todo">
+<h2>TODO<a class="headerlink" href="#todo" title="Permalink to this headline">¶</a></h2>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>add chi2exp</li>
+<li>add bias cancellation for mean value</li>
+<li>add support for writing MATLAB dobs .xml.gz</li>
+<li>add support for prod</li>
+<li>add support for eigenvalues and eigenvectors</li>
+<li>cythonize other core functions beyond drho</li>
+<li>add support for complex numbers (?)</li>
+<li>add documentation for pfit</li>
+<li>add documentation for cdata and cobs</li>
+</ul>
+</div>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>test file formats: json, binary and xml</li>
+</ul>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>uwerr tested for a single replica against original MATLAB implementation</li>
+<li>plotter of autocorrelations and fluctuations tested</li>
+<li>maker.sh tested on Mac</li>
+<li>fitting routines tested (see quark-mass project)</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="intro.html" title="Introduction"
+             >next</a> |</li>
+    <li class="nav-item nav-item-0"><a href="#">home</a> |</li>
+    <li class="nav-item nav-item-1"><a href="tutorials.html">tutorials</a> |</li>
+    <li class="nav-item nav-item-2"><a href="pyobs.html">documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Mattia Bruno.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+    </div>
+  </body>
+</html>
