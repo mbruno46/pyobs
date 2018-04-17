@@ -1,0 +1,14 @@
+{% extends "!layout.html" %}
+{% block rootrellink %}
+    <li class="nav-item nav-item-0"><a href="{{ pathto('index') }}">home</a>{{ reldelim2 }}</li>
+    <li class="nav-item nav-item-1"><a href="{{ pathto('tutorials') }}">tutorials</a>{{ reldelim2 }}</li>
+    <li class="nav-item nav-item-2"><a href="{{ pathto('pyobs') }}">documentation</a>{{ reldelim1 }}</li>
+    {%- for link in theme_rootlinks %}
+    <li class="active"><a href="{{ link[0] }}">{{ link[1] }}</a></li>
+    {%- endfor %}
+{% endblock %}
+
+
+{# put the sidebar before the body #}
+{% block sidebar1 %}{{ sidebar() }}{% endblock %}
+{% block sidebar2 %}{% endblock %}

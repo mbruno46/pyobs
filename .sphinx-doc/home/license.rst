@@ -1,0 +1,4 @@
+PyObs license
+=============
+
+Copyright
