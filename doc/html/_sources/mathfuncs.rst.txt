@@ -30,7 +30,7 @@ Multiplications and divisions::
 
 The only operation that permits the combination 
 of observables with different sizes is the product 
-between a vector/matrix with a scalar::
+between an observable (vector/matrix) and a scalar::
 
    >>> mat1 * c
 
@@ -40,14 +40,17 @@ Reductions::
    >>> mat1.sum(1) # return 3x1 vector
 
 .. warning::
-   If we ware interested in the product/sum/difference of an observable with 
-   a `numpy.array` object we must defined the binary operation with the 
-   `observa` as the first element. If we do the opposite an error is thrown
-   because the routine `__add__` from the `numpy` library is picked
-   first, instead of `__radd__` of the library `pyobs`::
+   Element-wise operations imply that the two objects (e.g. an observable and 
+   a `numpy.array`) have the same dimensions.
+   If the user is interested in the product/sum/difference of an observable with 
+   a `numpy.array` object the user does not have define the binary operation with the 
+   `observa` as the first element. The flag `__array_priority__` allows the
+   class `observa` to overload functions such as `__radd__` and `__rmul__`. 
+   Nevertheless we recommed to always use the `observa` as first element 
+   (`__array_priority__` may be deprecated in future versions of `numpy`)::
 
    >>> obs * a # this works only if a.shape coincides with obs.dims
-   >>> a * obs # this fails
+   >>> a * obs # not recommended
 
 scalar functions
 ----------------

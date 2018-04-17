@@ -80,33 +80,31 @@
 <div class="section" id="getting-pyobs">
 <h2>Getting PyObs<a class="headerlink" href="#getting-pyobs" title="Permalink to this headline">¶</a></h2>
 <p>You can download the latest stable release
-from this link <a class="reference download internal" href="_downloads/pyobs-0.5.1.tar.gz" download=""><code class="xref download docutils literal notranslate"><span class="pre">latest-release-pyobs</span></code></a></p>
+from the git repository <a class="reference external" href="https://github.com/mbruno46/pyobs">pyobs</a>.</p>
 </div>
 <div class="section" id="install-pyobs">
 <h2>Install PyObs<a class="headerlink" href="#install-pyobs" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="usage-w-o-installation-pyobs">
 <h2>Usage w/o installation PyObs<a class="headerlink" href="#usage-w-o-installation-pyobs" title="Permalink to this headline">¶</a></h2>
-<p>PyObs can be used also without installing
+<p>PyObs can be used without installing
 it in the python library, by following these steps</p>
 <blockquote>
 <div><ol class="arabic">
-<li><p class="first">untar the latest release in a directory, for example <cite>/home/analysis/</cite>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd /home/analysis
-$ tar -zxvf pyobs-x.y.z.tar.gz
-</pre></div>
-</div>
+<li><p class="first">git clone the <em>master branch</em></p>
+<p>$ cd /home/analysis
+$ git clone <a class="reference external" href="mailto:git&#37;&#52;&#48;github&#46;com">git<span>&#64;</span>github<span>&#46;</span>com</a>:mbruno46/pyobs.git -b master</p>
 </li>
-<li><p class="first">execute the file <cite>maker.sh</cite> to compile a fast c library of core functions used in the package;
+<li><p class="first">run <cite>maker.sh</cite> to compile a fast c library of core functions used in the package;
 this script requires one argument which is the location of the C compiler:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd /home/analysics/pyobs/pyobs/core
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd pyobs/pyobs/core
 $ sh maker.sh /usr/bin/gcc
 </pre></div>
 </div>
 </li>
-<li><p class="first">finally, to use the package in a python script simply add the path with:</p>
+<li><p class="first">to use the package in a python script simply add the path with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;/home/analysis/pyobs&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;/full/path/to/pyobs&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyobs</span> <span class="k">import</span> <span class="o">*</span>
 </pre></div>
 </div>
@@ -117,7 +115,7 @@ $ sh maker.sh /usr/bin/gcc
 <p class="first admonition-title">Warning</p>
 <p class="last">Make sure to add the path that points to the directory that
 contains the subfolder named <code class="docutils literal notranslate"><span class="pre">pyobs</span></code>, which is the true package
-loaded by <code class="docutils literal notranslate"><span class="pre">import</span></code>. In our example above do not use <cite>/home/analysis/pyobs/pyobs</cite></p>
+loaded by <code class="docutils literal notranslate"><span class="pre">import</span></code>. In our example above do not use <cite>pyobs/pyobs</cite></p>
 </div>
 </div>
 </div>

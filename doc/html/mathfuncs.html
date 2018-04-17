@@ -105,7 +105,7 @@ examples based on the following objects</p>
 </div>
 <p>The only operation that permits the combination
 of observables with different sizes is the product
-between a vector/matrix with a scalar:</p>
+between an observable (vector/matrix) and a scalar:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat1</span> <span class="o">*</span> <span class="n">c</span>
 </pre></div>
 </div>
@@ -116,13 +116,16 @@ between a vector/matrix with a scalar:</p>
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p>If we ware interested in the product/sum/difference of an observable with
-a <cite>numpy.array</cite> object we must defined the binary operation with the
-<cite>observa</cite> as the first element. If we do the opposite an error is thrown
-because the routine <cite>__add__</cite> from the <cite>numpy</cite> library is picked
-first, instead of <cite>__radd__</cite> of the library <cite>pyobs</cite>:</p>
+<p>Element-wise operations imply that the two objects (e.g. an observable and
+a <cite>numpy.array</cite>) have the same dimensions.
+If the user is interested in the product/sum/difference of an observable with
+a <cite>numpy.array</cite> object the user does not have define the binary operation with the
+<cite>observa</cite> as the first element. The flag <cite>__array_priority__</cite> allows the
+class <cite>observa</cite> to overload functions such as <cite>__radd__</cite> and <cite>__rmul__</cite>.
+Nevertheless we recommed to always use the <cite>observa</cite> as first element
+(<cite>__array_priority__</cite> may be deprecated in future versions of <cite>numpy</cite>):</p>
 <div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span> <span class="o">*</span> <span class="n">a</span> <span class="c1"># this works only if a.shape coincides with obs.dims</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">*</span> <span class="n">obs</span> <span class="c1"># this fails</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">*</span> <span class="n">obs</span> <span class="c1"># not recommended</span>
 </pre></div>
 </div>
 </div>
@@ -207,19 +210,13 @@ first, instead of <cite>__radd__</cite> of the library <cite>pyobs</cite>:</p>
 
 <dl class="function">
 <dt id="pyobs.observa.inv">
-<code class="descclassname">pyobs.observa.</code><code class="descname">inv</code><span class="sig-paren">(</span><em>x</em>, <em>numeric=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.inv" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyobs.observa.</code><code class="descname">inv</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.inv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the inverse of an observable</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>x</strong> (<a class="reference internal" href="pyobs.observa.html#pyobs.observa.observa" title="pyobs.observa.observa"><em>observa</em></a>) – must be a square matrix</li>
-<li><strong>numeric</strong> (<em>bool</em><em>, </em><em>optional</em>) – flag to use the numeric or analytic function to perform
-the inverse. The numeric inverse is in general faster, especially
-for large matrices. Default is True.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<a class="reference internal" href="pyobs.observa.html#pyobs.observa.observa" title="pyobs.observa.observa"><em>observa</em></a>) – must be a square matrix</td>
 </tr>
 </tbody>
 </table>

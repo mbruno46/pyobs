@@ -19,7 +19,6 @@ Introduction
 
    intro
    first
-   license
 
 TODO
 ----

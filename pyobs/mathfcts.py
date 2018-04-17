@@ -84,21 +84,9 @@ def math_tr(mean):
     expr = Matrix( [[M.trace()]] )
     return math_generic(expr, [M], 'M', [mean])
 
-def math_inv(mean,numeric=False):
+def math_inv(mean):
 	dims = numpy.shape(mean)
-	if (numeric==False):
-		M = SymMat(dims,'m')
-		# checks if expression has been already computed and saved
-		fexpr = './mathdata/inverse.'+str(dims[0])+'.sym'
-		if (os.path.isfile(fexpr)==True):
-			expr = pickle.load(open(fexpr,'rb'))
-		else:
-			expr = M.inv()
-
-		f = lambdify(symbols('m'), expr, "numpy")
-		func = f(mean)
-	else:
-		func = numpy.linalg.inv(mean)
+	func = numpy.linalg.inv(mean)
 
 	grad = numpy.zeros(dims+dims)
 	dfunc = numpy.zeros(dims)
@@ -113,18 +101,6 @@ def math_inv(mean,numeric=False):
 					grad[i,j,k,l] = tmp[i,j]
 
 	return [func, [grad]]
-
-def math_adjugate(mean):
-	dims = numpy.shape(mean)
-	M = SymMat(dims,'m')
-	s = Subs([mean],[M])
-	# checks if expression has been already computed and saved
-	fexpr = './mathdata/adjugate.'+str(dims[0])+'.sym'
-	if (os.path.isfile(fexpr)==True):
-		expr = pickle.load(open(fexpr,'rb'))
-	else:
-		expr = M.adjugate()
-	return math_generic(expr, [M], 'm', [mean])
 
 #######################################################################
 

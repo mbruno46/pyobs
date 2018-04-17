@@ -24,7 +24,7 @@ def generate_mock_data(func, N, taus, strength, mixing=None):
 			nui = nui*ff + apars * nu_old
 		h = nui.dot(mixing) #nui * mixing
 		res[i] = func + strength * h
-		nu_old = list(nui) #deepcopy(nui)
+		nu_old = numpy.array(nui) #deepcopy(nui)
 	return res
 
 
