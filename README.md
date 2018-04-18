@@ -31,3 +31,7 @@ it in the python library, by following these steps
       >>> sys.path.insert(0,'/full/path/to/pyobs')
       >>> from pyobs import *
       ```
+
+## Documentation
+
+The online documentation can be found here: [HTML](https://mbruno46.github.io/pyobs/)
