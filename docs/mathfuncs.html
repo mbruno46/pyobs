@@ -1,0 +1,260 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Built-in functions &#8212; PyObs 0.5.1(alpha) documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pyobs.fit package" href="pyobs.fit.html" />
+    <link rel="prev" title="pyobs.observa module" href="pyobs.observa.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyobs.fit.html" title="pyobs.fit package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pyobs.observa.html" title="pyobs.observa module"
+             accesskey="P">previous</a> |</li>
+    <li class="nav-item nav-item-0"><a href="index.html">home</a> |</li>
+    <li class="nav-item nav-item-1"><a href="tutorials.html">tutorials</a> |</li>
+    <li class="nav-item nav-item-2"><a href="pyobs.html">documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="pyobs.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Built-in functions</a><ul>
+<li><a class="reference internal" href="#scalar-functions">scalar functions</a></li>
+<li><a class="reference internal" href="#matrix-functions">matrix functions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pyobs.observa.html"
+                        title="previous chapter">pyobs.observa module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pyobs.fit.html"
+                        title="next chapter">pyobs.fit package</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="built-in-functions">
+<h1>Built-in functions<a class="headerlink" href="#built-in-functions" title="Permalink to this headline">¶</a></h1>
+<p>The class <cite>observa</cite> is defined with built-in
+overloaded operators, that let the user quickly
+obtain derived observables. Below we show some
+examples based on the following objects</p>
+<ul class="simple">
+<li><cite>mat1</cite> matrix observable with size 3x4</li>
+<li><cite>mat2</cite> matrix observable with size 4x3</li>
+<li><cite>mat3</cite> matrix observable with size 3x4, different from <cite>mat1</cite></li>
+<li><cite>c</cite> scalar observable (size 1x1)</li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat1</span> <span class="o">+</span> <span class="n">mat3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">-</span><span class="n">mat1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat1</span> <span class="o">-</span> <span class="n">mat3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat1</span><span class="o">**</span><span class="mi">2</span> <span class="c1"># element-wise power</span>
+</pre></div>
+</div>
+<p>Multiplications and divisions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat1</span> <span class="o">*</span> <span class="n">mat3</span> <span class="c1"># element-wise</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat1</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">mat2</span><span class="p">)</span>  <span class="c1"># dot product</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat1</span><span class="o">.</span><span class="n">reciprocal</span><span class="p">()</span> <span class="c1"># element-wise</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">1.</span><span class="o">/</span><span class="n">mat1</span> <span class="c1"># identical to reciprocal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat1</span> <span class="o">*</span> <span class="n">mat3</span><span class="o">.</span><span class="n">reciprocal</span><span class="p">()</span> <span class="c1"># element-wise</span>
+</pre></div>
+</div>
+<p>The only operation that permits the combination
+of observables with different sizes is the product
+between an observable (vector/matrix) and a scalar:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat1</span> <span class="o">*</span> <span class="n">c</span>
+</pre></div>
+</div>
+<p>Reductions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat1</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># returns 1x4 vector</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat1</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># return 3x1 vector</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>Element-wise operations imply that the two objects (e.g. an observable and
+a <cite>numpy.array</cite>) have the same dimensions.
+If the user is interested in the product/sum/difference of an observable with
+a <cite>numpy.array</cite> object the user does not have define the binary operation with the
+<cite>observa</cite> as the first element. The flag <cite>__array_priority__</cite> allows the
+class <cite>observa</cite> to overload functions such as <cite>__radd__</cite> and <cite>__rmul__</cite>.
+Nevertheless we recommed to always use the <cite>observa</cite> as first element
+(<cite>__array_priority__</cite> may be deprecated in future versions of <cite>numpy</cite>):</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span> <span class="o">*</span> <span class="n">a</span> <span class="c1"># this works only if a.shape coincides with obs.dims</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">*</span> <span class="n">obs</span> <span class="c1"># not recommended</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="scalar-functions">
+<h2>scalar functions<a class="headerlink" href="#scalar-functions" title="Permalink to this headline">¶</a></h2>
+<p>The following functions can be imported using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyobs</span> <span class="k">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyobs</span> <span class="k">import</span> <span class="n">log</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="o">...</span>
+</pre></div>
+</div>
+<span class="target" id="module-pyobs.observa"></span><dl class="function">
+<dt id="pyobs.observa.log">
+<code class="descclassname">pyobs.observa.</code><code class="descname">log</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the logarithm of an observable x element-wise</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyobs.observa.exp">
+<code class="descclassname">pyobs.observa.</code><code class="descname">exp</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.exp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the exponential of an observable x element-wise</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyobs.observa.sin">
+<code class="descclassname">pyobs.observa.</code><code class="descname">sin</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.sin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the sine of an observable x element-wise</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyobs.observa.cos">
+<code class="descclassname">pyobs.observa.</code><code class="descname">cos</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.cos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the cosine of an observable x element-wise</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyobs.observa.arccos">
+<code class="descclassname">pyobs.observa.</code><code class="descname">arccos</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.arccos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the arccosine of an observable x element-wise</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyobs.observa.arcsin">
+<code class="descclassname">pyobs.observa.</code><code class="descname">arcsin</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.arcsin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the arcsine of an observable x element-wise</p>
+</dd></dl>
+
+</div>
+<div class="section" id="matrix-functions">
+<h2>matrix functions<a class="headerlink" href="#matrix-functions" title="Permalink to this headline">¶</a></h2>
+<p>The following functions can be imported using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyobs</span> <span class="k">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyobs</span> <span class="k">import</span> <span class="n">det</span><span class="p">,</span> <span class="n">inv</span>
+</pre></div>
+</div>
+<span class="target" id="module-pyobs.observa"></span><dl class="function">
+<dt id="pyobs.observa.det">
+<code class="descclassname">pyobs.observa.</code><code class="descname">det</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.det" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the determinant of an observable</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<a class="reference internal" href="pyobs.observa.html#pyobs.observa.observa" title="pyobs.observa.observa"><em>observa</em></a>) – must be a square matrix</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyobs.observa.trace">
+<code class="descclassname">pyobs.observa.</code><code class="descname">trace</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.trace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the trace of an observable</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<a class="reference internal" href="pyobs.observa.html#pyobs.observa.observa" title="pyobs.observa.observa"><em>observa</em></a>) – must be a square matrix</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyobs.observa.inv">
+<code class="descclassname">pyobs.observa.</code><code class="descname">inv</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.inv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the inverse of an observable</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<a class="reference internal" href="pyobs.observa.html#pyobs.observa.observa" title="pyobs.observa.observa"><em>observa</em></a>) – must be a square matrix</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyobs.fit.html" title="pyobs.fit package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pyobs.observa.html" title="pyobs.observa module"
+             >previous</a> |</li>
+    <li class="nav-item nav-item-0"><a href="index.html">home</a> |</li>
+    <li class="nav-item nav-item-1"><a href="tutorials.html">tutorials</a> |</li>
+    <li class="nav-item nav-item-2"><a href="pyobs.html">documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Mattia Bruno.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+    </div>
+  </body>
+</html>

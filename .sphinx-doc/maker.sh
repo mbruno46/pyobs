@@ -9,3 +9,6 @@ cd ../tutorials
 make html
 cd ../pyobs
 make html
+cd ..
+
+cp -r ../doc/html ../docs

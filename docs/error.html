@@ -1,0 +1,242 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Computing the error &#8212; PyObs 0.5.1(alpha) documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Basics" href="basics.html" />
+    <link rel="prev" title="Getting Started" href="getstarted.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="basics.html" title="Basics"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="getstarted.html" title="Getting Started"
+             accesskey="P">previous</a> |</li>
+    <li class="nav-item nav-item-0"><a href="index.html">home</a> |</li>
+    <li class="nav-item nav-item-1"><a href="tutorials.html">tutorials</a> |</li>
+    <li class="nav-item nav-item-2"><a href="pyobs.html">documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="tutorials.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Computing the error</a><ul>
+<li><a class="reference internal" href="#errinfo-class">ErrInfo class</a></li>
+<li><a class="reference internal" href="#standard-uwerr-approach">Standard UWerr approach</a></li>
+<li><a class="reference internal" href="#attaching-exponential-tail">Attaching Exponential Tail</a></li>
+<li><a class="reference internal" href="#plotting-the-autocorrelation-function">Plotting the autocorrelation function</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="getstarted.html"
+                        title="previous chapter">Getting Started</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="basics.html"
+                        title="next chapter">Basics</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="computing-the-error">
+<h1>Computing the error<a class="headerlink" href="#computing-the-error" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial we show the various methods
+that can be used to compute and study
+the error of an observable.</p>
+<p>The error (for each element of the observable) can be calculated
+using the function <cite>vwerr</cite> as shown here:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="n">dc</span><span class="p">]</span> <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">vwerr</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">c</span>
+<span class="go">[ 1.50881841  1.09511523  0.8530834 ... 1.0948965 ]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">dc</span>
+<span class="go">[ 0.0012057   0.00058748  0.00064241 ... 0.0005396 ]</span>
+</pre></div>
+</div>
+<p>The method used for the estimate of the error is the
+<cite>Gamma method</cite>. The summation window is defined through
+an automatic procedure, explained in the <span class="xref std std-doc">introduction</span>,
+which depends on some parameters.
+The user can freely modify those, ensemble by ensemble, through the
+class <cite>errinfo</cite>.</p>
+<div class="section" id="errinfo-class">
+<h2>ErrInfo class<a class="headerlink" href="#errinfo-class" title="Permalink to this headline">¶</a></h2>
+<p>We provide here an example where we show how
+to tweak the parameter <span class="math notranslate">\(S_\tau\)</span> for the
+ensemble with id 0:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">einfo</span> <span class="o">=</span> <span class="n">errinfo</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">einfo</span><span class="o">.</span><span class="n">addEnsemble</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">Stau</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">vwerr</span><span class="p">(</span><span class="n">errinfo</span><span class="o">=</span><span class="n">einfo</span><span class="p">)</span> <span class="c1"># uses the new Stau</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">vwerr</span><span class="p">()</span> <span class="c1"># standard method with Stau=1.5</span>
+</pre></div>
+</div>
+<p>Note that the automatic window can be bypassed
+by imposing a fixed summation window with
+the argument <code class="docutils literal notranslate"><span class="pre">W</span></code> of the class <cite>errinfo</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">einfo</span> <span class="o">=</span> <span class="n">errinfo</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">einfo</span><span class="o">.</span><span class="n">addEnsemble</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">W</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">vwerr</span><span class="p">(</span><span class="n">errinfo</span><span class="o">=</span><span class="n">einfo</span><span class="p">)</span> <span class="c1"># gamma summed up to W</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">vwerr</span><span class="p">()</span> <span class="c1"># standard method with automatic window</span>
+</pre></div>
+</div>
+<p>The <cite>errinfo</cite> class can be quickly inspected using
+the <cite>print</cite> command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">einfo</span>
+<span class="go">Ensemble id 0</span>
+<span class="go">     Stau = 1.5 ; Texp = 10.00 ; Nsigma = 2</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="standard-uwerr-approach">
+<h2>Standard UWerr approach<a class="headerlink" href="#standard-uwerr-approach" title="Permalink to this headline">¶</a></h2>
+<p>The standard approach defined in <a href="#id2"><span class="problematic" id="id1">[1]_</span></a>
+is usually called <cite>UWerr</cite>. The automatic
+window procedure depends on <span class="math notranslate">\(S_\tau\)</span>
+alone. The examples above show how to changed
+this parameter ensemble by ensemble.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">To make sure that the <cite>UWerr</cite> method is enforced
+on a given ensemble, check that
+the <cite>errinfo</cite> class <strong>Texp=0</strong>.</p>
+</div>
+</div>
+<div class="section" id="attaching-exponential-tail">
+<h2>Attaching Exponential Tail<a class="headerlink" href="#attaching-exponential-tail" title="Permalink to this headline">¶</a></h2>
+<p>In order to use the approach <cite>VWerr</cite>
+on a given ensemble, the user must define
+the <cite>errinfo</cite> class with non-zero <code class="docutils literal notranslate"><span class="pre">Texp</span></code>
+field:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">einfo</span> <span class="o">=</span> <span class="n">errinfo</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">einfo</span><span class="o">.</span><span class="n">addEnsemble</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">Texp</span><span class="o">=</span><span class="mf">10.</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">vwerr</span><span class="p">(</span><span class="n">errinfo</span><span class="o">=</span><span class="n">einfo</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="plotting-the-autocorrelation-function">
+<h2>Plotting the autocorrelation function<a class="headerlink" href="#plotting-the-autocorrelation-function" title="Permalink to this headline">¶</a></h2>
+<p>The plotting of the autocorrelation function <span class="math notranslate">\(\rho\)</span>
+is performed with the library <cite>matplotlib</cite> and
+can be activated with the flag <code class="docutils literal notranslate"><span class="pre">plot</span></code> in <cite>vwerr</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">vwerr</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># to simply plot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">vwerr</span><span class="p">(</span><span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># equivalent as line above</span>
+</pre></div>
+</div>
+<img alt="_images/example_rho_E0_00.pdf" src="_images/example_rho_E0_00.pdf" />
+<div class="sidebar">
+<p class="first sidebar-title">Explaining the plot</p>
+<p class="last">The title contains the ensemble name and the integrated autocorrelation
+time. The vertical line shows the optimal window found by the
+automatic procedure (U.Wolff).</p>
+</div>
+<p>The plots can be saved to a pdf file by using the <code class="docutils literal notranslate"><span class="pre">pfile</span></code> field
+in <cite>vwerr</cite>. Note that the argument of <code class="docutils literal notranslate"><span class="pre">pfile</span></code> must be a base name
+for the file, without the extension, e.g. <code class="docutils literal notranslate"><span class="pre">/home/users/tmp/test_observable</span></code>:
+the program automatically attaches to it the ensemble name and the observable
+components and saves a file like <code class="docutils literal notranslate"><span class="pre">/home/users/tmp/test_observable_E0_00.pdf</span></code>.
+If multiple ensembles or if the observable is a vector or a matrix,
+then multiple plots and files will be generated with the
+appropriate names ending with <code class="docutils literal notranslate"><span class="pre">_ensemblename_ij.pdf</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">vwerr</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;/path/to/file&#39;</span> <span class="p">)</span> <span class="c1"># to plot and save the figure to disk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">vwerr</span><span class="p">(</span><span class="n">pfile</span><span class="o">=</span><span class="s1">&#39;/path/to/file&#39;</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># same as above</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">vwerr</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;/path/to/file&#39;</span><span class="p">)</span> <span class="c1"># raises an error</span>
+</pre></div>
+</div>
+<p>If the exponential tails are defined in a given <cite>errinfo</cite> class
+then an exponential function is displayed in the plot as well:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">einfo</span> <span class="o">=</span> <span class="n">errinfo</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">einfo</span><span class="o">.</span><span class="n">addEnsemble</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">Texp</span><span class="o">=</span><span class="mf">10.</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">vwerr</span><span class="p">(</span><span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">errinfo</span><span class="o">=</span><span class="n">einfo</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/example_rho_tail_E0_00.pdf" src="_images/example_rho_tail_E0_00.pdf" />
+<p>If the observable contains the fluctuations of
+many ensembles, an additional pie chart is plotted automatically
+displaying which ensemble contributes to the final error and in
+what percentage</p>
+<img alt="_images/example_pie.pdf" src="_images/example_pie.pdf" />
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The function <code class="docutils literal notranslate"><span class="pre">vwerr</span></code> generates one plot for every element of the observable and
+for every ensemble. In this example, it is better to avoid
+plotting the entire correlator with <code class="docutils literal notranslate"><span class="pre">corr.vwerr(True)</span></code>.</p>
+</div>
+<p>Additionally it is also possible to visualize the fluctuations of a given
+observable by calling the function <cite>plotter</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">plotter</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Also in this case one plot per ensemble and component will be generated</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="basics.html" title="Basics"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="getstarted.html" title="Getting Started"
+             >previous</a> |</li>
+    <li class="nav-item nav-item-0"><a href="index.html">home</a> |</li>
+    <li class="nav-item nav-item-1"><a href="tutorials.html">tutorials</a> |</li>
+    <li class="nav-item nav-item-2"><a href="pyobs.html">documentation</a> &#187;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Mattia Bruno.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+    </div>
+  </body>
+</html>
