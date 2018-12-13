@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 
 from .vwerr import uwerr, uwerr_texp
 from .core.utils import fill_holes, irregular_measurements
+from .jerr import jackknife_error
 
 class edata:
     def __init__(self):
@@ -92,6 +93,9 @@ class edata:
                             False, (self.name,i,j,''), 1.5, 0)
                 sigma[i,j] = res[0]
         return sigma
+
+    def jkerr(self,bsize,mean):
+        return jackknife_error(mean,self.rdata[0].data,self.rdata[0].ncnfg,self.dims,bsize)
 
     def plotter(self):
         for i in range(self.dims[0]):
