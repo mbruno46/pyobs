@@ -16,6 +16,7 @@ pyobs documentation
    mathfuncs
    pyobs.fit
    pyobs.vwerr
+   pyobs.jerr
 
 Indices and tables
 ==================
