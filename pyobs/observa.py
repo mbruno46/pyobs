@@ -338,6 +338,78 @@ class observa:
 
         return numpy.sqrt(sigma_tot)
 
+    def jkerr(self,plot=False,pfile=None,jkinfo=None,simplify=True):
+        """ Compute the error of each element
+
+        Parameters
+        ----------
+        plot : bool, optional
+            tells the program to plot a pie-chart with the contributions
+            to the error from the various ensembles
+        pfile : str, optional
+            provides a filename to save the plots with the errors
+        jkinfo : dictionary, optional
+            dictionary with the bin size for each ensemble.
+            It contains information for multiple ensembles. If one ensemble is
+            present in the observable and not in jkinfo the default jkerr routine 
+            assigns bin size of 1. 
+        simplify: bool, optional
+            for a scalar observable returns floats, for a vector returns a 1-D array
+            and for a matrix returns the full 2D array. If set to False it always
+            returns objects in 2D
+
+        Returns
+        -------
+        value : float or array
+        error : float or array
+
+        Examples
+        --------
+        >>> [val, err] = a.jkerr()
+        >>> [val, err] = a.jkerr(True) # to plot
+        >>> a.jkerr(True,'/path/to/file') # to save the plot
+        >>> [val, err] = a.jkerr(jkinfo={0: 2})
+        """
+
+        if (plot==False and pfile!=None):
+            print 'Warning: plots ' + pfile + ' are not saved. Use plot=True'
+
+        sigma = []
+        sigma_tot = numpy.zeros(self.dims)
+        for ed in self.edata:
+            if (jkinfo==None):
+                res = ed.jkerr(1,self.mean)
+            else:
+                if ed.id in jkinfo:
+                    res = ed.jkerr(jkinfo[ed.id],self.mean)
+                else:
+                    res = ed.jkerr(1,self.mean)
+            sigma.append(res[0])
+            sigma_tot += sigma[-1]
+        
+        # add cdata
+        for cd in self.cdata:
+            sigma.append( cd.sigma() )
+            sigma_tot += sigma[-1]
+
+        if (plot==True and len(self.eid)>1):
+            nn = [ed.name for ed in self.edata]+[cd.name for cd in self.cdata]
+            for i in range(self.dims[0]):
+                for j in range(self.dims[1]):
+                    piechart([sigma[k][i,j] for k in range(len(sigma))],nn,(i,j))
+
+        error = numpy.sqrt(sigma_tot)
+        if (simplify==False):
+            return [self.mean, error]
+        else:
+            if (self.dims[0]==1):
+                if (self.dims[1]==1):
+                    return [self.mean[0,0], error[0,0]]
+                else:
+                    return [self.mean[0,:], error[0,:]]
+            else:
+                return [self.mean, error]
+
     #########################################################
     
     def __getitem__(self,args):

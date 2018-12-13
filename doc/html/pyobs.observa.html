@@ -116,6 +116,46 @@ required for an analysis, including other miscellanea functions.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pyobs.observa.observa.jkerr">
+<code class="descname">jkerr</code><span class="sig-paren">(</span><em>plot=False</em>, <em>pfile=None</em>, <em>jkinfo=None</em>, <em>simplify=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.observa.jkerr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the error of each element</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>plot</strong> (<em>bool</em><em>, </em><em>optional</em>) – tells the program to plot a pie-chart with the contributions
+to the error from the various ensembles</li>
+<li><strong>pfile</strong> (<em>str</em><em>, </em><em>optional</em>) – provides a filename to save the plots with the errors</li>
+<li><strong>jkinfo</strong> (<em>dictionary</em><em>, </em><em>optional</em>) – dictionary with the bin size for each ensemble.
+It contains information for multiple ensembles. If one ensemble is
+present in the observable and not in jkinfo the default jkerr routine
+assigns bin size of 1.</li>
+<li><strong>simplify</strong> (<em>bool</em><em>, </em><em>optional</em>) – for a scalar observable returns floats, for a vector returns a 1-D array
+and for a matrix returns the full 2D array. If set to False it always
+returns objects in 2D</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>value</strong> (<em>float or array</em>)</li>
+<li><strong>error</strong> (<em>float or array</em>)</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">val</span><span class="p">,</span> <span class="n">err</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">jkerr</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">val</span><span class="p">,</span> <span class="n">err</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">jkerr</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># to plot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">jkerr</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span><span class="s1">&#39;/path/to/file&#39;</span><span class="p">)</span> <span class="c1"># to save the plot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">val</span><span class="p">,</span> <span class="n">err</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">jkerr</span><span class="p">(</span><span class="n">jkinfo</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="pyobs.observa.observa.load">
 <code class="descname">load</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.observa.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the observable from disk</p>
