@@ -90,8 +90,9 @@ it is always a 2D numpy.array::
    >>> print corr.mean[0,0]
    1.50881841113
 
-The full observable can be sliced exactly in the same way, using 
-square brackets::
+The full observable can be sliced exactly in the same way 
+(more details can be found in `Manipulation of observables <mathfuncs.html#>`_),
+using square brackets::
 
    >>> print corr[0,1:4]
        1.09512(59)    0.85308(64)    0.69602(49)
@@ -146,3 +147,72 @@ or in MATLAB format::
 
 When loading an observable the full file name must be specified including
 the extension.
+
+External observables
+####################
+
+Often in analysis of lattice observables, external parameters or
+quantities have to be included: for example PDG values of hadron 
+masses or calculations of quantities by different collaborations 
+for which the full statistical sample is not available. In all these
+cases the statistical information is contained in covariance matrices.
+The ``pyobs`` library allows the user to incorporate these quantities
+and properly propagate their error throughout the entire analysis.
+
+For simplicity let's consider an experiment that measures a 
+certain quantity :math:`A_i` for several energy bins labeled by
+:math:`i`. If we apply a function :math:`f` its error is determined
+from
+
+.. math::
+   \sigma_f^2 = \frac{\partial f}{\partial A_i} \mathrm{cov}^{ij} \frac{\partial f}{\partial A_j}
+
+To create such an observable, one starts as usual from the class
+`observa`
+
+.. code-block:: python
+
+   >>> val = [0.00026333, 0.048661, 0.0352]
+   >>> cov = [[1.18122806e-07, 3.03071340e-08, 2.01081569e-08],
+   >>>        [3.03071340e-08, 2.08975942e-04, 7.08967804e-06],
+   >>>        [2.01081569e-08, 7.08967804e-06, 4.54329935e-05]]
+   >>> exp = observa()
+   >>> exp.c_observable(0,'experiment',val,cov)
+   >>> print exp
+   	0.00026(34)	0.049(14)	0.0352(67)
+   >>> (exp[0,0] * exp[0,2]).vwerr()
+   [9.269216e-06, 1.2242634568573964e-05]
+
+
+The input parameters of ``c_observa`` are:
+
+   1. an integer which uniquely indentifies the quantity
+	
+   2. a string that labels the quantity. This is an auxiliary field, but now crucial
+
+   3. a list of floats with the values of the observable
+
+   4. a list or ``numpy.array`` with the covariance matrix. 
+
+.. warning::
+   Note that the integer used to identify the `c_observable` is completely
+   independent from the integers used to identify the ensembles.
+
+Additional possible cases and allowed input
+
+.. code-block:: python
+
+   >>> val = [0.00026333, 0.048661, 0.0352]
+   >>> cov = [1.18122806e-07, 2.08975942e-04, 4.54329935e-05]
+   >>> exp = observa()
+   >>> exp.c_observable(0,'experiment',val,cov)
+   >>> print exp
+   	0.00026(34)	0.049(14)	0.0352(67)
+   >>> (exp[0,0] * exp[0,2]).vwerr()
+   [9.269216e-06, 1.222740068372286e-05]
+
+.. warning::
+   If the observable is 2D the expected covariance matrix is a 4D object 
+   (possibly a ``numpy.array``)
+
+

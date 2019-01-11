@@ -6,14 +6,15 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Introduction &#8212; PyObs 0.5.1(alpha) documentation</title>
+    <title>Introduction &#8212; PyObs 0.6 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="First Steps with PyObs" href="first.html" />
@@ -39,7 +40,7 @@
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Introduction</a><ul>
 <li><a class="reference internal" href="#the-gamma-method">The Gamma Method</a></li>
@@ -83,65 +84,65 @@ Markov Chains and we set the notation for the rest of the documentation.
 More details can be found in Ref <a class="footnote-reference" href="#id5" id="id1">[1]</a> which has been the base for
 many of the routines implemented in this library.</p>
 <div class="section" id="the-gamma-method">
-<h2>The Gamma Method<a class="headerlink" href="#the-gamma-method" title="Permalink to this headline">¶</a></h2>
+<span id="intro"></span><h2>The Gamma Method<a class="headerlink" href="#the-gamma-method" title="Permalink to this headline">¶</a></h2>
 <p>Let us imagine to have a generic set of primary observables
-<span class="math notranslate">\(\{A_\alpha\}\)</span> measured on <span class="math notranslate">\(R\)</span> replicas of the same ensemble,
-each having <span class="math notranslate">\(N_r\)</span> configurations with index <span class="math notranslate">\(i\)</span>.</p>
-<p>We denote with <span class="math notranslate">\(N\)</span> the total of configurations per ensemble
-<span class="math notranslate">\(N=\sum_r N_r\)</span>.
-The measurements are called <span class="math notranslate">\(a_{\alpha}^{i,r}\)</span> and their
+<span class="math notranslate nohighlight">\(\{A_\alpha\}\)</span> measured on <span class="math notranslate nohighlight">\(R\)</span> replicas of the same ensemble,
+each having <span class="math notranslate nohighlight">\(N_r\)</span> configurations with index <span class="math notranslate nohighlight">\(i\)</span>.</p>
+<p>We denote with <span class="math notranslate nohighlight">\(N\)</span> the total of configurations per ensemble
+<span class="math notranslate nohighlight">\(N=\sum_r N_r\)</span>.
+The measurements are called <span class="math notranslate nohighlight">\(a_{\alpha}^{i,r}\)</span> and their
 mean value and fluctuations are defined as</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\bar a_\alpha^r = \frac{1}{N_r} \sum_{i=1}^{N_r} a_\alpha^{i,r} \quad
 \bar{\bar a}_\alpha  = \frac{1}{N} \sum_{r=1}^R N_r \bar a_\alpha^r =
 \frac{1}{N} \sum_{r=1}^R \sum_{i=1}^{N_r} a_\alpha^{i,r} \quad
 \quad
 \delta a_\alpha^{i,r} = (a_\alpha^{i,r} - A_\alpha)\]</div>
 <p>and the autocorrelation function is defined as</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\langle \delta a_\alpha^{i,r} \ \delta a_\beta^{j,s} \rangle =
 \delta_{rs} \Gamma_{\alpha \beta} (j-i)\]</div>
 <p>At the practical level the autocorrelation function is computed as</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\Gamma_{\alpha \beta} (t) = \frac{1}{N-Rt} \sum_{r=1}^R \sum_{i=1}^{N_r -t}
 (a_\alpha^{i,r} - \bar{\bar a}_\alpha)(a_\beta^{i+t,r} - \bar{\bar a}_\beta)  + O(1/N)\]</div>
 <p>To be as general as possible we also need to account for situations where the measurements
 are taken on irregular Monte-Carlo series, e.g. with holes and missing configurations.
 For this reason it is convenient to consider the normalized fluctuations</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\begin{split}\pi_\alpha^{i,r} = \left\lbrace \begin{array}{ll}
 0 &amp; \mbox{if } a_\alpha^{i,r} \mbox{ on config } i \mbox{ is missing} \\
 \frac{N_r}{N_m} (a_\alpha^{i,r} - \bar{\bar a}_\alpha) &amp; \mbox{otherwise}
 \end{array} \right. \quad\end{split}\]</div>
-<p>where <span class="math notranslate">\(N_m\)</span> is the number of measurements at disposal. Note however
-that in the end <span class="math notranslate">\(N_r\)</span> is going to be the total number of configurations, including
+<p>where <span class="math notranslate nohighlight">\(N_m\)</span> is the number of measurements at disposal. Note however
+that in the end <span class="math notranslate nohighlight">\(N_r\)</span> is going to be the total number of configurations, including
 the zero fluctuations, such that the time series given by
-<span class="math notranslate">\(\pi_\alpha^{i,r}\)</span> is now contiguous.</p>
+<span class="math notranslate nohighlight">\(\pi_\alpha^{i,r}\)</span> is now contiguous.</p>
 <p>The calculation of the autocorrelation function therefore becomes</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\Gamma_{\alpha \beta} (t) = \frac{1}{N-Rt} \sum_{r=1}^R \sum_{i=1}^{N_r -t}
 \pi_\alpha^{i,r} \pi_\beta^{i+t,r}\]</div>
 <p>and its integral defines the covariance matrix</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[C_{\alpha \beta} = \sum_{t=-\infty}^\infty \Gamma_{\alpha \beta} (t)\]</div>
 <p>The error of a given observable can be read off from the diagonal
 elements of the covariance matrix, which can be re-expressed in terms
 of the integrated autocorrelation time</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\sigma^2 (a_\alpha) = \frac{C_{\alpha \alpha}}{N} = \frac{ 2 \tau_\mathrm{int} }{N}
 \Gamma_{\alpha \alpha}(0)\]</div>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\tau_\mathrm{int\,, \alpha} = \frac{1}{2 \Gamma_{\alpha \alpha}(0)}
 \sum_{t=-\infty}^\infty \Gamma_{\alpha \alpha} (t)\]</div>
 <p>It is often convenient to think in terms of the normalized autocorrelation function
-<span class="math notranslate">\(\rho(t) = \Gamma(t) / \Gamma(0)\)</span>, whose error can be computed
-according to <a class="footnote-reference" href="#id6" id="id2">[2]</a> (for the case <span class="math notranslate">\(\alpha=\beta\)</span>)</p>
-<div class="math notranslate">
+<span class="math notranslate nohighlight">\(\rho(t) = \Gamma(t) / \Gamma(0)\)</span>, whose error can be computed
+according to <a class="footnote-reference" href="#id6" id="id2">[2]</a> (for the case <span class="math notranslate nohighlight">\(\alpha=\beta\)</span>)</p>
+<div class="math notranslate nohighlight">
 \[\mathrm{var} \rho (t) \simeq \frac{1}{N} \sum_{k=1}^\infty
 \big[ \rho(k+t) + \rho(k-t) - 2 \rho(k) \rho(t) \big]^2\]</div>
-<p>Note that for a derived observable, <span class="math notranslate">\(F(\{a\})\)</span>, the same equations
+<p>Note that for a derived observable, <span class="math notranslate nohighlight">\(F(\{a\})\)</span>, the same equations
 hold with the only difference being in the fluctuations</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\pi_F^{i,r} \equiv \sum_\alpha
 \frac{\partial F(\{a\})}{\partial a_\alpha} \bigg|_{a=\bar{\bar a}}
 \pi_\alpha^{i,r}\]</div>
@@ -151,26 +152,26 @@ hold with the only difference being in the fluctuations</p>
 <p>In practice with a finite number of configurations
 it is not possible to sum the autocorrelation function up to
 infinity.
-Moreover the noise of <span class="math notranslate">\(\Gamma(t)\)</span> grows
-with <span class="math notranslate">\(t\)</span>. As a compromise an optimal summation window
-<span class="math notranslate">\(W\)</span> is chosen such that the error estimate is reliable.</p>
-<p>In fact, it is possible to demonstrate that <span class="math notranslate">\(\Gamma\)</span> is
+Moreover the noise of <span class="math notranslate nohighlight">\(\Gamma(t)\)</span> grows
+with <span class="math notranslate nohighlight">\(t\)</span>. As a compromise an optimal summation window
+<span class="math notranslate nohighlight">\(W\)</span> is chosen such that the error estimate is reliable.</p>
+<p>In fact, it is possible to demonstrate that <span class="math notranslate nohighlight">\(\Gamma\)</span> is
 expected to be a sum of exponentials whose coefficients
 are observable dependent and whose arguments depend
 instead on the Markov Transition Matrix.</p>
 <p>The automatic windowing procedure introduced in <a class="footnote-reference" href="#id5" id="id3">[1]</a>
-defines a criterion for the optimal window <span class="math notranslate">\(W\)</span>,
-which is the first value for which <span class="math notranslate">\(g(W)\)</span> is negative</p>
-<div class="math notranslate">
+defines a criterion for the optimal window <span class="math notranslate nohighlight">\(W\)</span>,
+which is the first value for which <span class="math notranslate nohighlight">\(g(W)\)</span> is negative</p>
+<div class="math notranslate nohighlight">
 \[g(W) = \exp [-W / \tau_W] -  \tau_W /\sqrt{W N}\]</div>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\tau_W = S_\tau \bigg[ \ln \bigg( \frac{\sum_W \rho(W) + 1}{\sum_W \rho(W)-1} \bigg)
 \bigg]^{-1}\]</div>
-<p>A standard choice for the parameter <span class="math notranslate">\(S_\tau\)</span> is 1.5</p>
+<p>A standard choice for the parameter <span class="math notranslate nohighlight">\(S_\tau\)</span> is 1.5</p>
 </div>
 <div class="section" id="exponential-tail">
 <h2>Exponential tail<a class="headerlink" href="#exponential-tail" title="Permalink to this headline">¶</a></h2>
-<p><a class="footnote-reference" href="#id8" id="id4">[3]</a></p>
+<p><a class="footnote-reference" href="#id7" id="id4">[3]</a></p>
 </div>
 <div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
@@ -188,7 +189,7 @@ which is the first value for which <span class="math notranslate">\(g(W)\)</span
 <a class="reference external" href="https://arxiv.org/abs/hep-lat/0409106">Link to article</a></td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id8" rules="none">
+<table class="docutils footnote" frame="void" id="id7" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
 <tr><td class="label"><a class="fn-backref" href="#id4">[3]</a></td><td>S. Schaefer, R. Sommer and F. Virotta “Investigating the critical slowing down of QCD simulations”
@@ -224,7 +225,7 @@ which is the first value for which <span class="math notranslate">\(g(W)\)</span
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Mattia Bruno.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
     </div>
   </body>
 </html>

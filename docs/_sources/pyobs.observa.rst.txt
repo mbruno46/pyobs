@@ -10,8 +10,7 @@ class observa
 -------------
 
 .. automodule:: pyobs.observa
-    :members: observa 
-
+    :members: observa
 
 derobs
 ------

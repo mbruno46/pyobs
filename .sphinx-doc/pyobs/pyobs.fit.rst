@@ -5,5 +5,5 @@ mfit class
 ----------
 
 .. autoclass:: pyobs.fit.mfit
-    :members:
+   :members:
 

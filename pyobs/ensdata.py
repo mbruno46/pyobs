@@ -174,9 +174,9 @@ class cdata:
     
     def create(self,cov,grad=None): 
         self.cov = numpy.array(cov)
-        self.cov_dims = self.cov.shape[0:2]
+        self.cov_dims = self.cov.shape
         if grad is None:
-            self.cov_grad = numpy.zeros(self.dims+self.cov_dims)
+            self.cov_grad = numpy.zeros(self.dims+self.cov_dims[0:2])
         else:
             self.cov_grad = numpy.array(grad)
 

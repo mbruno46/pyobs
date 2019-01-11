@@ -38,3 +38,16 @@ it in the python library, by following these steps
    contains the subfolder named ``pyobs``, which is the true package 
    loaded by ``import``. In our example above do not use `pyobs/pyobs`
 
+Dependencies
+------------
+
+The ``pyobs`` library was developed and written for Python2.7. 
+It depends on the following python packages
+
+   1. standard packages: os, gzip, pickle, json, ctypes, xml
+
+   2. additional packages: numpy, sympy, scipy, matplotlib
+
+To install them run the following command::
+
+   $ pip install -U numpy scipy sympy matplotlib

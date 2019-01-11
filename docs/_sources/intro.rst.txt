@@ -7,6 +7,8 @@ Markov Chains and we set the notation for the rest of the documentation.
 More details can be found in Ref [1]_ which has been the base for
 many of the routines implemented in this library.
 
+.. _intro:
+
 The Gamma Method
 ----------------
 
@@ -137,11 +139,11 @@ References
 ----------
 
 .. [1] U. Wolff "Monte Carlo errors with less errors"
-       `Link to article <https://arxiv.org/abs/hep-lat/0306017>`_
+       `Link to article <https://arxiv.org/abs/hep-lat/0306017>`__
 
 .. [2] M. Luscher "Schwarz-preconditioned HMC algorithm for two-flavour lattice QCD"
-       `Link to article <https://arxiv.org/abs/hep-lat/0409106>`_
+       `Link to article <https://arxiv.org/abs/hep-lat/0409106>`__
 
 .. [3] S. Schaefer, R. Sommer and F. Virotta "Investigating the critical slowing down of QCD simulations"
-       `Link to article <https://arxiv.org/abs/0910.1465>`_
+       `Link to article <https://arxiv.org/abs/0910.1465>`__
 

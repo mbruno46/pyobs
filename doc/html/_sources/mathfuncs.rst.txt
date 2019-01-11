@@ -61,8 +61,10 @@ The following functions can be imported using::
    >>> from pyobs import log, exp, ...
 
 .. automodule:: pyobs.observa
-   :members: log, exp, sin, cos, arccos, arcsin
+   :members: log, exp, sin, cos, arccos, arcsin,
+             sinh, cosh, arcsinh, arccosh, tan, arctan
 
+   
 matrix functions
 ----------------
 
@@ -73,3 +75,25 @@ The following functions can be imported using::
 
 .. automodule:: pyobs.observa
    :members: det, trace, inv
+
+
+Manipulation of observables
+---------------------------
+
+The structure of the observables can be manipulated in
+various ways, using specific built-in functions.
+Below we show some examples based on the following objects
+
+* `mat1` matrix observable with size 3x4
+* `vec1` matrix observable with size 1x3
+* `vec2` matrix observable with size 1x4
+
+.. code-block:: python
+
+   >>> mat = mat1
+   >>> mat.addrow( vec2 ) # now mat is a 4x4 matrix with last row vec2
+   >>> mat = mat1
+   >>> mat.addcol( vec1.transpose() ) # now mat is 3x5 matrix with last col vec1
+   >>> mat = mat1[0,:] # now mat is the first row of mat1
+
+

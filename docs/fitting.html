@@ -6,14 +6,15 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Fitting &#8212; PyObs 0.5.1(alpha) documentation</title>
+    <title>Fitting &#8212; PyObs 0.6 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Eigenvalue problem" href="eigen.html" />
@@ -39,7 +40,7 @@
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="tutorials.html">Table Of Contents</a></h3>
+  <h3><a href="tutorials.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Fitting</a><ul>
 <li><a class="reference internal" href="#fitting-a-correlator">Fitting a correlator</a></li>
@@ -89,7 +90,9 @@ and the gradient and hessian of the fitted function w.r.t.
 the parameters are computed analytically: they are used in the
 LM algorithm and also in the propagation of the error from
 input (y) observables, which is also analytical.
-Let us illustrate a few possible ways to use this class.</p>
+Let us illustrate a few possible ways to use this class.
+Although this tutorial should be pretty comprehensive, more
+details can be found in <a class="reference external" href="pyobs.fit.html#">mfit class</a>.</p>
 <div class="section" id="fitting-a-correlator">
 <h2>Fitting a correlator<a class="headerlink" href="#fitting-a-correlator" title="Permalink to this headline">¶</a></h2>
 <p>The first example concerns the fitting of observables defined
@@ -101,14 +104,14 @@ fit.</p>
 <p>The free parameters of the fit are always defined using the notation
 <cite>p[i]</cite>, with <cite>i</cite> an integer number.
 For the single exponential fit</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[f(x) = A \exp (-m x)\]</div>
 <p>we first defined a new <cite>mfit</cite> class:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">mfit</span><span class="p">(</span><span class="s1">&#39;p[0] * exp(-p[1]*x)&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Note that the function is passed as a string!
-The minimization of an un-correlated <span class="math notranslate">\(\chi^2\)</span>
+The minimization of an un-correlated <span class="math notranslate nohighlight">\(\chi^2\)</span>
 is obtained simply by:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xdata</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">corr</span><span class="p">)</span>
@@ -118,7 +121,7 @@ is obtained simply by:</p>
 </div>
 <p>where the first <cite>print</cite> command prints out some useful information
 on the minimization procedure, such as the final value of the
-<span class="math notranslate">\(\chi^2\)</span>, the number of iterations of the minimizator, etc…</p>
+<span class="math notranslate nohighlight">\(\chi^2\)</span>, the number of iterations of the minimizator, etc…</p>
 </div>
 <div class="section" id="plotting-the-fitted-function">
 <h2>Plotting the fitted function<a class="headerlink" href="#plotting-the-fitted-function" title="Permalink to this headline">¶</a></h2>
@@ -173,7 +176,7 @@ different ensembles are the chiral and continuum extrapolations.</p>
 </pre></div>
 </div>
 <p>In this case the observables measured on each ensemble are patched together
-in a <em>list</em>. We assume to take the continuum limit in <span class="math notranslate">\(a^2\)</span>:</p>
+in a <em>list</em>. We assume to take the continuum limit in <span class="math notranslate nohighlight">\(a^2\)</span>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span> <span class="o">=</span> <span class="n">mfit</span><span class="p">(</span><span class="s1">&#39;p[0] + p[1]*x&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">asq</span><span class="p">,</span> <span class="n">obs</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">fit</span>
@@ -187,7 +190,7 @@ in a <em>list</em>. We assume to take the continuum limit in <span class="math n
 <div class="section" id="fitting-observables-from-different-ensembles-ii">
 <h2>Fitting observables from different ensembles - II<a class="headerlink" href="#fitting-observables-from-different-ensembles-ii" title="Permalink to this headline">¶</a></h2>
 <p>Let us now suppose to have measured two different quantities
-<span class="math notranslate">\(\phi_1\)</span> and <span class="math notranslate">\(\phi_2\)</span> both with a well defined and unique
+<span class="math notranslate nohighlight">\(\phi_1\)</span> and <span class="math notranslate nohighlight">\(\phi_2\)</span> both with a well defined and unique
 continuum limit: in this case we want to perform a constrained extrapolation.
 As before, we first patch together the observables ensemble by ensemble
 (without the constraint of having to use <cite>rows</cite>):</p>
@@ -208,8 +211,8 @@ As before, we first patch together the observables ensemble by ensemble
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">fit</span><span class="o">.</span><span class="n">pars</span>
 </pre></div>
 </div>
-<p>We can also imagine the situation where we have computed <span class="math notranslate">\(\phi_1\)</span>
-and <span class="math notranslate">\(\phi_2\)</span> on 6 different ensembles:</p>
+<p>We can also imagine the situation where we have computed <span class="math notranslate nohighlight">\(\phi_1\)</span>
+and <span class="math notranslate nohighlight">\(\phi_2\)</span> on 6 different ensembles:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phi1</span> <span class="o">=</span> <span class="p">[</span><span class="n">phi1_E0</span><span class="p">,</span> <span class="n">phi1_E1</span><span class="p">,</span> <span class="n">phi1_E2</span><span class="p">,</span> <span class="n">phi1_E3</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">asq1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.06</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phi2</span> <span class="o">=</span> <span class="p">[</span><span class="n">phi2_E4</span><span class="p">,</span> <span class="n">phi2_E5</span><span class="p">]</span>
@@ -235,46 +238,46 @@ on the second coordinate <cite>c</cite>:</p>
 <h2>Most generic fit<a class="headerlink" href="#most-generic-fit" title="Permalink to this headline">¶</a></h2>
 <p>The most generic case that the <cite>mfit</cite> function can handle
 is defined from the minimization
-of a <span class="math notranslate">\(\chi^2\)</span> where
+of a <span class="math notranslate nohighlight">\(\chi^2\)</span> where
 the functions can be matrices
-with indices <span class="math notranslate">\((\alpha \beta)\)</span>
-and the coordinates <span class="math notranslate">\(x\)</span> can have multiple dimensions <span class="math notranslate">\(x^i_\mu\)</span></p>
-<div class="math notranslate">
+with indices <span class="math notranslate nohighlight">\((\alpha \beta)\)</span>
+and the coordinates <span class="math notranslate nohighlight">\(x\)</span> can have multiple dimensions <span class="math notranslate nohighlight">\(x^i_\mu\)</span></p>
+<div class="math notranslate nohighlight">
 \[\chi^2 = \sum_\alpha \sum_{\beta \rho} \sum_{ij}
 (f_{\alpha\beta}(x^i_\mu) - y_{\alpha \beta}^i)
 W_{\beta \rho}^{ij} (f_{\rho \alpha}(x^j_\mu) - y_{\rho \alpha}^j)\]</div>
-<p>If the weight matrix is block-diagonal w.r.t. the <span class="math notranslate">\(\beta \rho\)</span>
-indices, the <span class="math notranslate">\(\chi^2\)</span> defined above simply reduces to
-a sum of <span class="math notranslate">\(\chi^2\)</span>, each defined by the function <span class="math notranslate">\(f_{\alpha\beta}\)</span></p>
-<div class="math notranslate">
+<p>If the weight matrix is block-diagonal w.r.t. the <span class="math notranslate nohighlight">\(\beta \rho\)</span>
+indices, the <span class="math notranslate nohighlight">\(\chi^2\)</span> defined above simply reduces to
+a sum of <span class="math notranslate nohighlight">\(\chi^2\)</span>, each defined by the function <span class="math notranslate nohighlight">\(f_{\alpha\beta}\)</span></p>
+<div class="math notranslate nohighlight">
 \[\chi^2 = \sum_{\alpha \beta} \sum_{ij} (f_{\alpha\beta}(x^i_\mu) - y_{\alpha \beta}^i)
 W_\beta^{ij}
 (f_{\beta \alpha}(x^j_\mu) - y_{\beta \alpha}^j)\]</div>
 <p>Let’s examine again the case where we fit
 two correlators simulatenously, which we
-label <span class="math notranslate">\(C_\alpha(i)\)</span>, with <span class="math notranslate">\(alpha=1,2\)</span>
-labels the correlator and the index <span class="math notranslate">\(i\)</span>
+label <span class="math notranslate nohighlight">\(C_\alpha(i)\)</span>, with <span class="math notranslate nohighlight">\(alpha=1,2\)</span>
+labels the correlator and the index <span class="math notranslate nohighlight">\(i\)</span>
 the time slice.
 In this case all data is correlated and
 from the covariance matrix the weight matrix
-<span class="math notranslate">\(W\)</span> can be defined as</p>
-<div class="math notranslate">
+<span class="math notranslate nohighlight">\(W\)</span> can be defined as</p>
+<div class="math notranslate nohighlight">
 \[\mathrm{Cov}_{\alpha \beta}^{ij} = \langle \delta C_\alpha(i) \delta C_\beta(j) \rangle
 \quad \to \quad W \equiv \mathrm{Cov}^{-1}\]</div>
-<p><span class="math notranslate">\(W\)</span> in this case is a dense matrix, with all entries being non-zero.
+<p><span class="math notranslate nohighlight">\(W\)</span> in this case is a dense matrix, with all entries being non-zero.
 If instead we fit together two observables
 defined on different ensembles, such as
-<span class="math notranslate">\(\phi_1\)</span> and <span class="math notranslate">\(\phi_2\)</span> introduced above,
+<span class="math notranslate nohighlight">\(\phi_1\)</span> and <span class="math notranslate nohighlight">\(\phi_2\)</span> introduced above,
 we can use a weight matrix that takes
 into account correlations among the two
 for a fixed ensemble. In this case
-<span class="math notranslate">\(\alpha=1,2\)</span> refers to <span class="math notranslate">\(\phi_1, \phi_2\)</span>
-while the index <span class="math notranslate">\(i\)</span> refers to the
+<span class="math notranslate nohighlight">\(\alpha=1,2\)</span> refers to <span class="math notranslate nohighlight">\(\phi_1, \phi_2\)</span>
+while the index <span class="math notranslate nohighlight">\(i\)</span> refers to the
 ensemble (which is the data point).
 Therefore the covariance matrix
-is block-diagonal in the <span class="math notranslate">\(ij\)</span> indices
-and still dense in <span class="math notranslate">\(\alpha \beta\)</span>.</p>
-<p>If the user decides to manually pass the matrix <span class="math notranslate">\(W\)</span>
+is block-diagonal in the <span class="math notranslate nohighlight">\(ij\)</span> indices
+and still dense in <span class="math notranslate nohighlight">\(\alpha \beta\)</span>.</p>
+<p>If the user decides to manually pass the matrix <span class="math notranslate nohighlight">\(W\)</span>
 the following structure must be followed:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">W</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">Nalpha</span><span class="o">*</span><span class="n">Npt</span><span class="p">,</span> <span class="n">Nalpha</span><span class="o">*</span><span class="n">Npt</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Nalpha number of observables</span>
@@ -318,7 +321,7 @@ the following structure must be followed:</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Mattia Bruno.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
     </div>
   </body>
 </html>

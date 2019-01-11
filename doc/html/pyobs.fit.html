@@ -6,14 +6,14 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyobs.fit package &#8212; PyObs 0.5.1(alpha) documentation</title>
+    <title>pyobs.fit package &#8212; PyObs 0.6 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pyobs.vwerr package" href="pyobs.vwerr.html" />
@@ -42,7 +42,7 @@
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="pyobs.html">Table Of Contents</a></h3>
+  <h3><a href="pyobs.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">pyobs.fit package</a><ul>
 <li><a class="reference internal" href="#mfit-class">mfit class</a></li>
@@ -158,15 +158,21 @@ of the function and the third one to the ith point</li>
 <dl class="method">
 <dt id="pyobs.fit.mfit.eval_obs">
 <code class="descname">eval_obs</code><span class="sig-paren">(</span><em>xax</em>, <em>var</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.fit.mfit.eval_obs" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes the function at a given point using the results of the fit</p>
-<dl class="docutils">
-<dt>xax: list</dt>
-<dd>contains the coordinates where the function is evaluated. If the mu
+<dd><p>Computes the function at a given point using the results of the fit</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xax</strong> (<em>list</em>) – contains the coordinates where the function is evaluated. If the mu
 coordinate is an observa the errors are propagated accordingly. In this
-case the observa must be a scalar</dd>
-<dt>var: list</dt>
-<dd>contains the name of the variables corresponding to elements of xax</dd>
-</dl>
+case the observa must be a scalar</li>
+<li><strong>var</strong> (<em>list</em>) – contains the name of the variables corresponding to elements of xax</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span><span class="o">.</span><span class="n">mfit</span><span class="p">(</span><span class="s1">&#39;p[0]*x + p[1]*b&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fit</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
@@ -257,7 +263,7 @@ Allowed values go from 0 to the total length of obs/xdata - 1.</li>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Mattia Bruno.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
     </div>
   </body>
 </html>

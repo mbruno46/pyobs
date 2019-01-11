@@ -32,8 +32,6 @@ TODO
    * add support for eigenvalues and eigenvectors
    * cythonize other core functions beyond drho
    * add support for complex numbers (?)
-   * add documentation for pfit
-   * add documentation for cdata and cobs
 
 .. todo::
 

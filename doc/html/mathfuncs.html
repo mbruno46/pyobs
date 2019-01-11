@@ -6,14 +6,14 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Built-in functions &#8212; PyObs 0.5.1(alpha) documentation</title>
+    <title>Built-in functions &#8212; PyObs 0.6 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pyobs.fit package" href="pyobs.fit.html" />
@@ -42,11 +42,12 @@
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="pyobs.html">Table Of Contents</a></h3>
+  <h3><a href="pyobs.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Built-in functions</a><ul>
 <li><a class="reference internal" href="#scalar-functions">scalar functions</a></li>
 <li><a class="reference internal" href="#matrix-functions">matrix functions</a></li>
+<li><a class="reference internal" href="#manipulation-of-observables">Manipulation of observables</a></li>
 </ul>
 </li>
 </ul>
@@ -172,6 +173,36 @@ Nevertheless we recommed to always use the <cite>observa</cite> as first element
 <dd><p>Compute the arcsine of an observable x element-wise</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="pyobs.observa.sinh">
+<code class="descclassname">pyobs.observa.</code><code class="descname">sinh</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.sinh" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyobs.observa.cosh">
+<code class="descclassname">pyobs.observa.</code><code class="descname">cosh</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.cosh" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyobs.observa.arcsinh">
+<code class="descclassname">pyobs.observa.</code><code class="descname">arcsinh</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.arcsinh" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyobs.observa.arccosh">
+<code class="descclassname">pyobs.observa.</code><code class="descname">arccosh</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.arccosh" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyobs.observa.tan">
+<code class="descclassname">pyobs.observa.</code><code class="descname">tan</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.tan" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyobs.observa.arctan">
+<code class="descclassname">pyobs.observa.</code><code class="descname">arctan</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.arctan" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="matrix-functions">
 <h2>matrix functions<a class="headerlink" href="#matrix-functions" title="Permalink to this headline">¶</a></h2>
@@ -223,6 +254,24 @@ Nevertheless we recommed to always use the <cite>observa</cite> as first element
 </dd></dl>
 
 </div>
+<div class="section" id="manipulation-of-observables">
+<h2>Manipulation of observables<a class="headerlink" href="#manipulation-of-observables" title="Permalink to this headline">¶</a></h2>
+<p>The structure of the observables can be manipulated in
+various ways, using specific built-in functions.
+Below we show some examples based on the following objects</p>
+<ul class="simple">
+<li><cite>mat1</cite> matrix observable with size 3x4</li>
+<li><cite>vec1</cite> matrix observable with size 1x3</li>
+<li><cite>vec2</cite> matrix observable with size 1x4</li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span> <span class="o">=</span> <span class="n">mat1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span><span class="o">.</span><span class="n">addrow</span><span class="p">(</span> <span class="n">vec2</span> <span class="p">)</span> <span class="c1"># now mat is a 4x4 matrix with last row vec2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span> <span class="o">=</span> <span class="n">mat1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span><span class="o">.</span><span class="n">addcol</span><span class="p">(</span> <span class="n">vec1</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span> <span class="p">)</span> <span class="c1"># now mat is 3x5 matrix with last col vec1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span> <span class="o">=</span> <span class="n">mat1</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span> <span class="c1"># now mat is the first row of mat1</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -254,7 +303,7 @@ Nevertheless we recommed to always use the <cite>observa</cite> as first element
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Mattia Bruno.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
     </div>
   </body>
 </html>

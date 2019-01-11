@@ -18,10 +18,11 @@ using the function `vwerr` as shown here::
 
 The method used for the estimate of the error is the
 `Gamma method`. The summation window is defined through 
-an automatic procedure, explained in the :doc:`introduction <../home/intro>`, 
+an automatic procedure, explained in the `introduction <intro.html#>`_
 which depends on some parameters. 
 The user can freely modify those, ensemble by ensemble, through the
 class `errinfo`.
+
 
 ErrInfo class
 -------------
@@ -58,7 +59,8 @@ the `print` command::
 Standard UWerr approach
 -----------------------
 
-The standard approach defined in [1]_
+The standard approach described in the 
+`introduction <intro.html#>`_
 is usually called `UWerr`. The automatic
 window procedure depends on :math:`S_\tau`
 alone. The examples above show how to changed
@@ -145,3 +147,32 @@ observable by calling the function `plotter`::
 
 .. warning::
    Also in this case one plot per ensemble and component will be generated
+
+(Pseudo)-jackknife error
+------------------------
+
+As an alternative it is also possible to estimate the error using the 
+jackknife method. In general this method is extremely powerful as it
+allows to automatically propagate the error by applying the wanted 
+function to each jackknife bin, thus also including the derivative 
+of the function. In ``pyobs`` instead the derivative is computed at each
+step therefore the jackknife error estimation is applied to the 
+fluctuations :math:`\pi_\alpha^{i,r}`.
+In essence, the function `jkerr` generates jackknife bins of the 
+fluctuations of the observables and computes the error from those,
+by simply specifying the bin size. 
+
+Similarly to the `errinfo` class, the bin size can be 
+specified for each ensemble separately through a dictionary. 
+If not specified a bin size of 1 is assumed for all ensembles.
+The dictionary is in the form a:b with a the ensemble id and b the
+bin size:::
+
+   >>> [v, e] = obs.jkerr() # default bin size of 1 for all ensembles
+   >>> bsize = {0:2, 1:1, 2:4}
+   >>> # ensemble 0 has bin size of 2, ensemble 1 has bin size of 1, etc...
+   >>> [v, e] = obs.jkerr(jkinfo = bsize)
+   >>> obs.jkerr(True) # to plot the piechart
+
+
+
