@@ -6,14 +6,15 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Basics &#8212; PyObs 0.5.1(alpha) documentation</title>
+    <title>Basics &#8212; PyObs 0.6 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Fitting" href="fitting.html" />
@@ -39,7 +40,7 @@
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="tutorials.html">Table Of Contents</a></h3>
+  <h3><a href="tutorials.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Basics</a><ul>
 <li><a class="reference internal" href="#effective-mass">Effective mass</a></li>
@@ -89,7 +90,7 @@ as an <cite>observa</cite> class:</p>
 </pre></div>
 </div>
 <p>The effective mass is defined as</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[m_\mathrm{eff} (t) = \mathrm{arccosh} \bigg( \frac{ C(t-1) + C(t+1) }{2 C(t) } \bigg)\]</div>
 <p>This library has been designed such that the previous formula can be mapped
 into a single line of code that reads exactly the same:</p>
@@ -109,13 +110,13 @@ and define a plateau where the effective mass can be averaged:</p>
 </div>
 <div class="section" id="combining-observables">
 <h2>Combining observables<a class="headerlink" href="#combining-observables" title="Permalink to this headline">¶</a></h2>
-<p>Now that we have computed the pion mass in lattice units <span class="math notranslate">\(a m_\pi\)</span>
+<p>Now that we have computed the pion mass in lattice units <span class="math notranslate nohighlight">\(a m_\pi\)</span>
 we need a scale. Let suppose that the user has already compute the
-flow parameter <span class="math notranslate">\(t_0/a^2\)</span> (see Ref <a class="footnote-reference" href="#id2" id="id1">[1]</a> for more details)
+flow parameter <span class="math notranslate nohighlight">\(t_0/a^2\)</span> (see Ref <a class="footnote-reference" href="#id2" id="id1">[1]</a> for more details)
 and that he is interested in the dimensionless quantity</p>
-<div class="math notranslate">
+<div class="math notranslate nohighlight">
 \[\phi = 8 t_0 m_\pi^2\]</div>
-<p>The observable <span class="math notranslate">\(\phi\)</span> can be computed again in a single line:</p>
+<p>The observable <span class="math notranslate nohighlight">\(\phi\)</span> can be computed again in a single line:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># t0 and mpi already loaded/defined</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="s1">&#39;t0 = &#39;</span><span class="p">,</span> <span class="n">t0</span>
 <span class="go">t0 =      5.1652(44)</span>
@@ -164,7 +165,7 @@ and that he is interested in the dimensionless quantity</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Mattia Bruno.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
     </div>
   </body>
 </html>

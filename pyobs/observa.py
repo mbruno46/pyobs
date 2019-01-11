@@ -174,6 +174,10 @@ class observa:
             self.mean = numpy.array([data])
             if (numpy.shape(cov)==(len(data),len(data))):
                 _cov = numpy.reshape(cov,(1,len(data),1,len(data)))
+            elif (numpy.shape(cov)==(len(data),)):
+                _cov = numpy.zeros((1,len(data),1,len(data)))
+                for i in range(len(data)):
+                    _cov[0,i,0,i] = cov[i]
             elif (numpy.shape(cov)==(1,len(data),1,len(data))):
                 _cov = numpy.array(cov)
             else:
@@ -255,11 +259,12 @@ class observa:
             sigma.append( cd.sigma() )
             sigma_tot += sigma[-1]
 
-        if (plot==True and len(self.eid)>1):
-            nn = [ed.name for ed in self.edata]+[cd.name for cd in self.cdata]
-            for i in range(self.dims[0]):
-                for j in range(self.dims[1]):
-                    piechart([sigma[k][i,j] for k in range(len(sigma))],nn,(i,j))
+        if (plot==True):
+            if (len(self.eid)>1 or len(self.cid)>1):
+                nn = [ed.name for ed in self.edata]+[cd.name for cd in self.cdata]
+                for i in range(self.dims[0]):
+                    for j in range(self.dims[1]):
+                        piechart([sigma[k][i,j] for k in range(len(sigma))],nn,(i,j))
 
         error = numpy.sqrt(sigma_tot)
         if (simplify==False):
@@ -328,7 +333,7 @@ class observa:
         -------
         sigma : array
             The standard deviation as an array with the same dimensions of the observable
-        """
+        """ 
 
         sigma_tot = numpy.zeros(self.dims)
         for ed in self.edata:
@@ -338,7 +343,7 @@ class observa:
 
         return numpy.sqrt(sigma_tot)
 
-    def jkerr(self,plot=False,pfile=None,jkinfo=None,simplify=True):
+    def jkerr(self,plot=False,jkinfo=None,simplify=True):
         """ Compute the error of each element
 
         Parameters
@@ -346,8 +351,6 @@ class observa:
         plot : bool, optional
             tells the program to plot a pie-chart with the contributions
             to the error from the various ensembles
-        pfile : str, optional
-            provides a filename to save the plots with the errors
         jkinfo : dictionary, optional
             dictionary with the bin size for each ensemble.
             It contains information for multiple ensembles. If one ensemble is
@@ -367,12 +370,8 @@ class observa:
         --------
         >>> [val, err] = a.jkerr()
         >>> [val, err] = a.jkerr(True) # to plot
-        >>> a.jkerr(True,'/path/to/file') # to save the plot
         >>> [val, err] = a.jkerr(jkinfo={0: 2})
         """
-
-        if (plot==False and pfile!=None):
-            print 'Warning: plots ' + pfile + ' are not saved. Use plot=True'
 
         sigma = []
         sigma_tot = numpy.zeros(self.dims)
@@ -392,11 +391,12 @@ class observa:
             sigma.append( cd.sigma() )
             sigma_tot += sigma[-1]
 
-        if (plot==True and len(self.eid)>1):
-            nn = [ed.name for ed in self.edata]+[cd.name for cd in self.cdata]
-            for i in range(self.dims[0]):
-                for j in range(self.dims[1]):
-                    piechart([sigma[k][i,j] for k in range(len(sigma))],nn,(i,j))
+        if (plot==True):
+            if (len(self.eid)>1 or len(self.cid)>1):
+                nn = [ed.name for ed in self.edata]+[cd.name for cd in self.cdata]
+                for i in range(self.dims[0]):
+                    for j in range(self.dims[1]):
+                        piechart([sigma[k][i,j] for k in range(len(sigma))],nn,(i,j))
 
         error = numpy.sqrt(sigma_tot)
         if (simplify==False):
@@ -435,7 +435,7 @@ class observa:
         for cd in res.cdata:
             cd.dims = res.dims
             ic = res.cdata.index(cd)
-            cd.cov_grad = numpy.reshape(self.cdata[ic].cov_grad[args[0],args[1]], cd.dims+cd.cov_dims)
+            cd.cov_grad = numpy.reshape(self.cdata[ic].cov_grad[args[0],args[1]], cd.dims+cd.cov_dims[0:2])
         return res
 
 
@@ -477,14 +477,17 @@ class observa:
         for ed in self.edata:
             ed.dims = self.dims
             ed1 = y.find_edata(ed)
-            for rd in ed.rdata:
-                rd.dims = self.dims
-                rd1 = ed1.find_rdata(rd)
-                rd.data = numpy.concatenate((rd.data, rd1.data),axis)
+            if (ed1!=None):
+                for rd in ed.rdata:
+                    rd.dims = self.dims
+                    rd1 = ed1.find_rdata(rd)
+                    if (rd1!=None):
+                        rd.data = numpy.concatenate((rd.data, rd1.data),axis)
         for cd in self.cdata:
             cd.dims = self.dims
             cd1 = y.find_cdata(cd)
-            cd.cov_grad = numpy.concatenate((cd.cov_grad, cd1.cov_grad),axis)
+            if (cd1!=None):
+                cd.cov_grad = numpy.concatenate((cd.cov_grad, cd1.cov_grad),axis)
         return self
 
     #########################################################
@@ -528,7 +531,7 @@ class observa:
         Examples
         --------
         >>> a.save("./test") # creates a file test.pyobs.gz with json format
-        >>> a.save("./test.pyobs.dat") # creates a file test.pyobs.dat with binary format
+        >>> a.save("./test.pyobs.dat") # creates a file test.pyobs.dat with binary format TO FIX
         """
 
         if (name[-6:]=='.pyobs'):
@@ -887,6 +890,16 @@ def cos(x):
     """
     return fast_math_scalar(x,11)
 
+def tan(x):
+    """
+    """
+    return fast_math_scalar(x,14)
+
+def arctan(x):
+    """
+    """
+    return fast_math_scalar(x,15)
+
 def arcsin(x):
     """
     Compute the arcsine of an observable x element-wise
@@ -900,15 +913,23 @@ def arccos(x):
     return fast_math_scalar(x,13)
 
 def sinh(x):
+    """
+    """
     return fast_math_scalar(x,20)
 
 def cosh(x):
+    """
+    """
     return fast_math_scalar(x,21)
 
 def arcsinh(x):
+    """
+    """
     return fast_math_scalar(x,22)
 
 def arccosh(x):
+    """
+    """
     return fast_math_scalar(x,23)
 
 #### matrix operations
@@ -923,6 +944,7 @@ def trace(x):
     x : observa
         must be a square matrix
     """
+    
     if (x.dims[0]!=x.dims[1]):
         raise InputError('unsupported operation for non-square matrices')
     [f, df] = math_tr(x.mean)
@@ -937,6 +959,7 @@ def det(x):
     x : observa
         must be a square matrix
     """
+    
     if (x.dims[0]!=x.dims[1]):
         raise InputError('unsupported operation for non-square matrices')
     [f, df] = math_det(x.mean)
@@ -979,7 +1002,7 @@ def derobs(inps,func,dfunc=None):
 
     Returns
     -------
-    x : observa
+    x : class observa
         an observa with central value func(x) and error propagated 
         from inps using the derivatives of func
 
@@ -989,6 +1012,7 @@ def derobs(inps,func,dfunc=None):
     >>> func = lambda x: x[0]*x[1]
     >>> dfunc = [ numpy.array([[x[1].mean]]), numpy.array([[x[0].mean]]) ]
     >>> res = derobs(inps, func, dfunc)
+    
     """
 
     if not isinstance(inps,list):

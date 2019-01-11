@@ -10,6 +10,8 @@ the parameters are computed analytically: they are used in the
 LM algorithm and also in the propagation of the error from
 input (y) observables, which is also analytical.
 Let us illustrate a few possible ways to use this class.
+Although this tutorial should be pretty comprehensive, more
+details can be found in `mfit class <pyobs.fit.html#>`_.
 
 Fitting a correlator
 --------------------

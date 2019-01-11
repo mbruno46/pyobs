@@ -6,14 +6,14 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyobs.observa module &#8212; PyObs 0.5.1(alpha) documentation</title>
+    <title>pyobs.observa module &#8212; PyObs 0.6 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Built-in functions" href="mathfuncs.html" />
@@ -42,7 +42,7 @@
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="pyobs.html">Table Of Contents</a></h3>
+  <h3><a href="pyobs.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">pyobs.observa module</a><ul>
 <li><a class="reference internal" href="#module-pyobs.observa">class observa</a></li>
@@ -117,7 +117,7 @@ required for an analysis, including other miscellanea functions.</p>
 
 <dl class="method">
 <dt id="pyobs.observa.observa.jkerr">
-<code class="descname">jkerr</code><span class="sig-paren">(</span><em>plot=False</em>, <em>pfile=None</em>, <em>jkinfo=None</em>, <em>simplify=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.observa.jkerr" title="Permalink to this definition">¶</a></dt>
+<code class="descname">jkerr</code><span class="sig-paren">(</span><em>plot=False</em>, <em>jkinfo=None</em>, <em>simplify=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observa.observa.jkerr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the error of each element</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -126,7 +126,6 @@ required for an analysis, including other miscellanea functions.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>plot</strong> (<em>bool</em><em>, </em><em>optional</em>) – tells the program to plot a pie-chart with the contributions
 to the error from the various ensembles</li>
-<li><strong>pfile</strong> (<em>str</em><em>, </em><em>optional</em>) – provides a filename to save the plots with the errors</li>
 <li><strong>jkinfo</strong> (<em>dictionary</em><em>, </em><em>optional</em>) – dictionary with the bin size for each ensemble.
 It contains information for multiple ensembles. If one ensemble is
 present in the observable and not in jkinfo the default jkerr routine
@@ -149,7 +148,6 @@ returns objects in 2D</li>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">val</span><span class="p">,</span> <span class="n">err</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">jkerr</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">val</span><span class="p">,</span> <span class="n">err</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">jkerr</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># to plot</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">jkerr</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span><span class="s1">&#39;/path/to/file&#39;</span><span class="p">)</span> <span class="c1"># to save the plot</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">val</span><span class="p">,</span> <span class="n">err</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">jkerr</span><span class="p">(</span><span class="n">jkinfo</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
 </pre></div>
 </div>
@@ -253,7 +251,7 @@ by specifying the extensions <cite>.pyobs.dat</cite></td>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;./test&quot;</span><span class="p">)</span> <span class="c1"># creates a file test.pyobs.gz with json format</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;./test.pyobs.dat&quot;</span><span class="p">)</span> <span class="c1"># creates a file test.pyobs.dat with binary format</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;./test.pyobs.dat&quot;</span><span class="p">)</span> <span class="c1"># creates a file test.pyobs.dat with binary format TO FIX</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -361,7 +359,7 @@ If not passed the gradient is computed numerically.</li>
 from inps using the derivatives of func</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#pyobs.observa.observa" title="pyobs.observa.observa">observa</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">class observa</p>
 </td>
 </tr>
 </tbody>
@@ -407,7 +405,7 @@ from inps using the derivatives of func</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Mattia Bruno.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
     </div>
   </body>
 </html>

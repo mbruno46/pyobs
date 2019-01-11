@@ -6,14 +6,15 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Computing the error &#8212; PyObs 0.5.1(alpha) documentation</title>
+    <title>Computing the error &#8212; PyObs 0.6 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Basics" href="basics.html" />
@@ -39,13 +40,14 @@
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="tutorials.html">Table Of Contents</a></h3>
+  <h3><a href="tutorials.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Computing the error</a><ul>
 <li><a class="reference internal" href="#errinfo-class">ErrInfo class</a></li>
 <li><a class="reference internal" href="#standard-uwerr-approach">Standard UWerr approach</a></li>
 <li><a class="reference internal" href="#attaching-exponential-tail">Attaching Exponential Tail</a></li>
 <li><a class="reference internal" href="#plotting-the-autocorrelation-function">Plotting the autocorrelation function</a></li>
+<li><a class="reference internal" href="#pseudo-jackknife-error">(Pseudo)-jackknife error</a></li>
 </ul>
 </li>
 </ul>
@@ -92,14 +94,14 @@ using the function <cite>vwerr</cite> as shown here:</p>
 </div>
 <p>The method used for the estimate of the error is the
 <cite>Gamma method</cite>. The summation window is defined through
-an automatic procedure, explained in the <span class="xref std std-doc">introduction</span>,
+an automatic procedure, explained in the <a class="reference external" href="intro.html#">introduction</a>
 which depends on some parameters.
 The user can freely modify those, ensemble by ensemble, through the
 class <cite>errinfo</cite>.</p>
 <div class="section" id="errinfo-class">
 <h2>ErrInfo class<a class="headerlink" href="#errinfo-class" title="Permalink to this headline">¶</a></h2>
 <p>We provide here an example where we show how
-to tweak the parameter <span class="math notranslate">\(S_\tau\)</span> for the
+to tweak the parameter <span class="math notranslate nohighlight">\(S_\tau\)</span> for the
 ensemble with id 0:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">einfo</span> <span class="o">=</span> <span class="n">errinfo</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">einfo</span><span class="o">.</span><span class="n">addEnsemble</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">Stau</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
@@ -126,9 +128,10 @@ the <cite>print</cite> command:</p>
 </div>
 <div class="section" id="standard-uwerr-approach">
 <h2>Standard UWerr approach<a class="headerlink" href="#standard-uwerr-approach" title="Permalink to this headline">¶</a></h2>
-<p>The standard approach defined in <a href="#id2"><span class="problematic" id="id1">[1]_</span></a>
+<p>The standard approach described in the
+<a class="reference external" href="intro.html#">introduction</a>
 is usually called <cite>UWerr</cite>. The automatic
-window procedure depends on <span class="math notranslate">\(S_\tau\)</span>
+window procedure depends on <span class="math notranslate nohighlight">\(S_\tau\)</span>
 alone. The examples above show how to changed
 this parameter ensemble by ensemble.</p>
 <div class="admonition warning">
@@ -152,7 +155,7 @@ field:</p>
 </div>
 <div class="section" id="plotting-the-autocorrelation-function">
 <h2>Plotting the autocorrelation function<a class="headerlink" href="#plotting-the-autocorrelation-function" title="Permalink to this headline">¶</a></h2>
-<p>The plotting of the autocorrelation function <span class="math notranslate">\(\rho\)</span>
+<p>The plotting of the autocorrelation function <span class="math notranslate nohighlight">\(\rho\)</span>
 is performed with the library <cite>matplotlib</cite> and
 can be activated with the flag <code class="docutils literal notranslate"><span class="pre">plot</span></code> in <cite>vwerr</cite>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">vwerr</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># to simply plot</span>
@@ -208,6 +211,31 @@ observable by calling the function <cite>plotter</cite>:</p>
 <p class="last">Also in this case one plot per ensemble and component will be generated</p>
 </div>
 </div>
+<div class="section" id="pseudo-jackknife-error">
+<h2>(Pseudo)-jackknife error<a class="headerlink" href="#pseudo-jackknife-error" title="Permalink to this headline">¶</a></h2>
+<p>As an alternative it is also possible to estimate the error using the
+jackknife method. In general this method is extremely powerful as it
+allows to automatically propagate the error by applying the wanted
+function to each jackknife bin, thus also including the derivative
+of the function. In <code class="docutils literal notranslate"><span class="pre">pyobs</span></code> instead the derivative is computed at each
+step therefore the jackknife error estimation is applied to the
+fluctuations <span class="math notranslate nohighlight">\(\pi_\alpha^{i,r}\)</span>.
+In essence, the function <cite>jkerr</cite> generates jackknife bins of the
+fluctuations of the observables and computes the error from those,
+by simply specifying the bin size.</p>
+<p>Similarly to the <cite>errinfo</cite> class, the bin size can be
+specified for each ensemble separately through a dictionary.
+If not specified a bin size of 1 is assumed for all ensembles.
+The dictionary is in the form a:b with a the ensemble id and b the
+bin size::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">v</span><span class="p">,</span> <span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">jkerr</span><span class="p">()</span> <span class="c1"># default bin size of 1 for all ensembles</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bsize</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># ensemble 0 has bin size of 2, ensemble 1 has bin size of 1, etc...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">v</span><span class="p">,</span> <span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">jkerr</span><span class="p">(</span><span class="n">jkinfo</span> <span class="o">=</span> <span class="n">bsize</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">jkerr</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># to plot the piechart</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -236,7 +264,7 @@ observable by calling the function <cite>plotter</cite>:</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Mattia Bruno.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
     </div>
   </body>
 </html>
