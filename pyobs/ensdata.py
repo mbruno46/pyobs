@@ -131,21 +131,7 @@ class rdata:
     def create(self,idx,data,mean):
         subtraction = numpy.array([mean for _ in range(len(idx))]).flatten()
         delta = data - subtraction
-
-        # check if data is irregular and fix it    
-        if (irregular_measurements(idx)==True):
-            tmp = fill_holes(idx, delta)
-        else:
-            tmp = [idx, delta]
-
-        self.ncnfg = len(idx)
-        self.idx = list(tmp[0])
-        self.data = numpy.zeros(self.dims+(self.ncnfg,))
-        for k in range(self.ncnfg):
-            for i in range(self.dims[0]):
-                for j in range(self.dims[1]):
-                    self.data[i,j,k] = tmp[1][ (k*self.dims[1] + i)*self.dims[0] + j]
-        #self.data = numpy.reshape(tmp[1], (self.ncnfg,)+self.dims[::-1]).T
+        self.fill(idx,delta)
 
     def clone(self,full):
         res = rdata(self.id,self.name,self.dims)
@@ -157,13 +143,26 @@ class rdata:
             res.data = numpy.zeros(self.dims + (self.ncnfg,))
         return res
 
-    def fill(self,idx,data=None):
-        self.ncnfg = len(idx)
-        self.idx = list(idx)
-        if (data==None):
-            self.data = numpy.zeros(self.dims + (self.ncnfg,))
+    def fill(self,idx,delta=None):
+        if delta==None:
+            # fixes idx if irregular
+            tmp = [numpy.arange(idx[0],idx[-1]+1,1), delta]
         else:
-            self.data = numpy.array(data)
+            # check if data is irregular and fix it    
+            if (irregular_measurements(idx)==True):
+                tmp = fill_holes(idx, delta,numpy.prod(self.dims))
+            else:
+                tmp = [idx, delta]
+
+        self.ncnfg = len(tmp[0])
+        self.idx = list(tmp[0])
+        self.data = numpy.zeros(self.dims+(self.ncnfg,))
+        if delta==None:
+            return
+        for k in range(self.ncnfg):
+            for i in range(self.dims[0]):
+                for j in range(self.dims[1]):
+                    self.data[i,j,k] = tmp[1][ (k*self.dims[0] + i)*self.dims[1] + j]
 
 
 class cdata:

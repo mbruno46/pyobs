@@ -2,11 +2,14 @@ import numpy
 import json
 import gzip
 
+from os.path import isfile
+
 from .ensdata import edata, rdata, cdata
 
 from .mathfcts import *
 
 from .core.utils import valerr, union, double_union, piechart
+from .core.utils import pad_with_zeros
 from .core.libxml import read_xml
 
 __all__ = ['observa', 'derobs',
@@ -589,6 +592,9 @@ class observa:
         >>> a = observa()
         >>> a.load('./test.pyobs.gz')
         """
+
+        if not isfile(name):
+            raise ValueError('file %s not found!' % name)
 
         if (name[-7:]=='.xml.gz'):
             tmp = gzip.open(name, 'r').read()

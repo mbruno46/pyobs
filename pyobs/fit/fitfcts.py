@@ -517,8 +517,8 @@ class mfit:
                 nx += 1
             else:
                 xax2.append(x)
-        if (nx==0):
-            return None
+        #if (nx==0):
+        #    return None
 
         _var = 'p'
         for v in var:
@@ -538,6 +538,9 @@ class mfit:
                 for k in range(nx):
                     df = sympy.lambdify(_var, sympy.diff(expr, var2[k]), 'numpy')
                     grad_xax[i,j,0,k] = df(self.pars.mean[0,:], *xax2)
+
+        if (nx==0):
+            return derobs([self.pars], val, [grad_pars])
 
         return derobs([self.pars, xax_obs], val, [grad_pars, grad_xax])
 
