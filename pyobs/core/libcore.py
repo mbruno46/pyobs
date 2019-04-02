@@ -78,7 +78,7 @@ def find_window(rho, N, Stau, texp=None):
     flag=0
     for W in range(1,Wmax):
         rho_int = rho_int + rho[W]
-        tauW = Stau/numpy.log((rho_int+1.)/rho_int)
+        tauW = Stau/numpy.log(numpy.fabs((rho_int+1.)/rho_int))
         gW = numpy.exp(-W/tauW) - tauW/numpy.sqrt(W*N)
         if (gW<0):
             Wopt = W

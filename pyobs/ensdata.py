@@ -144,7 +144,7 @@ class rdata:
         return res
 
     def fill(self,idx,delta=None):
-        if delta==None:
+        if delta is None:
             # fixes idx if irregular
             tmp = [numpy.arange(idx[0],idx[-1]+1,1), delta]
         else:
@@ -157,7 +157,7 @@ class rdata:
         self.ncnfg = len(tmp[0])
         self.idx = list(tmp[0])
         self.data = numpy.zeros(self.dims+(self.ncnfg,))
-        if delta==None:
+        if delta is None:
             return
         for k in range(self.ncnfg):
             for i in range(self.dims[0]):
