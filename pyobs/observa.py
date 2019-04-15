@@ -1034,6 +1034,17 @@ def derobs(inps,func,dfunc=None):
             raise InputError('Unexpected function')
         else:
             new_mean = numpy.array(func)
+
+    # checks new_mean has right properties
+    if numpy.ndim(new_mean)!=2:
+        raise ValueError('Unexpected function (wrong format)')
+    else:
+        if not isinstance(new_mean,numpy.ndarray):
+            raise ValueError('Unexpected function (wrong format)')
+        else:
+            if not isinstance(new_mean[0],numpy.ndarray):
+                raise ValueError('Unexpected function (wrong format)')
+
     new_dims = numpy.shape(new_mean)
     res = merge_observa(new_dims,inps)
     res.mean = new_mean
@@ -1041,7 +1052,7 @@ def derobs(inps,func,dfunc=None):
 
     grad = []
     for i in range(len(inps)):
-        if (dfunc==None):
+        if dfunc is None:
             grad.append( numerical_derivative(all_mean,func,i,inps[i].naive_err()) )
         else:
             grad.append( numpy.array(dfunc[i]) )
