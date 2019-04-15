@@ -815,6 +815,16 @@ class observa:
         [f,df] = math_sum(self.mean, axis)
         return derobs([self],f,df)
 
+    def cumsum(self, axis=0):
+        if (axis==0):
+            res = self[0,:]
+            for i in range(1,self.dims[0]):
+                res.addrow( self[0:i+1,:].sum(0) )
+        elif (axis==1):
+            res = self[:,0]
+            for i in range(1,self.dims[1]):
+                res.addcol( self[:,0:i+1].sum(1) )
+        return res
 
 def fast_math_scalar(inp,ifunc,a=None):
     res = inp.clone(True)
