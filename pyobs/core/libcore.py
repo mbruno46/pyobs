@@ -22,9 +22,23 @@ _libcore.compute_drho.argtypes = [cptr, cptr, ctypes.c_int, ctypes.c_int]
 ##################################################
 
 
+def gamma_fft(Wmax,data1,data2=None):
+    aux1=numpy.fft.fft(data1)
+    if (data2 is not None):
+        if (len(data2)!=len(data1)):
+            raise
+        else:
+            aux2=numpy.fft.fft(data2)
+    else:
+        aux2=aux1
+   
+    tmp = numpy.fft.ifft(aux1*numpy.conj(aux2))
+    return tmp[0:Wmax+1].real
+
+
 def gamma(Wmax,data1,data2=None):
     N=len(data1)
-    g = numpy.zeros(Wmax, dtype=numpy.double)
+    g = numpy.zeros(Wmax+1, dtype=numpy.double)
 
     if (data2 is not None):
         if (len(data2)!=N):
@@ -32,13 +46,13 @@ def gamma(Wmax,data1,data2=None):
     else:
         data2 = data1
     
-    for t in range(Wmax):
+    for t in range(Wmax+1):
         g[t] = data1[0:N-t].dot(data2[t:N])
     
     return g
 
 def normalize_gamma(gamma, Wmax, N, R):
-    n = N-R*numpy.arange(0.,Wmax,1.)
+    n = N-R*numpy.arange(0.,Wmax+1,1.)
     nn = 1.0/n
     return numpy.multiply(gamma, nn)
 

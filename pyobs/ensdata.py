@@ -67,11 +67,38 @@ class edata:
         dtau = numpy.zeros(self.dims)
         for i in range(self.dims[0]):
             for j in range(self.dims[1]):
-                res = uwerr([rd.data[i,j] for rd in self.rdata], [rd.ncnfg for rd in self.rdata], plot, (self.name,i,j,pfile), pars[0], pars[1])
+                res = uwerr([rd.data[i,j] for rd in self.rdata], None,
+                        [rd.ncnfg for rd in self.rdata], 
+                        plot, (self.name,i,j,pfile), pars[0], pars[1])
                 sigma[i,j] = res[0]
                 tau[i,j] = res[1]
                 dtau[i,j] = res[2]
         return [sigma, tau, dtau]
+   
+
+    def uwcov(self,plot,pars=(1.5,None)):
+        if isinstance(plot,str):
+            raise TypeError('uwcov: saving of plots to file not supported');
+        sigma = numpy.zeros(self.dims+self.dims)
+        tau = numpy.zeros(self.dims+self.dims)
+        dtau = numpy.zeros(self.dims+self.dims)
+        for i in range(self.dims[0]):
+            for k in range(i,self.dims[0]):
+                for j in range(self.dims[1]):
+                    for l in range(j,self.dims[1]):
+                        res = uwerr([rd.data[i,j] for rd in self.rdata], 
+                                [rd.data[k,l] for rd in self.rdata],
+                                [rd.ncnfg for rd in self.rdata], 
+                                plot, (self.name,i,j,None), pars[0], pars[1])
+                        sigma[i,j,k,l] = res[0]
+                        tau[i,j,k,l] = res[1]
+                        dtau[i,j,k,l] = res[2]
+                        if (i!=k) or (j!=l):
+                            sigma[k,l,i,j] = res[0]
+                            tau[k,l,i,j] = res[1]
+                            dtau[k,l,i,j] = res[2]
+        return [sigma, tau, dtau]
+
 
     def uwerr_texp(self,plot,pfile,pars=(1.5,0.0,2,0,None)):
         sigma = numpy.zeros(self.dims)
@@ -89,8 +116,9 @@ class edata:
         sigma = numpy.zeros(self.dims)
         for i in range(self.dims[0]):
             for j in range(self.dims[1]):
-                res = uwerr([rd.data[i,j] for rd in self.rdata], [rd.ncnfg for rd in self.rdata], 
-                            False, (self.name,i,j,''), 1.5, 0)
+                res = uwerr([rd.data[i,j] for rd in self.rdata], None,
+                        [rd.ncnfg for rd in self.rdata], 
+                        False, (self.name,i,j,None), 1.5, 0)
                 sigma[i,j] = res[0]
         return sigma
 

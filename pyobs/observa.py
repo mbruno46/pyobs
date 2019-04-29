@@ -280,7 +280,32 @@ class observa:
                     return [self.mean[0,:], error[0,:]]
             else:
                 return [self.mean, error]
-   
+
+
+    def vwcov(self,plot=False,errinfo=None,simplify=True):
+        covmat = numpy.zeros(self.dims+self.dims)
+
+        for ed in self.edata:
+            if (errinfo==None):
+                res = ed.uwcov(plot)
+            else:
+                if (errinfo.Tail(ed.id)==True):
+                    raise ValueError('texp not yet supported for vwcov');
+                    #res = ed.uwerr_texp(plot, pfile, errinfo.getUWerrTexp(ed.id))
+                else:
+                    res = ed.uwcov(plot, errinfo.getUWerr(ed.id))
+            covmat += res[0]
+
+        if (simplify==False):
+            return covmat
+        else:
+            if (self.dims[0]==1):
+                return numpy.array(covmat[0,:,0,:])
+            else:
+                if (self.dims[1]==1):
+                    return numpy.array(covmat[:,0,:,0])
+
+
     def tauint(self,eid=None,errinfo=None):
         """ Computes the autocorrelation time and its error 
 
@@ -835,7 +860,9 @@ def fast_math_scalar(inp,ifunc,a=None):
             if (a.ndim==1):
                 aa = numpy.reshape(a, (1,)+a.shape)
             elif (a.ndim==2):
-                aa = a
+                aa = numpy.array(a)
+        else:
+            raise ValueError('Unexpected input type')
     else:
         aa = None
     [res.mean, grad] = math_scalar(inp.mean, ifunc, aa)

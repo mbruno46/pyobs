@@ -7,14 +7,17 @@ import libcore
 
 __all__ = ['uwerr']
 
-def uwerr(data,ncnfg,plot=False,opts=(),Stau=1.5,W=None):
+def uwerr(data,data2,ncnfg,plot=False,opts=(),Stau=1.5,W=None):
 	R=len(ncnfg)
 	N = numpy.sum(ncnfg)
 	Wmax = min(ncnfg)/2
 	
 	gg = numpy.zeros(Wmax, dtype=numpy.double)
 	for ir in range(R):
-		gg = gg + gamma(Wmax, data[ir])
+        if data2 is None:
+            gg = gg + gamma_fft(Wmax, data[ir])
+        else:
+            gg = gg + gamma_fft(Wmax, data[ir], data2[ir])
 	gg2 = normalize_gamma(gg, Wmax, N, R)
 
 	if (W==None):
@@ -26,14 +29,12 @@ def uwerr(data,ncnfg,plot=False,opts=(),Stau=1.5,W=None):
 	gg3 = correct_gamma_bias(gg2, Wopt, N)
 	res = tauint(gg3,Wopt,N)
 
-	if (plot==True) or isinstance(plot,str):
+    if (plot==True):
 		rho = gg3/gg3[0]
 		drho = libcore.compute_drho(rho,N)
 
 	if (plot==True):
-		_rho_plotter(rho,drho,Wmax,Wopt,res[1:3],opts)
-	if isinstance(plot,str):
-		_rho_plotter(rho,drho,Wmax,Wopt,res[1:3],opts,plot)
+        _rho_plotter(rho,drho,Wmax,Wopt,res[1:3],opts[:-1],opts[-1])
 
 	return res
 
