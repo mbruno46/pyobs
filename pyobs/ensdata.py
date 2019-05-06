@@ -1,7 +1,7 @@
 import numpy
 import matplotlib.pyplot as plt
 
-from .vwerr import uwerr, uwerr_texp
+from .vwerr import uwerr, uwerr_texp, normac
 from .core.utils import fill_holes, irregular_measurements
 from .jerr import jackknife_error
 
@@ -98,6 +98,21 @@ class edata:
                             tau[k,l,i,j] = res[1]
                             dtau[k,l,i,j] = res[2]
         return [sigma, tau, dtau]
+
+
+    def normac(self,Wmax):
+        rho = numpy.zeros(self.dims+self.dims+(Wmax+1,))
+        drho= numpy.zeros(self.dims+self.dims+(Wmax+1,))
+        for i in range(self.dims[0]):
+            for k in range(i,self.dims[0]):
+                for j in range(self.dims[1]):
+                    for l in range(j,self.dims[1]):
+                        res = normac([rd.data[i,j] for rd in self.rdata],
+                                [rd.data[k,l] for rd in self.rdata],
+                                [rd.ncnfg for rd in self.rdata], Wmax)
+                        rho[i,j,k,l,:] = res[0]
+                        drho[i,j,k,l,:] = res[1]
+        return [rho,drho]
 
 
     def uwerr_texp(self,plot,pfile,pars=(1.5,0.0,2,0,None)):

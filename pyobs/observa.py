@@ -837,8 +837,18 @@ class observa:
             return derobs([self], f, [df[0]])
 
     def sum(self, axis=0):
-        [f,df] = math_sum(self.mean, axis)
-        return derobs([self],f,df)
+        # old way, very slow
+        #[f,df] = math_sum(self.mean, axis)
+        #return derobs([self],f,df)
+        if axis==0:
+            res=self[0,:]
+            for i in range(1,self.dims[0]):
+                res+=self[i,:]
+        elif axis==1:
+            res=self[:,0]
+            for i in range(1,self.dims[1]):
+                res+=self[:,i]
+        return res
 
     def cumsum(self, axis=0):
         if (axis==0):

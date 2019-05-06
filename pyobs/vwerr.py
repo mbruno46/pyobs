@@ -6,7 +6,7 @@ from .core.utils import valerr
 
 from core import libcore
 
-__all__ = ['uwerr','uwerr_texp','errinfo']
+__all__ = ['uwerr','normac','uwerr_texp','errinfo']
 
 
 class errinfo:
@@ -119,6 +119,18 @@ def uwerr(data,data_,ncnfg,plot=False,plotopts=('',0.,0.,''),Stau=1.5,W=None):
         _rho_plotter(rho,drho,Wmax,Wopt,res[1:3],plotopts)
 
     return res
+
+
+def normac(data,data_,ncnfg,Wmax):
+    [gg, N] = _compute_gamma(data,ncnfg,data_)
+    if (gg[0]==0.0):
+        return [0., 0.]
+
+    #gg2 = libcore.correct_gamma_bias(gg, Wmax, N)
+    rho = gg/gg[0]
+    drho = libcore.compute_drho(rho,N)
+    return [rho[0:Wmax+1],drho[0:Wmax+1]]
+
 
 def _rho_plotter(rho,drho,Wmax,Wopt,tau,opts,texp=None):
     plt.figure()
