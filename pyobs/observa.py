@@ -8,7 +8,7 @@ from .ensdata import edata, rdata, cdata
 
 from .mathfcts import *
 
-from .core.utils import valerr, union, double_union, piechart
+from .core.utils import valerr, union, double_union, piechart, pad_with_zeros
 from .core.utils import pad_with_zeros
 from .core.libxml import read_xml
 

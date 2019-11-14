@@ -115,7 +115,7 @@ def uwerr(data,data_,ncnfg,plot=False,plotopts=('',0.,0.,''),Stau=1.5,W=None):
     
     if (plot==True):
         rho = gg2/gg2[0]
-        drho = libcore.compute_drho(rho,N)
+        drho = libcore.compute_drho(rho[0:Wmax+1],N)
         _rho_plotter(rho,drho,Wmax,Wopt,res[1:3],plotopts)
 
     return res
@@ -128,7 +128,7 @@ def normac(data,data_,ncnfg,Wmax):
 
     #gg2 = libcore.correct_gamma_bias(gg, Wmax, N)
     rho = gg/gg[0]
-    drho = libcore.compute_drho(rho,N)
+    drho = libcore.compute_drho(rho[0:Wmax+1],N)
     return [rho[0:Wmax+1],drho[0:Wmax+1]]
 
 
