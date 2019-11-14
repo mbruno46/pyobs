@@ -6,7 +6,7 @@ from .core.utils import valerr
 
 from core import libcore
 
-__all__ = ['uwerr','uwerr_texp','errinfo']
+__all__ = ['uwerr','normac','uwerr_texp','errinfo']
 
 
 class errinfo:
@@ -86,18 +86,21 @@ class errinfo:
         return out
 
 
-def _compute_gamma(data,ncnfg):
+def _compute_gamma(data,ncnfg,data_=None):
     R=len(ncnfg)
     N = numpy.sum(ncnfg)
     Wmax = min(ncnfg)/2
     
-    gg = numpy.zeros(Wmax, dtype=numpy.double)
+    gg = numpy.zeros(Wmax+1, dtype=numpy.double)
     for ir in range(R):
-        gg = gg + libcore.gamma(Wmax, data[ir])
+        if data_ is None:
+            gg = gg + libcore.gamma_fft(Wmax, data[ir])
+        else:
+            gg = gg + libcore.gamma_fft(Wmax,data[ir],data_[ir])
     return [libcore.normalize_gamma(gg, Wmax, N, R), N]
 
-def uwerr(data,ncnfg,plot=False,plotopts=('',0.,0.,''),Stau=1.5,W=None):
-    [gg, N] = _compute_gamma(data,ncnfg)
+def uwerr(data,data_,ncnfg,plot=False,plotopts=('',0.,0.,''),Stau=1.5,W=None):
+    [gg, N] = _compute_gamma(data,ncnfg,data_)
     if (gg[0]==0.0):
         return [0., 0., 0.]
 
@@ -112,10 +115,22 @@ def uwerr(data,ncnfg,plot=False,plotopts=('',0.,0.,''),Stau=1.5,W=None):
     
     if (plot==True):
         rho = gg2/gg2[0]
-        drho = libcore.compute_drho(rho,N)
+        drho = libcore.compute_drho(rho[0:Wmax+1],N)
         _rho_plotter(rho,drho,Wmax,Wopt,res[1:3],plotopts)
 
     return res
+
+
+def normac(data,data_,ncnfg,Wmax):
+    [gg, N] = _compute_gamma(data,ncnfg,data_)
+    if (gg[0]==0.0):
+        return [0., 0.]
+
+    #gg2 = libcore.correct_gamma_bias(gg, Wmax, N)
+    rho = gg/gg[0]
+    drho = libcore.compute_drho(rho[0:Wmax+1],N)
+    return [rho[0:Wmax+1],drho[0:Wmax+1]]
+
 
 def _rho_plotter(rho,drho,Wmax,Wopt,tau,opts,texp=None):
     plt.figure()
@@ -133,7 +148,9 @@ def _rho_plotter(rho,drho,Wmax,Wopt,tau,opts,texp=None):
     plt.tight_layout()
 
     if (len(opts)==4 and isinstance(opts[3],str)):
-        plt.savefig(opts[3]+'_'+opts[0]+'_'+str(opts[1])+str(opts[2])+'.pdf')
+        fname=opts[3]+'_'+opts[0]+'_'+str(opts[1])+str(opts[2])+'.pdf'
+        plt.savefig(fname)
+        print 'Saving plot of rho(t) in file ', fname
     plt.show()
 
 

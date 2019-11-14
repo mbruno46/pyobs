@@ -517,8 +517,8 @@ class mfit:
                 nx += 1
             else:
                 xax2.append(x)
-        if (nx==0):
-            return None
+        #if (nx==0):
+        #    return None
 
         _var = 'p'
         for v in var:
@@ -538,6 +538,9 @@ class mfit:
                 for k in range(nx):
                     df = sympy.lambdify(_var, sympy.diff(expr, var2[k]), 'numpy')
                     grad_xax[i,j,0,k] = df(self.pars.mean[0,:], *xax2)
+
+        if (nx==0):
+            return derobs([self.pars], val, [grad_pars])
 
         return derobs([self.pars, xax_obs], val, [grad_pars, grad_xax])
 
@@ -571,9 +574,9 @@ def _extract_data(obs,W,cuts):
         np = len(cuts)
         ydata = numpy.zeros((d0,d1,np))
         wmat = numpy.zeros((d0*d1*np,d0*d1*np))
-        _obs = obs[cuts[0]]
+        _obs = [obs[cuts[0]]]
         for ic in range(1,np):
-            _obs.append( obs[cuts[i]] )
+            _obs.append( obs[cuts[ic]] )
         for i in range(np):
             if (W==None):
                 [_,e] = obs[cuts[i]].vwerr(simplify=False)

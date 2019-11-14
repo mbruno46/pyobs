@@ -2,11 +2,14 @@ import numpy
 import json
 import gzip
 
+from os.path import isfile
+
 from .ensdata import edata, rdata, cdata
 
 from .mathfcts import *
 
-from .core.utils import valerr, union, double_union, piechart
+from .core.utils import valerr, union, double_union, piechart, pad_with_zeros
+from .core.utils import pad_with_zeros
 from .core.libxml import read_xml
 
 __all__ = ['observa', 'derobs',
@@ -277,7 +280,32 @@ class observa:
                     return [self.mean[0,:], error[0,:]]
             else:
                 return [self.mean, error]
-   
+
+
+    def vwcov(self,plot=False,errinfo=None,simplify=True):
+        covmat = numpy.zeros(self.dims+self.dims)
+
+        for ed in self.edata:
+            if (errinfo==None):
+                res = ed.uwcov(plot)
+            else:
+                if (errinfo.Tail(ed.id)==True):
+                    raise ValueError('texp not yet supported for vwcov');
+                    #res = ed.uwerr_texp(plot, pfile, errinfo.getUWerrTexp(ed.id))
+                else:
+                    res = ed.uwcov(plot, errinfo.getUWerr(ed.id))
+            covmat += res[0]
+
+        if (simplify==False):
+            return covmat
+        else:
+            if (self.dims[0]==1):
+                return numpy.array(covmat[0,:,0,:])
+            else:
+                if (self.dims[1]==1):
+                    return numpy.array(covmat[:,0,:,0])
+
+
     def tauint(self,eid=None,errinfo=None):
         """ Computes the autocorrelation time and its error 
 
@@ -590,6 +618,9 @@ class observa:
         >>> a.load('./test.pyobs.gz')
         """
 
+        if not isfile(name):
+            raise ValueError('file %s not found!' % name)
+
         if (name[-7:]=='.xml.gz'):
             tmp = gzip.open(name, 'r').read()
             self._load_xml(tmp)
@@ -806,9 +837,29 @@ class observa:
             return derobs([self], f, [df[0]])
 
     def sum(self, axis=0):
-        [f,df] = math_sum(self.mean, axis)
-        return derobs([self],f,df)
+        # old way, very slow
+        #[f,df] = math_sum(self.mean, axis)
+        #return derobs([self],f,df)
+        if axis==0:
+            res=self[0,:]
+            for i in range(1,self.dims[0]):
+                res+=self[i,:]
+        elif axis==1:
+            res=self[:,0]
+            for i in range(1,self.dims[1]):
+                res+=self[:,i]
+        return res
 
+    def cumsum(self, axis=0):
+        if (axis==0):
+            res = self[0,:]
+            for i in range(1,self.dims[0]):
+                res.addrow( self[0:i+1,:].sum(0) )
+        elif (axis==1):
+            res = self[:,0]
+            for i in range(1,self.dims[1]):
+                res.addcol( self[:,0:i+1].sum(1) )
+        return res
 
 def fast_math_scalar(inp,ifunc,a=None):
     res = inp.clone(True)
@@ -819,7 +870,9 @@ def fast_math_scalar(inp,ifunc,a=None):
             if (a.ndim==1):
                 aa = numpy.reshape(a, (1,)+a.shape)
             elif (a.ndim==2):
-                aa = a
+                aa = numpy.array(a)
+        else:
+            raise ValueError('Unexpected input type')
     else:
         aa = None
     [res.mean, grad] = math_scalar(inp.mean, ifunc, aa)
@@ -1028,6 +1081,17 @@ def derobs(inps,func,dfunc=None):
             raise InputError('Unexpected function')
         else:
             new_mean = numpy.array(func)
+
+    # checks new_mean has right properties
+    if numpy.ndim(new_mean)!=2:
+        raise ValueError('Unexpected function (wrong format)')
+    else:
+        if not isinstance(new_mean,numpy.ndarray):
+            raise ValueError('Unexpected function (wrong format)')
+        else:
+            if not isinstance(new_mean[0],numpy.ndarray):
+                raise ValueError('Unexpected function (wrong format)')
+
     new_dims = numpy.shape(new_mean)
     res = merge_observa(new_dims,inps)
     res.mean = new_mean
@@ -1035,7 +1099,7 @@ def derobs(inps,func,dfunc=None):
 
     grad = []
     for i in range(len(inps)):
-        if (dfunc==None):
+        if dfunc is None:
             grad.append( numerical_derivative(all_mean,func,i,inps[i].naive_err()) )
         else:
             grad.append( numpy.array(dfunc[i]) )
