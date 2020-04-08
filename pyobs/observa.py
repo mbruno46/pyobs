@@ -15,7 +15,7 @@ from .core.libxml import read_xml
 __all__ = ['observa', 'derobs',
         'log', 'exp', 'sin', 'cos', 'arcsin', 'arccos',
         'sinh', 'cosh', 'arcsinh', 'arccosh', 
-        'trace', 'det', 'inv']
+        'trace', 'det', 'inv','eig']
 
 class InputError(Exception):
     pass
@@ -1034,6 +1034,32 @@ def inv(x):
     return derobs([x], f, df)
 
 
+def eig(x):
+    """
+    Compute the eigenvalues and eigenvectors of a square symmetric matrix
+    
+    Parameters
+    ----------
+    x : observa
+        must be a square matrix
+
+    Returns
+    -------
+    w, v : observa
+           the eigenvalues and a matrix whose columns 
+           correspond to the eigenvectors
+
+    Examples
+    --------
+    >>> [w, v] = eig(x)
+    """
+
+    if (x.dims[0]!=x.dims[1]):
+        raise InputError('unsupported operation for non-square matrices')
+    [f, df] = math_eig(x.mean)
+    return [derobs([x], f[0], [df[0]]), derobs([x], f[1], [df[1]])]
+
+
 def derobs(inps,func,dfunc=None):
     """ Compute the derived observable from a given function. 
     It is highly recommended to avoid the usage of this function
@@ -1100,7 +1126,7 @@ def derobs(inps,func,dfunc=None):
     grad = []
     for i in range(len(inps)):
         if dfunc is None:
-            grad.append( numerical_derivative(all_mean,func,i,inps[i].naive_err()) )
+            grad.append( numerical_derivative(all_mean,func,i,inps[i].naive_err()*1e-4) )
         else:
             grad.append( numpy.array(dfunc[i]) )
 

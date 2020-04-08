@@ -74,7 +74,7 @@ The following functions can be imported using::
    >>> from pyobs import det, inv
 
 .. automodule:: pyobs.observa
-   :members: det, trace, inv
+   :members: det, trace, inv, eig
 
 
 Manipulation of observables
