@@ -1,7 +1,7 @@
 import numpy
 import matplotlib.pyplot as plt
 
-from .vwerr import uwerr, uwerr_texp
+from .vwerr import uwerr, uwerr_texp, normac
 from .core.utils import fill_holes, irregular_measurements
 from .jerr import jackknife_error
 
@@ -67,11 +67,53 @@ class edata:
         dtau = numpy.zeros(self.dims)
         for i in range(self.dims[0]):
             for j in range(self.dims[1]):
-                res = uwerr([rd.data[i,j] for rd in self.rdata], [rd.ncnfg for rd in self.rdata], plot, (self.name,i,j,pfile), pars[0], pars[1])
+                res = uwerr([rd.data[i,j] for rd in self.rdata], None,
+                        [rd.ncnfg for rd in self.rdata], 
+                        plot, (self.name,i,j,pfile), pars[0], pars[1])
                 sigma[i,j] = res[0]
                 tau[i,j] = res[1]
                 dtau[i,j] = res[2]
         return [sigma, tau, dtau]
+   
+
+    def uwcov(self,plot,pars=(1.5,None)):
+        if isinstance(plot,str):
+            raise TypeError('uwcov: saving of plots to file not supported');
+        sigma = numpy.zeros(self.dims+self.dims)
+        tau = numpy.zeros(self.dims+self.dims)
+        dtau = numpy.zeros(self.dims+self.dims)
+        for i in range(self.dims[0]):
+            for k in range(i,self.dims[0]):
+                for j in range(self.dims[1]):
+                    for l in range(j,self.dims[1]):
+                        res = uwerr([rd.data[i,j] for rd in self.rdata], 
+                                [rd.data[k,l] for rd in self.rdata],
+                                [rd.ncnfg for rd in self.rdata], 
+                                plot, (self.name,i,j,None), pars[0], pars[1])
+                        sigma[i,j,k,l] = res[0]
+                        tau[i,j,k,l] = res[1]
+                        dtau[i,j,k,l] = res[2]
+                        if (i!=k) or (j!=l):
+                            sigma[k,l,i,j] = res[0]
+                            tau[k,l,i,j] = res[1]
+                            dtau[k,l,i,j] = res[2]
+        return [sigma, tau, dtau]
+
+
+    def normac(self,Wmax):
+        rho = numpy.zeros(self.dims+self.dims+(Wmax+1,))
+        drho= numpy.zeros(self.dims+self.dims+(Wmax+1,))
+        for i in range(self.dims[0]):
+            for k in range(i,self.dims[0]):
+                for j in range(self.dims[1]):
+                    for l in range(j,self.dims[1]):
+                        res = normac([rd.data[i,j] for rd in self.rdata],
+                                [rd.data[k,l] for rd in self.rdata],
+                                [rd.ncnfg for rd in self.rdata], Wmax)
+                        rho[i,j,k,l,:] = res[0]
+                        drho[i,j,k,l,:] = res[1]
+        return [rho,drho]
+
 
     def uwerr_texp(self,plot,pfile,pars=(1.5,0.0,2,0,None)):
         sigma = numpy.zeros(self.dims)
@@ -89,8 +131,9 @@ class edata:
         sigma = numpy.zeros(self.dims)
         for i in range(self.dims[0]):
             for j in range(self.dims[1]):
-                res = uwerr([rd.data[i,j] for rd in self.rdata], [rd.ncnfg for rd in self.rdata], 
-                            False, (self.name,i,j,''), 1.5, 0)
+                res = uwerr([rd.data[i,j] for rd in self.rdata], None,
+                        [rd.ncnfg for rd in self.rdata], 
+                        False, (self.name,i,j,None), 1.5, 0)
                 sigma[i,j] = res[0]
         return sigma
 
@@ -131,21 +174,7 @@ class rdata:
     def create(self,idx,data,mean):
         subtraction = numpy.array([mean for _ in range(len(idx))]).flatten()
         delta = data - subtraction
-
-        # check if data is irregular and fix it    
-        if (irregular_measurements(idx)==True):
-            tmp = fill_holes(idx, delta)
-        else:
-            tmp = [idx, delta]
-
-        self.ncnfg = len(idx)
-        self.idx = list(tmp[0])
-        self.data = numpy.zeros(self.dims+(self.ncnfg,))
-        for k in range(self.ncnfg):
-            for i in range(self.dims[0]):
-                for j in range(self.dims[1]):
-                    self.data[i,j,k] = tmp[1][ (k*self.dims[1] + i)*self.dims[0] + j]
-        #self.data = numpy.reshape(tmp[1], (self.ncnfg,)+self.dims[::-1]).T
+        self.fill(idx,delta)
 
     def clone(self,full):
         res = rdata(self.id,self.name,self.dims)
@@ -157,13 +186,26 @@ class rdata:
             res.data = numpy.zeros(self.dims + (self.ncnfg,))
         return res
 
-    def fill(self,idx,data=None):
-        self.ncnfg = len(idx)
-        self.idx = list(idx)
-        if (data==None):
-            self.data = numpy.zeros(self.dims + (self.ncnfg,))
+    def fill(self,idx,delta=None):
+        if delta is None:
+            # fixes idx if irregular
+            tmp = [numpy.arange(idx[0],idx[-1]+1,1), delta]
         else:
-            self.data = numpy.array(data)
+            # check if data is irregular and fix it    
+            if (irregular_measurements(idx)==True):
+                tmp = fill_holes(idx, delta,numpy.prod(self.dims))
+            else:
+                tmp = [idx, delta]
+
+        self.ncnfg = len(tmp[0])
+        self.idx = list(tmp[0])
+        self.data = numpy.zeros(self.dims+(self.ncnfg,))
+        if delta is None:
+            return
+        for k in range(self.ncnfg):
+            for i in range(self.dims[0]):
+                for j in range(self.dims[1]):
+                    self.data[i,j,k] = tmp[1][ (k*self.dims[0] + i)*self.dims[1] + j]
 
 
 class cdata:

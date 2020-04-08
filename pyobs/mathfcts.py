@@ -6,7 +6,7 @@ from sympy import IndexedBase, Idx, symbols
 from sympy import Matrix, diff, lambdify
 
 __all__ = ['math_sum','math_det','math_tr',
-        'math_inv','math_add','math_mul',
+        'math_inv','math_eig','math_add','math_mul',
         'math_dot','math_scalar','math_binary']
 
 
@@ -102,6 +102,28 @@ def math_inv(mean):
 
     return [func, [grad]]
 
+def math_eig(mean):
+    dims = numpy.shape(mean)
+    [w,v] = numpy.linalg.eig(mean)
+
+    gradw = numpy.zeros((dims[0],1)+dims)
+    gradv = numpy.zeros(dims+dims)
+    dfunc = numpy.zeros(dims)
+    
+    for k in range(dims[0]):
+        for l in range(dims[1]):
+            dfunc[k,l] = 1.0
+            tmp0 = (v.T).dot(dfunc).dot(v)
+            dfunc[k,l] = 0.0
+            for i in range(dims[0]):
+                gradw[i,0,k,l] = tmp0[i,i]
+                for j in range(dims[1]):
+                    if i!=j:
+                        gradv[:,i,k,l] += (tmp0[i,j]/(w[i]-w[j]))*v[:,j]
+    func = [numpy.reshape(w,(dims[0],1)), v]
+    dfunc = [gradw, gradv]
+    return [func, dfunc]
+
 #######################################################################
 
 def math_add(mean1,mean2):
@@ -138,11 +160,13 @@ def math_dot(mean1,mean2):
     M2 = SymMat(d2,'M2')
 
     s = Subs([mean1,mean2],[M1, M2])
-    h = [[0]*d2[1]]*d1[0]
+    h = []
     for i in range(d1[0]):
+        hh = [0]*d2[1]
         for j in range(d2[1]):
             for k in range(d1[1]):
-                h[i][j] = h[i][j] + M1[i,k]*M2[k,j]
+                hh[j] = hh[j] + M1[i,k]*M2[k,j]
+        h.append(hh)
     expr = Matrix(h)
     #expr = Matrix(M2.dot(M1)).reshape(d1[0],d2[1]).transpose()
 

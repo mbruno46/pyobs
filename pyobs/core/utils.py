@@ -33,7 +33,7 @@ def fill_holes(idx_in, data_in, size=1):
     N = idx_in[-1] - idx_in[0] + 1
     idx = numpy.arange(idx_in[0],idx_in[-1]+1,1)
     data = numpy.array(numpy.zeros(N*size), dtype=numpy.double)
-    
+   
     norm = float(N)/float(len(data_in)/size)
     j=0
     for i in range(N):
@@ -48,36 +48,37 @@ def pad_with_zeros(data, before, after):
     S = numpy.shape(data)
     n0 = S[-1]
     data2 = numpy.zeros( S[0:-1]+(before+n0+after,) )
+    norm = float(before+n0+after)/float(n0)
     for i in range(before, before+n0):
         data2[:,:,i] = numpy.array(data[:,:,i-before])
-    return data2
+    return data2 * norm
 
 # returns the sorted union of the two lists
 def union(a,b):
-	u = set(a) | set(b)
-	return list(u)
+    u = sorted(set(a) | set(b))
+    return list(u)
 
 def double_union(a,b,an,bn):
-	u = list(set(a) | set(b))
-	un = []
-	for iu in u:
-		try:
-			un.append( an[a.index(iu)] )
-		except:
-			un.append( bn[b.index(iu)] )
-	return [u, un]
+    u = list(sorted(set(a) | set(b)))
+    un = []
+    for iu in u:
+        try:
+            un.append( an[a.index(iu)] )
+        except:
+            un.append( bn[b.index(iu)] )
+    return [u, un]
 
 def contains(a,b):
-	for i in b:
-		if (a==b):
-			return b.index(a)
-	return -1
+    for i in b:
+        if (a==b):
+            return b.index(a)
+    return -1
 
 
 def piechart(x,l,t):
-	plt.subplots()
-	plt.title('Components (%d,%d)' % t)	
-	x2 = numpy.array(x)/numpy.sum(x)
-	plt.pie(x2,labels=l, autopct='%.0f%%',radius=1.0)
-	plt.axis('equal')
-	plt.show()
+    plt.subplots()
+    plt.title('Components (%d,%d)' % t)    
+    x2 = numpy.array(x)/numpy.sum(x)
+    plt.pie(x2,labels=l, autopct='%.0f%%',radius=1.0)
+    plt.axis('equal')
+    plt.show()
