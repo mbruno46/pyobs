@@ -47,16 +47,16 @@ After installation it can be imported like any other package
 
 .. code-block:: bash
 
-   $ git clone git+https://github.com/mbruno46/pyobs.git
+   $ pip install -e ./pyobs
+   $ # or alternatively
    $ cd pyobs
-   $ python setup.py build_ext_loc
-   $ mv build/lib.*/pyobs/core/mftools.so pyobs/core/
    $ python setup.py develop
+   $ python setup.py clean
 
 The library can alternatively be used without installation
 by adding the appropriate path to `sys`.
 In this case it is recommended to recompile the C++ extensions
-manually. 
+manually with `python setup.py buil_ext`. 
 
 .. code-block:: python
 

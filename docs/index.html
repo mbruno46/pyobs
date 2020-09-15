@@ -127,17 +127,17 @@ $ pip install ./pyobs
 <ul class="simple">
 <li><p><strong>developer mode</strong></p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone git+https://github.com/mbruno46/pyobs.git
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install -e ./pyobs
+$ <span class="c1"># or alternatively</span>
 $ <span class="nb">cd</span> pyobs
-$ python setup.py build_ext_loc
-$ mv build/lib.*/pyobs/core/mftools.so pyobs/core/
 $ python setup.py develop
+$ python setup.py clean
 </pre></div>
 </div>
 <p>The library can alternatively be used without installation
 by adding the appropriate path to <cite>sys</cite>.
 In this case it is recommended to recompile the C++ extensions
-manually.</p>
+manually with <cite>python setup.py buil_ext</cite>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">sys</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;/path/to/pyobs/directory/&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyobs</span>

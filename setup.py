@@ -24,7 +24,7 @@ ext = Extension('pyobs/core/mftools', ['pyobs/core/mftools.cc'],
                 include_dirs=[incpath])
 
 
-class RenameExt(Command):
+class SymLinkExt(Command):
 
     def initialize_options(self):
         vv = get_config_vars().get('VERSION')
@@ -36,19 +36,18 @@ class RenameExt(Command):
 
     def run(self):
         src = f'{self.bdir}/{ext.name}{self.suffix}'
-        dst = f'{self.bdir}/{ext.name}.so'
-        cmd = f'mv {src} {dst}'
+        cmd = f'ln -s {src} {ext.name}.so'
         if os.path.isfile(src):
             out = os.popen(cmd).read()
             if out != '':
-                raise Exception(f'RenameExt failed: {out}')
+                raise Exception(f'SymLink failed: {out}')
 
 
 class BuildExtLocal(build_ext):
 
     def run(self):
         build_ext.run(self)
-        self.run_command('rename_ext')
+        self.run_command('symlink_ext')
 
 
 with open("README.md", "r") as fh:
@@ -77,7 +76,7 @@ setup(
     ],
     ext_modules=[ext],
     cmdclass={
-        'rename_ext': RenameExt,
-        'build_ext_loc': BuildExtLocal,
+        'symlink_ext': SymLinkExt,
+        'build_ext': BuildExtLocal,
         },
 )
