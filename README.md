@@ -1,7 +1,7 @@
 
-![Build/Test](https://github.com/mbruno46/pyobs/workflows/Build/Test/badge.svg)](https://github.com/mbruno46/pyobs/actions?query=workflow%3ABuild%2FTest)
+[![Build/Test](https://github.com/mbruno46/pyobs/workflows/Build/Test/badge.svg)](https://github.com/mbruno46/pyobs/actions?query=workflow%3ABuild%2FTest)
 
-![pyobs logo](/docs/_images/pyobs-logo.png | width=150)
+<img src="/docs/_images/pyobs-logo.png" width="25%">
 
 # pyobs
 
