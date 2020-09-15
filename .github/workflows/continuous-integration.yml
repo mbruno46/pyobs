@@ -1,0 +1,43 @@
+name: pyobs ci
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.6,3.7,3.8]
+
+    steps: 
+
+    - name: Setup python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: x64
+
+    - name: Clone pyobs
+      uses: actions/checkout@v2
+      with:
+        path: pyobs
+
+    - name: Install pyobs and dependencies
+      run: |
+	python -m pip install --upgrade pip
+	pip install ./pyobs
+
+    - name: Test
+      run: |
+	cd pyobs
+	export WORK_DIR=$(mktemp -d)
+	./tests/run "coverage run"
+
+    - name: Coverage report
+      run: |
+        cd pyobs
+        coverage combine
+        coverage report -m  # Print coverage report to screen
+        coverage xml  # Export coverage report as XML file, for codecov.io
