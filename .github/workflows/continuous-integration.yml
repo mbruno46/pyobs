@@ -34,14 +34,14 @@ jobs:
 
     - name: Test
       run: |
-	export PYTHONPATH=/usr/local/lib/python${{ matrix.python-version}}/site-packages:/usr/local/lib64/python${{ matrix.python-version}}/site-packages
-	cd pyobs
+        export PYTHONPATH=/usr/local/lib/python${{ matrix.python-version}}/site-packages:/usr/local/lib64/python${{ matrix.python-version}}/site-packages
+        cd pyobs
         ./tests/run "coverage run -p"
 
     - name: Coverage report
       run: |
         cd pyobs
-	coverage combine
+        coverage combine
         coverage report -m  # Print coverage report to screen
         coverage xml  # Export coverage report as XML file, for codecov.i
 
@@ -51,6 +51,6 @@ jobs:
         CODECOV_TOKEN: "6f56ccbf-ceab-4666-81a7-fc2431ba9bb8"
         CODECOV_ENV: PYTHON_VERSION, CODECOV_TOKEN
       run: |
-	cd pyobs
+        cd pyobs
         bash <(curl -s https://codecov.io/bash) -f ./coverage.xml
 
