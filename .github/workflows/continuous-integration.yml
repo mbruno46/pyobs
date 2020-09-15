@@ -1,4 +1,4 @@
-name: pyobs ci
+name: pyobs build test
 
 on: [push]
 
@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         python-version: [3.6,3.7,3.8]
 
@@ -41,4 +42,20 @@ jobs:
         cd pyobs
         coverage combine
         coverage report -m  # Print coverage report to screen
-        coverage xml  # Export coverage report as XML file, for codecov.io
+        coverage xml  # Export coverage report as XML file, for codecov.i
+
+    - name: Upload coverage to Codecov
+      env:
+        PYTHON_VERSION: python${{ matrix.python-version }}
+        CODECOV_TOKEN: "6f56ccbf-ceab-4666-81a7-fc2431ba9bb8"
+	CODECOV_ENV: PYTHON_VERSION, CODECOV_TOKEN
+      run: |
+        cd pyobs
+        if [ "${{ secrets.CODECOV_USERNAME }}" != "" ] \
+            && [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/master" ]
+        then
+          bash <(curl -s https://codecov.io/bash) \
+          -f ./coverage.xml
+        else
+          echo "Skip uploading code coverage since we are not upstream"
+        fi
