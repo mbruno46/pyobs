@@ -29,7 +29,7 @@ from pyobs.tensor.unary import *
 from pyobs.core.derobs import derobs, num_grad, errbias4
 from pyobs.core import random
 from pyobs.core.utils import set_verbose, is_verbose, valerr, sort_data
-from pyobs.core.memory import memory, sysmem
+from pyobs.core.memory import memory
 from pyobs.core.error import errinfo
 
 from pyobs.fit.mfit import mfit

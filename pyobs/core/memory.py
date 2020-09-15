@@ -59,11 +59,3 @@ def memory():
         print(f'pyobs allocated memory {size/MB:.0f} MB\n')
     else:
         print(f'pyobs allocated memory {size/1024.:.0f} KB\n')
-        
-def sysmem():
-    # -a: All users; -m: Sort by memory usage; -c: prints only executable name; -x: prints all background processes
-    # -orss: rss is resident set size
-    cmd="ps -c -a -x -m -orss | awk '{ sum += $1 } END {print sum}'"
-    out=os.popen(cmd).readlines()[0].rsplit()[0]
-    size=int(out)
-    print(f'System allocated memory {size/GB:.2f} GB \n') 

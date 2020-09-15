@@ -13,6 +13,13 @@ fi
 cp pyobs-logo.png ../html/_images/
 mv ../html ../docs
 
+# fixes github pages
+touch ../docs/.nojekyll
+echo "include:
+	- _images
+	- _static
+	- _sources" > ../docs/_config.yml
+
 make latex
 cd ../latex
 pdflatex -pdf pyobs-doc.tex

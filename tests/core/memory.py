@@ -22,7 +22,6 @@ obsB = pyobs.obs()
 obsB.create('EnsB',data)
 
 pyobs.memory()
-pyobs.sysmem()
 obsB.peek()
 
 del obsB
