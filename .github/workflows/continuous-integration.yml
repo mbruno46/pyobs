@@ -48,7 +48,7 @@ jobs:
       env:
         PYTHON_VERSION: python${{ matrix.python-version }}
         CODECOV_TOKEN: "6f56ccbf-ceab-4666-81a7-fc2431ba9bb8"
-	CODECOV_ENV: PYTHON_VERSION, CODECOV_TOKEN
+        CODECOV_ENV: PYTHON_VERSION, CODECOV_TOKEN
       run: |
         cd pyobs
         if [ "${{ secrets.CODECOV_USERNAME }}" != "" ] \
