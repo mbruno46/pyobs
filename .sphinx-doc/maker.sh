@@ -11,5 +11,6 @@ cd ../pyobs
 make html
 cd ..
 
-echo "now remove the directory docs and run the following"
-echo "cp -r ../doc/html ../docs"
+rm -r ../docs
+cp -r ../doc/html ../docs
+rm -r ../doc
