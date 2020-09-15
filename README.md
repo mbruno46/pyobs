@@ -1,6 +1,9 @@
-# pyobs
 
-![build/test](https://github.com/mbruno46/pyobs/workflows/pyobs%20build%20test/badge.svg)
+![Build/Test](https://github.com/mbruno46/pyobs/workflows/Build/Test/badge.svg)](https://github.com/mbruno46/pyobs/actions?query=workflow%3ABuild%2FTest)
+
+![pyobs logo](/docs/_images/pyobs-logo.png | width=150)
+
+# pyobs
 
 A Python library to analyse data generated 
 from (Monte Carlo) Markov chains.

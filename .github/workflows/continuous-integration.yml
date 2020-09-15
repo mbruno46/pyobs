@@ -1,4 +1,4 @@
-name: pyobs build test
+name: Build/Test
 
 on: [push]
 
@@ -34,12 +34,11 @@ jobs:
     - name: Test
       run: |
         cd pyobs
-        export WORK_DIR=$(mktemp -d)
-        ./tests/run "coverage run"
+        ./tests/run "coverage run -p"
 
     - name: Coverage report
       run: |
-        cd pyobs
+        cd pyobs/tests
         coverage combine
         coverage report -m  # Print coverage report to screen
         coverage xml  # Export coverage report as XML file, for codecov.i
