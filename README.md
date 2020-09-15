@@ -1,37 +1,40 @@
 # pyobs
 
-A Python library to analyze lattice observables.
+A Python library to analyse data generated 
+from (Monte Carlo) Markov chains.
 
-   * entirely based on the `numpy` library, with some additional modules written in c
-   * objected-oriented with wide basis of overloaded operations
-   * flexible calculation of the error with the `Gamma method`
-   * analytic propagation of the error for all built-in functions, including fitting routines
-  
-## Usage
+## Authors
 
-PyObs can be used without installing
-it in the python library, by following these steps
-   
-   1. git clone the *master branch*
-      ```bash
-      $ git clone git@github.com:mbruno46/pyobs.git -b master
-      ```
-   2. run `maker.sh` to compile a fast c library of core functions used in the package;
-    this script requires one argument which is the location of the C compiler
-      
-      ```bash
-      $ cd pyobs/pyobs/core
-      $ sh maker.sh /usr/bin/gcc
-      ```
-   
-   3. to use the package in a python script simply add the path
-   
-      ```python
-      >>> import sys
-      >>> sys.path.insert(0,'/full/path/to/pyobs')
-      >>> from pyobs import *
-      ```
+Copyright (C) 2020, Mattia Bruno
+
+## Installation
+
+To install the library directly in the local python distribution,
+simply run the following commands
+
+```bash
+pip install git+https://github.com/mbruno46/pyobs.git@master#egg=pyobs
+# for upgrading
+pip install --update git+https://github.com/mbruno46/pyobs.git@master#egg=pyobs
+```
+
+After installation, `pyobs` can be imported like any other package 
+
+```python
+import pyobs
+from pyobs import obs
+help(pyobs)
+```
+
+The library can also be installed from a local clone of
+the repository or in *developer mode*, as described in the 
+documentation (see link below). Recompilation of the 
+C++ extensions might be necessary in this case.
 
 ## Documentation
 
-The online documentation can be found here: [HTML](https://mbruno46.github.io/pyobs/)
+The documentation together with tutorials
+can be accessed in [HTML][1] format or [PDF][2].
+
+[1]: https://mbruno46.github.io/pyobs
+[2]: ./doc/pyobs-doc.pdf
