@@ -35,7 +35,7 @@ jobs:
 
     - name: Test
       run: |
-        export PYTHONPATH=/usr/local/lib/python${{ matrix.python-version}}/site-packages:/usr/local/lib64/python${{ matrix.python-version}}/site-packages
+        export PYTHONPATH=$PWD/pyobs/
         cd pyobs
         ./tests/run "coverage run -p"
 
