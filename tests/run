@@ -2,14 +2,13 @@
 
 runner=$1
 
-dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-cd $dir
+dir=${BASH_SOURCE%/*}
 
-for d in `ls -d . */`
+for d in `ls -d $dir $dir/*/`
 do
 	for f in `ls $d/*.py`
 	do
 		echo "Running: ${runner} $f"
-		${runner} $f
+		${runner} --source=pyobs --omit=pyobs/setup.py $f
 	done
 done

@@ -33,12 +33,10 @@ jobs:
 
     - name: Test
       run: |
-        cd pyobs
-        ./tests/run "coverage run -p"
+        ./pyobs/tests/run "coverage run -p"
 
     - name: Coverage report
       run: |
-        cd pyobs/tests
         coverage combine
         coverage report -m  # Print coverage report to screen
         coverage xml  # Export coverage report as XML file, for codecov.i

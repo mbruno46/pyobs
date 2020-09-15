@@ -1,9 +1,10 @@
 import pyobs
 import numpy
-import gzip
+import os
 
 L=[32,32,32]
-data = numpy.loadtxt('./mfield-32x32x32-obs.txt.gz')
+p=os.path.realpath(__file__)[:-9]
+data = numpy.loadtxt(f'{p}/mfield-32x32x32-obs.txt.gz')
 
 mfobs = pyobs.obs()
 mfobs.create(f'test-mfield',data,lat=L)
