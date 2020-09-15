@@ -14,8 +14,8 @@ simply run the following commands
 
 ```bash
 pip install git+https://github.com/mbruno46/pyobs.git@master#egg=pyobs
-# for upgrading
-pip install --update git+https://github.com/mbruno46/pyobs.git@master#egg=pyobs
+# or for upgrading
+pip install -U git+https://github.com/mbruno46/pyobs.git@master#egg=pyobs
 ```
 
 After installation, `pyobs` can be imported like any other package 
