@@ -1,6 +1,6 @@
 #################################################################################
 #
-# __init__.py: methods and functionalities of the library accessible to users
+# cdata.py: definition and properties of the inner class cdata
 # Copyright (C) 2020 Mattia Bruno
 # 
 # This program is free software; you can redistribute it and/or
@@ -19,22 +19,28 @@
 #
 #################################################################################
 
-import pyobs.ndobs
-from pyobs.ndobs import obs
 
-from pyobs.tensor.manipulate import *
-from pyobs.tensor import linalg
-from pyobs.tensor.unary import *
+import numpy
 
-from pyobs.core.derobs import derobs, num_grad, errbias4
-from pyobs.core import random
-from pyobs.core.utils import set_verbose, is_verbose, valerr, sort_data
-from pyobs.core.memory import memory, sysmem
-from pyobs.core.error import errinfo
-
-from pyobs.fit.mfit import mfit
-from pyobs.fit.symbolic import diff
-
-from pyobs.version import __version__, __version_full__
-
-import pyobs.qft
+class cdata:
+    def __init__(self,grad,cov):
+        self.grad = grad
+        if numpy.ndim(cov)==1:
+            self.cov = numpy.diag(cov)
+        else:
+            self.cov = numpy.array(cov)
+    
+    def axpy(self,grad,cd):
+        self.grad += grad @ cd.grad
+        
+    def sigmasq(self):
+        (na,nb) = self.grad.shape
+        sigma = numpy.zeros((na,))
+        for ia in range(na):
+            sigma[ia] = self.grad[ia,:] @ self.cov[:,:] @ self.grad.T[:,ia]
+        return sigma
+    
+    def reduce(self):
+        self.cov = self.grad @ self.cov @ self.grad.T
+        self.grad = numpy.eye(self.cov.shape[0])
+        

@@ -1,6 +1,7 @@
 .DS_Store
 
 # ignores the compiled c python files and jupyter notebooks
+__pycache__/
 *.pyc
 *.ipynb*
 *.so
@@ -12,3 +13,7 @@
 doc/doctrees
 doc/.source/sphinx-build
 doc/.source/*/conf.py
+
+# ignores output from local coverage
+.coverage
+tests/htmlcov
