@@ -10,9 +10,8 @@ __pycache__/
 *.swp
 
 # ignores files from doc
-doc/doctrees
-doc/.source/sphinx-build
-doc/.source/*/conf.py
+doctrees/
+sphinx-build
 
 # ignores output from local coverage
 .coverage

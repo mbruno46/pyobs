@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [ -d ../docs ]; then
+	rm -r ../docs
+fi
+
+cp ../tutorials/*.ipynb ./tutorials
+
+make html
+if [ ! -d ../html/_images ]; then
+	mkdir ../html/_images
+fi
+cp pyobs-logo.png ../html/_images/
+mv ../html ../docs
+
+make latex
+cd ../latex
+pdflatex -pdf pyobs-doc.tex
+mv pyobs-doc.pdf ../docs
+cd ..
+rm -r latex
+
+rm -r doctrees
