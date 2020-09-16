@@ -7,7 +7,7 @@ cov = (numpy.array(mat)*0.05)**2
 data = pyobs.random.acrandn(mat,cov,1.0,4000)
 
 omat = pyobs.obs()
-omat.create('test',data.flatten(),dims=(2,2))
+omat.create('test',data.flatten(),shape=(2,2))
 print(omat)
 
 #check inverse

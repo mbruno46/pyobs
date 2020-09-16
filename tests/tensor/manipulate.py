@@ -15,7 +15,7 @@ tau=1.0
 data = pyobs.random.acrandn(corr_ex,cov_ex,tau,N)
 
 corr = pyobs.obs()
-corr.create(f'm{mass:g}-{L}x{T}', data.flatten(), dims=(len(xax),))
+corr.create(f'm{mass:g}-{L}x{T}', data.flatten(), shape=(len(xax),))
 print(corr)
 [c,dc] = corr.error()
 

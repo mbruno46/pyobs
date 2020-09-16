@@ -27,13 +27,13 @@ from pyobs.core.utils import error_msg
 
 __all__ = ['reshape','concatenate','transpose','sort','diag']
 
-def reshape(x,new_dims):
+def reshape(x,new_shape):
     """
     Change the shape of the observable
 
     Parameters:
       x (obs) : observables to be reshaped
-      new_dims (tuple): the new shape of the observable
+      new_shape (tuple): the new shape of the observable
 
     Returns:
       obs : reshaped observable
@@ -43,8 +43,8 @@ def reshape(x,new_dims):
       value.
     """
     res = obs(x)
-    res.dims = new_dims
-    res.mean = numpy.reshape(x.mean, new_dims)
+    res.shape = new_shape
+    res.mean = numpy.reshape(x.mean, new_shape)
     return res
 
 def concatenate(x,y,axis=0):
@@ -64,16 +64,16 @@ def concatenate(x,y,axis=0):
        ensembles, they are merged accordingly by keeping
        only the minimal amount of data in memory.
     """
-    if x.size==0 and x.dims==[]:
+    if x.size==0 and x.shape==[]:
         return obs(y)
-    if y.size==0 and y.dims==[]:
+    if y.size==0 and y.shape==[]:
         return obs(x)
     
-    if len(x.dims)!=len(y.dims):
-        error_msg(f'Incompatible dimensions between {x.dims} and {y.dims}')
-    for d in range(len(x.dims)):
-        if (d!=axis) and (x.dims[d]!=y.dims[d]):
-            error_msg(f'Incompatible dimensions between {x.dims} and {y.dims} for axis={axis}')
+    if len(x.shape)!=len(y.shape):
+        error_msg(f'Incompatible dimensions between {x.shape} and {y.shape}')
+    for d in range(len(x.shape)):
+        if (d!=axis) and (x.shape[d]!=y.shape[d]):
+            error_msg(f'Incompatible dimensions between {x.shape} and {y.shape} for axis={axis}')
     mean=numpy.concatenate((x.mean,y.mean),axis=axis)
     grads=[numpy.concatenate((numpy.eye(x.size),numpy.zeros((y.size,x.size))))]
     grads+=[numpy.concatenate((numpy.zeros((x.size,y.size)),numpy.eye(y.size)))]
@@ -125,8 +125,8 @@ def diag(x):
     Returns:
        obs : the diagonally projected or extended observable
     """
-    if len(x.dims)>2:
-        error_msg(f'Unexpected matrix with dims {x.dims}; only 2-D arrays are supported')
+    if len(x.shape)>2:
+        error_msg(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
     mean = numpy.diag(x.mean)
     grads = unary_grad(x.mean, lambda x:numpy.diag(x))
     return derobs([x],mean,[grads])

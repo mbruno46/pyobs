@@ -48,10 +48,6 @@ After installation it can be imported like any other package
 .. code-block:: bash
 
    $ pip install -e ./pyobs
-   $ # or alternatively
-   $ cd pyobs
-   $ python setup.py develop
-   $ python setup.py clean
 
 The library can alternatively be used without installation
 by adding the appropriate path to `sys`.

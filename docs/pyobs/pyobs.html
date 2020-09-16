@@ -84,7 +84,7 @@
   <input type="hidden" name="check_keywords" value="yes" />
   <input type="hidden" name="area" value="default" />
 </form><div id="navbar-logo" style="margin:auto;text-align:center">
-	<img src="_images/pyobs-logo.png" alt="" width="200" />
+	<img src="/_images/pyobs-logo.png" alt="" width="200" />
 </div>
         </div>
       </div>
@@ -125,7 +125,7 @@ with the systematic error</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.198638</span><span class="p">,</span> <span class="mf">0.403983</span><span class="p">,</span> <span class="mf">1.215960</span><span class="p">,</span> <span class="mf">1.607684</span><span class="p">,</span> <span class="mf">0.199049</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">vec</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">obs</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">vec</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vec</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
 <span class="go">0.201(13)    0.399(26)    1.199(24)    1.603(47)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">vec</span><span class="o">.</span><span class="n">add_syst_err</span><span class="p">(</span><span class="s1">&#39;syst.err&#39;</span><span class="p">,[</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.05</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
@@ -137,7 +137,7 @@ with the systematic error</p></li>
 
 <dl class="py method">
 <dt id="pyobs.ndobs.obs.create">
-<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ename</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">icnfg</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rname</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dims</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">lat</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.ndobs.obs.create" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ename</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">icnfg</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rname</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">lat</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.ndobs.obs.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an observable</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -150,8 +150,7 @@ of the configurations corresponding to data; if not passed the
 measurements are assumed to be contiguous</p></li>
 <li><p><strong>rname</strong> (<em>str</em><em> or </em><em>list of str</em><em>, </em><em>optional</em>) – identifier of the replica; if
 not passed integers from 0 are automatically assigned</p></li>
-<li><p><strong>dims</strong> (<em>tuple</em><em>, </em><em>optional</em>) – dimensions of the observable, data must
-be passed accordingly</p></li>
+<li><p><strong>shape</strong> (<em>tuple</em><em>, </em><em>optional</em>) – shape of the observable, data must be passed accordingly</p></li>
 <li><p><strong>lat</strong> (<em>list of ints</em><em>, </em><em>optional</em>) – the size of each dimension of the master-field;
 if passed data is assumed to be obtained from observables measured at different
 sites and <cite>icnfg</cite> is re-interpreted as the index labeling the sites; if <cite>icnfg</cite>
@@ -185,7 +184,7 @@ a new replica to the same ensemble.</p>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">obs</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;matrix&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;EnsembleA&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;EnsembleA&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 </pre></div>
 </div>
 <p class="rubric">Examples</p>
@@ -205,8 +204,8 @@ a new replica to the same ensemble.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyobs.ndobs.obs.create_cd">
-<code class="sig-name descname">create_cd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cname</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">covariance</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.ndobs.obs.create_cd" title="Permalink to this definition">¶</a></dt>
+<dt id="pyobs.ndobs.obs.create_from_cov">
+<code class="sig-name descname">create_from_cov</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cname</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">covariance</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.ndobs.obs.create_from_cov" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create observables based on covariance matrices</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

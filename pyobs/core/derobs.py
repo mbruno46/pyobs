@@ -41,8 +41,8 @@ def derobs(inps,mean,grads,desc=None):
         res.mean = numpy.reshape(mean,(1,))
     else:
         res.mean = numpy.array(mean)
-    res.dims = numpy.shape(res.mean)
-    res.size = numpy.prod(res.dims)
+    res.shape = numpy.shape(res.mean)
+    res.size = numpy.prod(res.shape)
     
     def core(datatype):
         allkeys = []

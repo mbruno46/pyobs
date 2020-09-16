@@ -52,7 +52,7 @@ class obs:
             check_type(desc,'text',str)
             self.description = desc
             self.www = [pwd.getpwuid(os.getuid())[0], os.uname()[1], datetime.datetime.now().strftime('%c')]
-            self.dims = []
+            self.shape = []
             self.size = 0
             self.mean = []
             self.edata = []
@@ -64,8 +64,8 @@ class obs:
             if isinstance(orig,obs):
                 self.description = orig.description
                 self.www = orig.www
-                self.dims = orig.dims
-                self.size = numpy.prod(self.dims)
+                self.shape = orig.shape
+                self.size = numpy.prod(self.shape)
                 self.mean = numpy.array(orig.mean) # or orig.mean.copy()
                 
                 self.edata = [e for e in orig.edata] #copy.deepcopy(orig.edata) # copy works only for primitive types, not lists
@@ -85,7 +85,7 @@ class obs:
             else:
                 error_msg('Unexpected orig argument')
     
-    def create(self,ename,data,icnfg=None,rname=None,dims=(1,),lat=None):
+    def create(self,ename,data,icnfg=None,rname=None,shape=(1,),lat=None):
         """
         Create an observable
         
@@ -98,8 +98,7 @@ class obs:
               measurements are assumed to be contiguous
            rname (str or list of str, optional): identifier of the replica; if 
               not passed integers from 0 are automatically assigned
-           dims (tuple, optional): dimensions of the observable, data must 
-              be passed accordingly
+           shape (tuple, optional): shape of the observable, data must be passed accordingly
            lat (list of ints, optional): the size of each dimension of the master-field;
               if passed data is assumed to be obtained from observables measured at different
               sites and `icnfg` is re-interpreted as the index labeling the sites; if `icnfg`
@@ -127,7 +126,7 @@ class obs:
 
            >>> data = [1.0, 2.0, 3.0, 4.0, ... ]
            >>> a = pyobs.obs(desc='matrix')
-           >>> a.create('EnsembleA',data,dims=(2,2))
+           >>> a.create('EnsembleA',data,shape=(2,2))
        
         Examples:
            >>> data = [0.43, 0.42, 0.44, ... ]
@@ -145,9 +144,9 @@ class obs:
         check_type(ename,'ename',str)
         if ':' in ename:
             error_msg(f'Column symbol not allowed in ename {ename}')
-        check_type(dims,'dims',tuple)
-        self.dims = dims
-        self.size=numpy.prod(dims)
+        check_type(shape,'shape',tuple)
+        self.shape = shape
+        self.size=numpy.prod(shape)
         mask=range(self.size)
         if lat is None:
             if not ename in self.edata:
@@ -176,7 +175,7 @@ class obs:
                 check_type(icnfg,'icnfg',list,range)
                 check_type(icnfg[0],'icnfg[:]',int,numpy.int32,numpy.int64)
                 if len(icnfg)*self.size!=len(data):
-                    error_msg(f'Incompatible icnfg and data, for dims={dims}')
+                    error_msg(f'Incompatible icnfg and data, for shape={shape}')
             if numpy.size(self.mean)!=0:
                 N0 = sum([self.rdata[rd].n for rd in self.rdata])
                 mean0 = numpy.reshape(self.mean,(self.size,))
@@ -228,20 +227,20 @@ class obs:
             else:
                 for ir in range(len(data)):
                     if len(icnfg[ir])*self.size!=len(data[ir]):
-                        error_msg(f'Incompatible icnfg[{ir}] and data[{ir}], for dims={dims}')
+                        error_msg(f'Incompatible icnfg[{ir}] and data[{ir}], for shape={shape}')
             for ir in range(len(data)):
                 key=f'{ename}:{rname[ir]}'
                 if lat is None:
                     self.rdata[key] = rdata(mask,icnfg[ir],data[ir],self.mean)
                 else:
                     self.mfdata[key] = mfdata(mask,icnfg[ir],lat,data[ir],self.mean)
-        self.mean = numpy.reshape(self.mean, self.dims)
+        self.mean = numpy.reshape(self.mean, self.shape)
         memory.add(self)
         if is_verbose('obs.create'):
             print(f'obs.create executed in {time()-t0:g} secs')
 
         
-    def create_cd(self,cname,value,covariance):
+    def create_from_cov(self,cname,value,covariance):
         """
         Create observables based on covariance matrices
         
@@ -263,10 +262,10 @@ class obs:
         else:
             self.mean = numpy.array(value)
             cov = numpy.array(covariance)
-        self.dims = numpy.shape(self.mean)
-        if numpy.ndim(self.dims)!=1:
+        self.shape = numpy.shape(self.mean)
+        if numpy.ndim(self.shape)!=1:
             error_msg(f'Unexpected value, only 1-D arrays are supported')
-        self.size = numpy.prod(self.dims)
+        self.size = numpy.prod(self.shape)
         if cov.shape!=(self.size,) and cov.shape!=(self.size,self.size):
             error_msg(f'Unexpected shape for covariance {cov.shape}')
         check_type(cname,'cname',str)
@@ -285,7 +284,7 @@ class obs:
         Examples:
            >>> data = [0.198638, 0.403983, 1.215960, 1.607684, 0.199049, ... ]
            >>> vec = pyobs.obs(desc='vector')
-           >>> vec.create('A',data,dims=(4,))
+           >>> vec.create('A',data,shape=(4,))
            >>> print(vec)
            0.201(13)    0.399(26)    1.199(24)    1.603(47)
            >>> vec.add_syst_err('syst.err',[0.05,0.05,0,0])
@@ -296,8 +295,8 @@ class obs:
         check_type(name,'name',str)
         if name in self.cdata:
             error_msg(f'Label {name} already used')
-        if numpy.shape(err)!=self.dims:
-            error_msg(f'Unexpected error, dimensions do not match {self.dims}')
+        if numpy.shape(err)!=self.shape:
+            error_msg(f'Unexpected error, dimensions do not match {self.shape}')
         cov = numpy.reshape(numpy.array(err)**2, (self.size,))
         grad = numpy.diag(1.0*(numpy.array(err)!=0.0))
         self.cdata[name] = cdata(grad,cov)
@@ -323,7 +322,7 @@ class obs:
                     temporary additional memory required 0.015 MB
 
         """  
-        print(f'Observable with shape = {self.dims}')
+        print(f'Observable with shape = {self.shape}')
         print(f' - description: {self.description}')
         print(f' - size: {memory.get(self)}')
         print(f' - mean: {self.mean}')
@@ -348,14 +347,14 @@ class obs:
     
     def __str__(self):
         [v,e] = self.error()
-        D=len(self.dims)
+        D=len(self.shape)
         if D==1:
-            out = '\t'.join([valerr(v[i],e[i]) for i in range(self.dims[0])])
+            out = '\t'.join([valerr(v[i],e[i]) for i in range(self.shape[0])])
             out += '\n'
         elif D==2:
             out= ''
-            for i in range(self.dims[0]):
-                out += '\t'.join([valerr(v[i,j],e[i,j]) for j in range(self.dims[1])])
+            for i in range(self.shape[0]):
+                out += '\t'.join([valerr(v[i,j],e[i,j]) for j in range(self.shape[1])])
                 out += '\n'
         return out
     
@@ -366,15 +365,15 @@ class obs:
         if isinstance(args,(int,numpy.int32,numpy.int64,slice,numpy.ndarray)):
             args=[args]
         na=len(args)
-        if na!=len(self.dims):
+        if na!=len(self.shape):
             error_msg('Unexpected argument')
         new_size=1
         for i in range(na):
             if isinstance(args[i],(slice,numpy.ndarray)):
-                new_size *= numpy.size(numpy.arange(self.dims[i])[args[i]])
+                new_size *= numpy.size(numpy.arange(self.shape[i])[args[i]])
         grad=numpy.zeros((new_size,self.size))
         hess=numpy.zeros((new_size,self.size,self.size))
-        idx = numpy.reshape(range(self.size),self.dims)[tuple(args)]
+        idx = numpy.reshape(range(self.size),self.shape)[tuple(args)]
         a=0
         for b in idx.flatten():
             grad[a,b]=1.0
@@ -444,8 +443,8 @@ class obs:
         return derobs([self], new_mean, [g0])
     
     def error_core(self,errinfo,plot,pfile):
-        sigma_tot = numpy.zeros(self.dims)
-        dsigma_tot = numpy.zeros(self.dims)
+        sigma_tot = numpy.zeros(self.shape)
+        dsigma_tot = numpy.zeros(self.shape)
         sigma = {}
         for ed in self.edata:
             if ed in errinfo:
@@ -453,21 +452,21 @@ class obs:
                     res = uwerr(self,ed,plot,pfile,errinfo[ed].Stau,errinfo[ed].W)
             else:
                 res = uwerr(self,ed,plot,pfile)
-            sigma[ed] = numpy.reshape(res[0],self.dims)
+            sigma[ed] = numpy.reshape(res[0],self.shape)
             sigma_tot += sigma[ed]
-            dsigma_tot += numpy.reshape(res[1],self.dims)
+            dsigma_tot += numpy.reshape(res[1],self.shape)
             
         for mf in self.mfname:
             if mf in errinfo:
                 res = mferr(self,mf,plot,pfile,errinfo[mf].k,errinfo[mf].Stau,errinfo[mf].R)
             else:
                 res = mferr(self,mf,plot,pfile)
-            sigma[mf] = numpy.reshape(res[0],self.dims)
+            sigma[mf] = numpy.reshape(res[0],self.shape)
             sigma_tot += sigma[mf]
-            dsigma_tot += numpy.reshape(res[1],self.dims)
+            dsigma_tot += numpy.reshape(res[1],self.shape)
         
         for cd in self.cdata:
-            sigma[cd] = numpy.reshape(self.cdata[cd].sigmasq(),self.dims)
+            sigma[cd] = numpy.reshape(self.cdata[cd].sigmasq(),self.shape)
             sigma_tot += sigma[cd]
         return [sigma, sigma_tot, dsigma_tot]
     
@@ -560,11 +559,11 @@ class obs:
         tau = {}
         for ed in self.edata:
             res = uwerr(self,ed,False,None)
-            tau[ed] = [numpy.reshape(res[2][:,0],self.dims), numpy.reshape(res[2][:,1],self.dims)]
+            tau[ed] = [numpy.reshape(res[2][:,0],self.shape), numpy.reshape(res[2][:,1],self.shape)]
 
         for mf in self.mfname:
             res = mferr(self,mf,False,None)
-            tau[mf] = [numpy.reshape(res[2][:,0],self.dims), numpy.reshape(res[2][:,1],self.dims)]
+            tau[mf] = [numpy.reshape(res[2][:,0],self.shape), numpy.reshape(res[2][:,1],self.shape)]
         
         return tau
         

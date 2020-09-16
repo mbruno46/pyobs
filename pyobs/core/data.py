@@ -83,7 +83,7 @@ def conv_1D_offdiag(data1,data2,idx,N,wmax):
 def conv_ND(data,idx,lat,rrmax):
     D=len(lat)
     fft_ax=tuple(range(D))
-    dims=tuple(lat)
+    shape=tuple(lat)
     v=numpy.prod(lat)
     
     if type(idx) is range:
@@ -92,12 +92,12 @@ def conv_ND(data,idx,lat,rrmax):
         aux=numpy.zeros((v,),dtype=numpy.float64)
         for i in range(len(idx)):
             aux[idx[i]] = data[i]
-    aux=numpy.reshape(aux,dims)
+    aux=numpy.reshape(aux,shape)
     
     # in-place, even if it adds one element at the end
-    aux=numpy.fft.rfftn(aux,s=dims,axes=fft_ax)
+    aux=numpy.fft.rfftn(aux,s=shape,axes=fft_ax)
     aux*=aux.conj()
-    aux=numpy.fft.irfftn(aux,s=dims,axes=fft_ax)
+    aux=numpy.fft.irfftn(aux,s=shape,axes=fft_ax)
     
     aux=numpy.reshape(aux,(v,))
     return mftools.intrsq(aux,lat,rrmax)

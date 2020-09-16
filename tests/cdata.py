@@ -14,7 +14,7 @@ t0.create('EnsA',data,rname='r001')
 
 # below we assume pion mass known to 1%
 mpi = pyobs.obs()
-mpi.create_cd('pion mass',134.9,0.1**2)
+mpi.create_from_cov('pion mass',134.9,0.1**2)
 [m,dm] = mpi.error()
 assert abs(dm[0]-0.1)<1e-12
 
@@ -34,7 +34,7 @@ phi_copy = pyobs.obs(phi)
 print(f'phi_copy = {phi}')
 
 masses = pyobs.obs(desc='pion, kaon')
-masses.create_cd('pion/kaon',[134.9766,497.648],[0.0006**2,0.022**2])
+masses.create_from_cov('pion/kaon',[134.9766,497.648],[0.0006**2,0.022**2])
 print('masses = ',masses)
 
 phi.peek()

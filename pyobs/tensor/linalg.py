@@ -38,7 +38,7 @@ def inv(x):
     Examples:
        >>> from pyobs.linalg import inv
        >>> a = pyobs.obs()
-       >>> a.create('A',data,dims=(2,2))
+       >>> a.create('A',data,shape=(2,2))
        >>> ainv = pyobs.inv(a)
     
     Notes:
@@ -46,8 +46,8 @@ def inv(x):
        `x` is treated as a stack of matrices residing 
        in the last two indexes and broadcast accordingly.
     """
-    if (x.dims[-2]!=x.dims[-1]):
-        error_msg(f'Unexpected matrix for inverse with dims={x.dims}')
+    if (x.shape[-2]!=x.shape[-1]):
+        error_msg(f'Unexpected matrix for inverse with shape={x.shape}')
     mean=numpy.linalg.inv(x.mean)
     # V Vinv = 1,   dV Vinv + V dVinv = 0 ,  dVinv = - Vinv dV Vinv
     g=unary_grad(x.mean, lambda x: - mean @ x @ mean)
@@ -75,8 +75,8 @@ def eig(x):
        >>>     # check eigenvalue equation  
        >>>     print(mat @ v[:,i] - v[:,i] * w[i])
     """
-    if len(x.dims)>2:
-        error_msg(f'Unexpected matrix with dims {x.dims}; only 2-D arrays are supported')
+    if len(x.shape)>2:
+        error_msg(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
     if numpy.any(numpy.fabs(x.mean/x.mean.T-1.0)>1e-10):
         error_msg(f'Unexpected non-symmetric matrix: user eigLR')
     
@@ -88,9 +88,9 @@ def eig(x):
     # d v_n = sum_{m \neq n} (w_m, dA v_n) / (l_n - l_m) w_m
     def gradv(y):
         tmp = v.T @ y @ v
-        gv = numpy.zeros(x.dims)
-        for n in range(x.dims[0]):
-            for m in range(x.dims[1]):
+        gv = numpy.zeros(x.shape)
+        for n in range(x.shape[0]):
+            for m in range(x.shape[1]):
                 if n!=m:
                     gv[:,n] += tmp[m,n]/(w[n]-w[m])*v[:,m]
         return gv
@@ -123,8 +123,8 @@ def eigLR(x):
        >>>     print(mat @ v[:,i] - v[:,i] * l[i])
        >>>     print(w[:,i] @ mat - w[:,i] * l[i])
     """
-    if len(x.dims)>2:
-        error_msg(f'Unexpected matrix with dims {x.dims}; only 2-D arrays are supported')
+    if len(x.shape)>2:
+        error_msg(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
    
     # left and right eigenvectors
     [l,v] = numpy.linalg.eig(x.mean)
@@ -136,9 +136,9 @@ def eigLR(x):
     # d v_n = sum_{m \neq n} (w_m, dA v_n) / (l_n - l_m) w_m
     def gradv(y):
         tmp = w.T @ y @ v
-        gv = numpy.zeros(x.dims)
-        for n in range(x.dims[0]):
-            for m in range(x.dims[1]):
+        gv = numpy.zeros(x.shape)
+        for n in range(x.shape[0]):
+            for m in range(x.shape[1]):
                 if n!=m:
                     gv[:,n] += tmp[m,n]/(l[n]-l[m])*w[:,m]
         return gv
@@ -147,9 +147,9 @@ def eigLR(x):
     # d w_n = sum_{m \neq n} (v_m, dA^T w_n) / (l_n - l_m) v_m
     def gradw(y):
         tmp = v.T @ y.T @ w
-        gw = numpy.zeros(x.dims)
-        for n in range(x.dims[0]):
-            for m in range(x.dims[1]):
+        gw = numpy.zeros(x.shape)
+        for n in range(x.shape[0]):
+            for m in range(x.shape[1]):
                 if n!=m:
                     gw[:,n] += tmp[m,n]/(l[n]-l[m])*v[:,m]
         return gw

@@ -87,7 +87,7 @@
   <input type="hidden" name="check_keywords" value="yes" />
   <input type="hidden" name="area" value="default" />
 </form><div id="navbar-logo" style="margin:auto;text-align:center">
-	<img src="_images/pyobs-logo.png" alt="" width="200" />
+	<img src="/_images/pyobs-logo.png" alt="" width="200" />
 </div>
         </div>
       </div>
@@ -221,7 +221,8 @@ lambda : (matrix) function of the hessian of <cite>f</cite></p>
 <p class="rubric">Notes</p>
 <p>The symbolic manipulation is based on the library <cite>sympy</cite> and the user
 must follow the <cite>sympy</cite> syntax when passing the argument <cite>f</cite>. The analytic
-form of the gradient and hessian is automatically printed.</p>
+form of the gradient and hessian can be printed by activating the ‘diff’
+verbose flag.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">diff</span><span class="p">(</span><span class="s1">&#39;a+b*x&#39;</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="s1">&#39;a,b&#39;</span><span class="p">)</span> <span class="c1"># differentiate wrt to a and b</span>
 <span class="go">a + b*x</span>

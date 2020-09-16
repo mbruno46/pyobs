@@ -50,7 +50,8 @@ def diff(f,x,dx):
     Notes: 
        The symbolic manipulation is based on the library `sympy` and the user 
        must follow the `sympy` syntax when passing the argument `f`. The analytic
-       form of the gradient and hessian is automatically printed.
+       form of the gradient and hessian can be printed by activating the 'diff'
+       verbose flag.
        
     Examples:
        >>> res = diff('a+b*x','x','a,b') # differentiate wrt to a and b

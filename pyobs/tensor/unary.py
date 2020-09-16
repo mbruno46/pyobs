@@ -27,7 +27,7 @@ __all__ = ['sum', 'trace','log','exp','cosh','sinh','arccosh',
           'besselk']
 
 def unary_grad(x,g):
-    dims=x.shape
+    shape=x.shape
     size=numpy.size(x)
     s=numpy.size(g(x))
     
@@ -36,7 +36,7 @@ def unary_grad(x,g):
     var1=numpy.zeros(size)
     for i in range(size):
         var1[i]=1.0
-        tmp = g(numpy.reshape(var1,dims))
+        tmp = g(numpy.reshape(var1,shape))
         grad[:,i] = numpy.reshape(tmp,s)
         var1[i]=0.0
     return grad
@@ -196,7 +196,7 @@ def arccosh(x):
        >>> B = pyobs.arccosh(obsA)
     """
     new_mean = numpy.arccosh(x.mean) 
-    aux = numpy.reciprocal(numpy.sqrt(x.mean**2-numpy.ones(x.dims)))  # 1/sqrt(x^2-1)
+    aux = numpy.reciprocal(numpy.sqrt(x.mean**2-numpy.ones(x.shape)))  # 1/sqrt(x^2-1)
     g=unary_grad(x.mean,lambda x: x*aux)
     return derobs([x],new_mean,[g],desc=f'arccosh of {x.description}')
 

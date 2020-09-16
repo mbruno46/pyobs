@@ -33,7 +33,7 @@ from pyobs.core.memory import memory
 from pyobs.core.error import errinfo
 
 from pyobs.fit.mfit import mfit
-from pyobs.fit.symbolic import diff
+from pyobs.fit import symbolic
 
 from pyobs.version import __version__, __version_full__
 

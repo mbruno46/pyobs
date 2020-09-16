@@ -5,6 +5,7 @@ __pycache__/
 *.pyc
 *.ipynb*
 *.so
+!tutorials/*ipynb
 
 # ignores vim swap files
 *.swp
