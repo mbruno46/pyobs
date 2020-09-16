@@ -13,13 +13,6 @@ from (Monte Carlo) Markov chains.
 
 Copyright (C) 2020, Mattia Bruno
 
-If you use this library in your publications please consider citing:
-
-* U. Wolff, "Monte Carlo errors with less errors". Comput.Phys.Commun. 156 (2004) 143-153.
-* F. Virotta, "Critical slowing down and error analysis of lattice QCD simulations." PhD thesis.
-* S. Schaefer, R. Sommer, F. Virotta, "Critical slowing down and error analysis in lattice QCD simulations". Nucl.Phys.B 845 (2011) 93-119.
-* M. Bruno, R. Sommer, In preparation.
-
 ## Installation
 
 To install the library directly in the local python distribution,
@@ -51,3 +44,11 @@ can be accessed in [HTML][1] format or [PDF][2].
 
 [1]: https://mbruno46.github.io/pyobs
 [2]: ./doc/pyobs-doc.pdf
+
+If you use this library in your publications please consider citing:
+
+* U. Wolff, "Monte Carlo errors with less errors". Comput.Phys.Commun. 156 (2004) 143-153.
+* F. Virotta, "Critical slowing down and error analysis of lattice QCD simulations." PhD thesis.
+* S. Schaefer, R. Sommer, F. Virotta, "Critical slowing down and error analysis in lattice QCD simulations". Nucl.Phys.B 845 (2011) 93-119.
+* M. Bruno, R. Sommer, In preparation.
+
