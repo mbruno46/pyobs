@@ -2,6 +2,7 @@ import pyobs
 import numpy
 
 pyobs.set_verbose('mfit')
+pyobs.set_verbose('diff')
 
 [f, df, _] = pyobs.symbolic.diff('a*exp(-m*x)','x','a,m')
 
@@ -32,3 +33,9 @@ assert abs(a-v) < 2.*e
 
 [v, e] = pars[1].error()
 assert abs(m-v) < 2.*e
+
+# extrapolate value at zero
+[yobs] = fit.eval(0.0,pars)
+
+[v, e] = yobs.error()
+assert abs(a-v) < 2.*e

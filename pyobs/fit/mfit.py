@@ -130,6 +130,9 @@ class chisquare:
         elif numpy.ndim(x)==1:
             n = len(x)
             nx=1
+        elif numpy.ndim(x)==0:
+            n = 1
+            nx = 1
         else:
             error_msg(f'Unexpected x')
         x = numpy.reshape(x,(n,nx))

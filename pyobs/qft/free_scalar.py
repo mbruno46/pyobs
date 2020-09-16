@@ -21,9 +21,6 @@
 
 import numpy
 
-def aomega(m,p):
-    return numpy.arccosh(1. + 0.5*(m**2 + p**2))
-
 def Gt(t,m,p,L):
     phat = 2*numpy.sin(numpy.array(p)*numpy.pi/numpy.array(L))
     om = numpy.arccosh(1. + 0.5*(m**2 + numpy.sum(phat**2)))
