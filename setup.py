@@ -62,7 +62,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/mbruno46/pyobs.git",
-    packages=['pyobs', 'pyobs/core', 'pyobs/tensor','pyobs/fit','pyobs/qft'],
+    packages=['pyobs', 'pyobs/core', 'pyobs/tensor','pyobs/fit','pyobs/qft','pyobs/misc'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU GPLv2",
