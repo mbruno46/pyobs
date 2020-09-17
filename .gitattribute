@@ -1,0 +1,3 @@
+# ignores following files from language detection
+*.ipynb linguist-detectable=false
+*.html linguist-detectable=false
