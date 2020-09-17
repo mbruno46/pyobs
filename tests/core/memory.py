@@ -14,16 +14,16 @@ obsA.create('EnsA',data)
 
 obsA.peek()
 
-pyobs.memory()
+pyobs.memory.info()
 
 N=100000
 data = pyobs.random.acrand(val,err,tau,N)
 obsB = pyobs.obs()
 obsB.create('EnsB',data)
 
-pyobs.memory()
+pyobs.memory.info()
 obsB.peek()
 
 del obsB
 
-pyobs.memory()
+pyobs.memory.info()

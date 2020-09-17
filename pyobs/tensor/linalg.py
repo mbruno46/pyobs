@@ -20,10 +20,9 @@
 #################################################################################
 
 import numpy
-from pyobs.core.utils import error_msg
-from pyobs.core.derobs import derobs
-from pyobs.tensor.unary import unary_grad
-from pyobs.tensor.manipulate import diag, transpose
+import pyobs
+
+__all__ = ['inv','eig','eigLR','matrix_power']
 
 def inv(x):
     """
@@ -47,11 +46,11 @@ def inv(x):
        in the last two indexes and broadcast accordingly.
     """
     if (x.shape[-2]!=x.shape[-1]):
-        error_msg(f'Unexpected matrix for inverse with shape={x.shape}')
+        pyobs.PyobsError(f'Unexpected matrix for inverse with shape={x.shape}')
     mean=numpy.linalg.inv(x.mean)
     # V Vinv = 1,   dV Vinv + V dVinv = 0 ,  dVinv = - Vinv dV Vinv
-    g=unary_grad(x.mean, lambda x: - mean @ x @ mean)
-    return derobs([x],mean,[g])
+    g=x.gradient( lambda x: - mean @ x @ mean)
+    return pyobs.derobs([x],mean,[g])
 
 def eig(x):
     """
@@ -76,14 +75,14 @@ def eig(x):
        >>>     print(mat @ v[:,i] - v[:,i] * w[i])
     """
     if len(x.shape)>2:
-        error_msg(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
+        pyobs.PyobsError(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
     if numpy.any(numpy.fabs(x.mean/x.mean.T-1.0)>1e-10):
-        error_msg(f'Unexpected non-symmetric matrix: user eigLR')
+        pyobs.PyobsError(f'Unexpected non-symmetric matrix: user eigLR')
     
     [w,v] = numpy.linalg.eig(x.mean)
     
     # d l_n = (v_n, dA v_n)
-    gw=unary_grad(x.mean, lambda x: numpy.diag(v.T @ x @ v))
+    gw=x.gradient( lambda x: numpy.diag(v.T @ x @ v))
 
     # d v_n = sum_{m \neq n} (w_m, dA v_n) / (l_n - l_m) w_m
     def gradv(y):
@@ -95,8 +94,8 @@ def eig(x):
                     gv[:,n] += tmp[m,n]/(w[n]-w[m])*v[:,m]
         return gv
 
-    gv=unary_grad(x.mean, gradv)
-    return [derobs([x],w,[gw]), derobs([x],v,[gv])]
+    gv=x.gradient( gradv)
+    return [pyobs.derobs([x],w,[gw]), pyobs.derobs([x],v,[gv])]
 
 def eigLR(x):
     """
@@ -124,14 +123,14 @@ def eigLR(x):
        >>>     print(w[:,i] @ mat - w[:,i] * l[i])
     """
     if len(x.shape)>2:
-        error_msg(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
+        pyobs.PyobsError(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
    
     # left and right eigenvectors
     [l,v] = numpy.linalg.eig(x.mean)
     [l,w] = numpy.linalg.eig(x.mean.T)
     
     # d l_n = (w_n, dA v_n) / (w_n, v_n)
-    gl=unary_grad(x.mean, lambda x: numpy.diag(w.T @ x @ v)/numpy.diag(w.T @ v))
+    gl=x.gradient( lambda x: numpy.diag(w.T @ x @ v)/numpy.diag(w.T @ v))
 
     # d v_n = sum_{m \neq n} (w_m, dA v_n) / (l_n - l_m) w_m
     def gradv(y):
@@ -142,7 +141,7 @@ def eigLR(x):
                 if n!=m:
                     gv[:,n] += tmp[m,n]/(l[n]-l[m])*w[:,m]
         return gv
-    gv=unary_grad(x.mean, gradv)
+    gv=x.gradient( gradv)
     
     # d w_n = sum_{m \neq n} (v_m, dA^T w_n) / (l_n - l_m) v_m
     def gradw(y):
@@ -154,8 +153,8 @@ def eigLR(x):
                     gw[:,n] += tmp[m,n]/(l[n]-l[m])*v[:,m]
         return gw
     
-    gw=unary_grad(x.mean, gradw)
-    return [derobs([x],l,[gl]), derobs([x],v,[gv]), derobs([x],w,[gw])]
+    gw=x.gradient( gradw)
+    return [pyobs.derobs([x],l,[gl]), pyobs.derobs([x],v,[gv]), pyobs.derobs([x],w,[gw])]
 
 def matrix_power(x,a):
     """
@@ -178,5 +177,5 @@ def matrix_power(x,a):
        >>> matsqrt @ mat @ matsqrt # return the identity
     """
     [w,v] = eig(x)
-    return v @ diag(w**a) @ transpose(v)
+    return v @ pyobs.diag(w**a) @ pyobs.transpose(v)
     

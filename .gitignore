@@ -13,7 +13,11 @@ __pycache__/
 # ignores files from doc
 doctrees/
 sphinx-build
+html/
 
 # ignores output from local coverage
 .coverage
 tests/htmlcov
+
+# ignores build dir
+build

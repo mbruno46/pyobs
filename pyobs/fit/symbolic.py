@@ -23,7 +23,7 @@ import sympy
 from sympy.parsing.sympy_parser import parse_expr
 sympy.init_printing()
 
-from pyobs.core.utils import check_type, is_verbose
+import pyobs
 
 try:
     from IPython.display import display
@@ -64,9 +64,9 @@ def diff(f,x,dx):
        [1, 0.4]
        [[0, 0], [0, 0]]
     """
-    check_type(f,'f',str)
-    check_type(x,'x',str)
-    check_type(dx,'dx',str)
+    pyobs.check_type(f,'f',str)
+    pyobs.check_type(x,'x',str)
+    pyobs.check_type(dx,'dx',str)
     
     sym = {}
     for y in dx.rsplit(','):
@@ -84,7 +84,7 @@ def diff(f,x,dx):
             tmp.append(sympy.diff(dexpr[-1], sym[z]))
         ddexpr.append(tmp)
     
-    if is_verbose('diff') or is_verbose('symbolic.diff'):
+    if pyobs.is_verbose('diff') or pyobs.is_verbose('symbolic.diff'):
         display(expr)
         display(dexpr)
         display(ddexpr)

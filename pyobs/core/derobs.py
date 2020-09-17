@@ -21,22 +21,33 @@
 
 import numpy
 from time import time
-import pyobs.ndobs
-from pyobs.core.utils import check_type, union_dicts, union_lists, is_verbose
-from pyobs.core.data import rdata, mfdata, merge_idx
-from pyobs.core.cdata import cdata
-from pyobs.core.memory import add
+import pyobs
 
+from .data import rdata, mfdata
+from .cdata import cdata
+
+
+def merge_idx(idx1,idx2):
+    if (type(idx1) is range) and (type(idx2) is range):
+        id0=min([idx1.start,idx2.start])
+        id1=max([idx1.stop, idx2.stop])
+        id2=min([idx1.step, idx2.step])
+        return range(id0,id1,id2)
+    else:
+        u=set(idx1)
+        return list(sorted(u.union(idx2)))
+
+    
 def derobs(inps,mean,grads,desc=None):
     t0=time()
-    check_type(inps,'inps',list)
-    check_type(mean,'mean',numpy.ndarray,int,float,numpy.float32,numpy.float64)
-    check_type(grads,'grads',list)
+    pyobs.check_type(inps,'inps',list)
+    pyobs.check_type(mean,'mean',numpy.ndarray,int,float,numpy.float32,numpy.float64)
+    pyobs.check_type(grads,'grads',list)
     if len(inps)!=len(grads):
         error_msg('Incompatible inps and grads')
     if desc is None:
         desc=', '.join(set([i.description for i in inps]))
-    res = pyobs.ndobs.obs(desc=desc)
+    res = pyobs.obs(desc=desc)
     if isinstance(mean,(int,float,numpy.float32,numpy.float64)):
         res.mean = numpy.reshape(mean,(1,))
     else:
@@ -110,14 +121,14 @@ def derobs(inps,mean,grads,desc=None):
                     res.cdata[key] = cdata(numpy.zeros((res.size,d)),inps[i].cdata[key].cov)
                 res.cdata[key].axpy(grads[i], inps[i].cdata[key])
 
-    add(res)
-    if is_verbose('derobs'):
+    pyobs.memory.add(res)
+    if pyobs.is_verbose('derobs'):
         print(f'derobs executed in {time()-t0:g} secs')
     return res
 
 
 def num_grad(x,f,eps=2e-4):
-    if isinstance(x,pyobs.ndobs.obs):
+    if isinstance(x,pyobs.obs):
         x0 = x.mean
     else:
         x0 = numpy.array(x)
@@ -160,7 +171,7 @@ def num_hess(x0,f,eps=2e-4):
     return ddf
 
 def errbias4(x,f):
-    check_type(x,'x',pyobs.ndobs.obs)
+    pyobs.check_type(x,'x',pyobs.obs)
     [x0,dx0] = x.error()
     bias4 = numpy.zeros((x.size,))
     hess = num_hess(x0, f)

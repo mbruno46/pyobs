@@ -1,1 +1,1 @@
-import pyobs.qft.free_scalar
+from . import free_scalar

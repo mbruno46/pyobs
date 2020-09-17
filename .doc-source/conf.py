@@ -57,7 +57,9 @@ master_doc = 'index'
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # remove module names, such package.module.module
-add_module_names = False
+# add_module_names = False
+
+autosummary_generate = True
 
 # -- Options for HTML output -------------------------------------------------
 

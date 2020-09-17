@@ -24,10 +24,9 @@ import sympy
 import copy
 from time import time
 
+import pyobs
 #from scipy.optimize import minimize
 from .minimize import lm
-from pyobs.core.utils import check_type, union_lists, is_verbose, error_msg
-from pyobs import obs, derobs
 
 
 class chisquare:
@@ -39,15 +38,15 @@ class chisquare:
             self.n = len(x)
             self.nx=1
         else:
-            error_msg(f'Unexpected x')
+            pyobs.PyobsError(f'Unexpected x')
         if len(self.v)!=self.nx:
-            error_msg(f'Unexpected x')
+            pyobs.PyobsError(f'Unexpected x')
         self.x = numpy.reshape(x,(self.n,self.nx))
         self.W = numpy.array(W)
         self.f = f
         self.df = df
         if f.__code__.co_varnames != df.__code__.co_varnames:
-            error_msg(f'Unexpected f and df: varnames do not match')
+            pyobs.PyobsError(f'Unexpected f and df: varnames do not match')
         self.pars = []
         for vn in f.__code__.co_varnames:
             if not vn in self.v:
@@ -65,9 +64,9 @@ class chisquare:
         
     def __call__(self,y):
         if len(y)!=self.n:
-            error_msg(f'Unexpected length of observable {len(y)} w.r.t. x-axis {self.n}')
+            pyobs.PyobsError(f'Unexpected length of observable {len(y)} w.r.t. x-axis {self.n}')
         if numpy.shape(self.W)[0]!=self.n:
-            error_msg(f'Unexpected size of W matrix {numpy.shape(self.W)} w.r.t. x-axis {self.n}')
+            pyobs.PyobsError(f'Unexpected size of W matrix {numpy.shape(self.W)} w.r.t. x-axis {self.n}')
         for i in range(self.n):
             self.e[i] = self.f(*self.x[i,:], *self.p) - y[i]
         return self.e @ self.W @ self.e
@@ -134,7 +133,7 @@ class chisquare:
             n = 1
             nx = 1
         else:
-            error_msg(f'Unexpected x')
+            pyobs.PyobsError(f'Unexpected x')
         x = numpy.reshape(x,(n,nx))
         res = numpy.zeros((n,len(pdict)))
         
@@ -207,9 +206,9 @@ class mfit:
         elif numpy.ndim(W)==2:
             [r,c]=numpy.shape(W)
             if r!=c:
-                error_msg(f'Rectangular W matrix, must be square')
+                pyobs.PyobsError(f'Rectangular W matrix, must be square')
         else:
-            error_msg(f'Unexpected size of W matrix')
+            pyobs.PyobsError(f'Unexpected size of W matrix')
         tmp = v.rsplit(',')
         self.csq = {0: chisquare(x,W,f,df,tmp)}
         self.pdict = {}
@@ -250,12 +249,12 @@ class mfit:
             
     def __call__(self, yobs, p0=None, min_search=None):
         if len(self.csq)>1:
-            check_type(yobs,'yobs',list)
+            pyobs.check_type(yobs,'yobs',list)
         else:
-            if isinstance(yobs, obs):
+            if isinstance(yobs, pyobs.obs):
                 yobs=[yobs]                
         if len(yobs)!=len(self.csq):
-            error_msg(f'Unexpected number of observables for {len(self.csq)} fits')
+            pyobs.PyobsError(f'Unexpected number of observables for {len(self.csq)} fits')
         if p0 is None:
             p0=[1.0]*len(self.pdict)
         if min_search is None:
@@ -285,12 +284,12 @@ class mfit:
             tmp=self.csq[i].gvec(self.pdict, res.x)
             g.append(Hinv @ tmp)
             
-        if is_verbose('mfit.run') or is_verbose('mfit'):
+        if pyobs.is_verbose('mfit.run') or pyobs.is_verbose('mfit'):
             print(f'chisquare = {res.fun}')
             print(f'minimizer iterations = {res.nit}')
             print(f'minimizer status: {res.message}')
             print(f'mfit.run executed in {time()-t0:g} secs')
-        return derobs(yobs, res.x, g)
+        return pyobs.derobs(yobs, res.x, g)
 
 
     def eval(self,xax,pars):
@@ -319,12 +318,12 @@ class mfit:
         
         if not type(xax) is list:
             xax = [xax]
-        check_type(pars,'pars',obs)
+        pyobs.check_type(pars,'pars',pyobs.obs)
         N = len(xax)
         if N!=len(self.csq):
-            raise error_msg(f'Coordinates and Paramters do not match number of internal functions')
+            raise pyobs.PyobsError(f'Coordinates and Paramters do not match number of internal functions')
         out = []
         for ic in self.csq:
             [m, g] = self.csq[ic].eval(xax[ic], self.pdict, pars.mean)
-            out.append( derobs([pars], m, [g]) )
+            out.append( pyobs.derobs([pars], m, [g]) )
         return out

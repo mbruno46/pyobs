@@ -1,11 +1,11 @@
 The mfit class
 --------------
 
-.. automodule:: pyobs.fit.mfit
+.. automodule:: pyobs
     :members: mfit
 
 Additional functionalities
 ==========================
 
-.. automodule:: pyobs.fit.symbolic
+.. automodule:: pyobs.symbolic
     :members: diff

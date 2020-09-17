@@ -21,6 +21,8 @@
 
 import numpy
 
+__all__ = ['acrand','acrandn']
+
 def acrand(mu,sigma,tau,N):
     """
     Create synthetic autocorrelated Monte Carlo data

@@ -26,13 +26,13 @@ import os, pwd, re
 from time import time
 import datetime
 
-from pyobs.core.utils import *
-from pyobs.core.data import rdata, mfdata
-from pyobs.core.cdata import cdata
-from pyobs.core.derobs import derobs
-from pyobs.core.error import uwerr, mferr, plot_piechart
-from pyobs.core import memory
-from pyobs.tensor.unary import unary_grad
+import pyobs
+
+from .data import rdata, mfdata
+from .cdata import cdata
+from .error import uwerr, mferr, plot_piechart
+
+__all__ = ['obs']
 
 class obs:
     """
@@ -49,7 +49,7 @@ class obs:
     
     def __init__(self,orig=None,desc='unknown'):
         if orig is None:
-            check_type(desc,'text',str)
+            pyobs.check_type(desc,'text',str)
             self.description = desc
             self.www = [pwd.getpwuid(os.getuid())[0], os.uname()[1], datetime.datetime.now().strftime('%c')]
             self.shape = []
@@ -81,9 +81,9 @@ class obs:
                 self.cdata = {}
                 for key in orig.cdata:
                     self.cdata[key] = cdata(orig.cdata[key].grad,orig.cdata[key].cov)
-                memory.add(self)
+                pyobs.memory.add(self)
             else:
-                error_msg('Unexpected orig argument')
+                pyobs.PyobsError('Unexpected orig argument')
     
     def create(self,ename,data,icnfg=None,rname=None,shape=(1,),lat=None):
         """
@@ -141,10 +141,10 @@ class obs:
            >>> a.create('EnsembleA',data,lat=lat,icnfg=idx)           
         """
         t0=time()
-        check_type(ename,'ename',str)
+        pyobs.check_type(ename,'ename',str)
         if ':' in ename:
-            error_msg(f'Column symbol not allowed in ename {ename}')
-        check_type(shape,'shape',tuple)
+            pyobs.PyobsError(f'Column symbol not allowed in ename {ename}')
+        pyobs.check_type(shape,'shape',tuple)
         self.shape = shape
         self.size=numpy.prod(shape)
         mask=range(self.size)
@@ -160,22 +160,22 @@ class obs:
         elif isinstance(data[0],(int,float,numpy.float64,numpy.float32)):
             R=1
         else:
-            error_msg(f'Unexpected data type')
+            pyobs.PyobsError(f'Unexpected data type')
             
         if R==1:
-            check_type(data,f'data',list,numpy.ndarray)
+            pyobs.check_type(data,f'data',list,numpy.ndarray)
             nc=int(len(data)/self.size)
             if rname is None:
                 rname=0
             else:
-                check_not_type(rname,'rname',list)
+                pyobs.check_not_type(rname,'rname',list)
             if icnfg is None:
                 icnfg=range(nc)
             else:
-                check_type(icnfg,'icnfg',list,range)
-                check_type(icnfg[0],'icnfg[:]',int,numpy.int32,numpy.int64)
+                pyobs.check_type(icnfg,'icnfg',list,range)
+                pyobs.check_type(icnfg[0],'icnfg[:]',int,numpy.int32,numpy.int64)
                 if len(icnfg)*self.size!=len(data):
-                    error_msg(f'Incompatible icnfg and data, for shape={shape}')
+                    pyobs.PyobsError(f'Incompatible icnfg and data, for shape={shape}')
             if numpy.size(self.mean)!=0:
                 N0 = sum([self.rdata[rd].n for rd in self.rdata])
                 mean0 = numpy.reshape(self.mean,(self.size,))
@@ -200,7 +200,7 @@ class obs:
                 self.mfdata[key] = mfdata(mask,icnfg,lat,data,self.mean)
         else:
             for ir in range(R):
-                check_type(data[ir],f'data[{ir}]',list,numpy.ndarray)
+                pyobs.check_type(data[ir],f'data[{ir}]',list,numpy.ndarray)
             self.mean=numpy.zeros((self.size,))
             nt=0
             for dd in data:
@@ -211,14 +211,14 @@ class obs:
             if rname is None:
                 rname = range(R)
             else:
-                check_type(rname,'rname',list)
+                pyobs.check_type(rname,'rname',list)
                 if len(rname)!=R:
-                    error_msg('Incompatible rname and data')
+                    pyobs.PyobsError('Incompatible rname and data')
             if not icnfg is None:
-                check_type(icnfg,'icnfg',list)
+                pyobs.check_type(icnfg,'icnfg',list)
             
             if numpy.size(self.mean)!=0:
-                Py3obsErr('Only a single replica can be added to existing observables')
+                pyobs.PyobsError('Only a single replica can be added to existing observables')
             if icnfg is None:
                 icnfg = []
                 for ir in range(len(data)):
@@ -227,7 +227,7 @@ class obs:
             else:
                 for ir in range(len(data)):
                     if len(icnfg[ir])*self.size!=len(data[ir]):
-                        error_msg(f'Incompatible icnfg[{ir}] and data[{ir}], for shape={shape}')
+                        pyobs.PyobsError(f'Incompatible icnfg[{ir}] and data[{ir}], for shape={shape}')
             for ir in range(len(data)):
                 key=f'{ename}:{rname[ir]}'
                 if lat is None:
@@ -235,8 +235,8 @@ class obs:
                 else:
                     self.mfdata[key] = mfdata(mask,icnfg[ir],lat,data[ir],self.mean)
         self.mean = numpy.reshape(self.mean, self.shape)
-        memory.add(self)
-        if is_verbose('obs.create'):
+        pyobs.memory.add(self)
+        if pyobs.is_verbose('obs.create'):
             print(f'obs.create executed in {time()-t0:g} secs')
 
         
@@ -264,13 +264,13 @@ class obs:
             cov = numpy.array(covariance)
         self.shape = numpy.shape(self.mean)
         if numpy.ndim(self.shape)!=1:
-            error_msg(f'Unexpected value, only 1-D arrays are supported')
+            pyobs.PyobsError(f'Unexpected value, only 1-D arrays are supported')
         self.size = numpy.prod(self.shape)
         if cov.shape!=(self.size,) and cov.shape!=(self.size,self.size):
-            error_msg(f'Unexpected shape for covariance {cov.shape}')
-        check_type(cname,'cname',str)
+            pyobs.PyobsError(f'Unexpected shape for covariance {cov.shape}')
+        pyobs.check_type(cname,'cname',str)
         self.cdata[cname] = cdata(numpy.eye(self.size),cov)
-        memory.add(self)
+        pyobs.memory.add(self)
         
     def add_syst_err(self,name,err):
         """
@@ -292,18 +292,18 @@ class obs:
            0.201(52)    0.399(56)    1.199(24)    1.603(47)
            
         """
-        check_type(name,'name',str)
+        pyobs.check_type(name,'name',str)
         if name in self.cdata:
-            error_msg(f'Label {name} already used')
+            pyobs.PyobsError(f'Label {name} already used')
         if numpy.shape(err)!=self.shape:
-            error_msg(f'Unexpected error, dimensions do not match {self.shape}')
+            pyobs.PyobsError(f'Unexpected error, dimensions do not match {self.shape}')
         cov = numpy.reshape(numpy.array(err)**2, (self.size,))
         grad = numpy.diag(1.0*(numpy.array(err)!=0.0))
         self.cdata[name] = cdata(grad,cov)
         
         
     def __del__(self):
-        memory.rm(self)
+        pyobs.memory.rm(self)
         
     def peek(self):
         """
@@ -324,7 +324,7 @@ class obs:
         """  
         print(f'Observable with shape = {self.shape}')
         print(f' - description: {self.description}')
-        print(f' - size: {memory.get(self)}')
+        print(f' - size: {pyobs.memory.get(self)}')
         print(f' - mean: {self.mean}')
         
         def core(n0,n1):
@@ -349,12 +349,12 @@ class obs:
         [v,e] = self.error()
         D=len(self.shape)
         if D==1:
-            out = '\t'.join([valerr(v[i],e[i]) for i in range(self.shape[0])])
+            out = '\t'.join([pyobs.valerr(v[i],e[i]) for i in range(self.shape[0])])
             out += '\n'
         elif D==2:
             out= ''
             for i in range(self.shape[0]):
-                out += '\t'.join([valerr(v[i,j],e[i,j]) for j in range(self.shape[1])])
+                out += '\t'.join([pyobs.valerr(v[i,j],e[i,j]) for j in range(self.shape[1])])
                 out += '\n'
         return out
     
@@ -366,7 +366,7 @@ class obs:
             args=[args]
         na=len(args)
         if na!=len(self.shape):
-            error_msg('Unexpected argument')
+            pyobs.PyobsError('Unexpected argument')
         new_size=1
         for i in range(na):
             if isinstance(args[i],(slice,numpy.ndarray)):
@@ -378,15 +378,15 @@ class obs:
         for b in idx.flatten():
             grad[a,b]=1.0
             a+=1
-        return derobs([self],self.mean[tuple(args)],[grad])
+        return pyobs.derobs([self],self.mean[tuple(args)],[grad])
     
     def __addsub__(self,y,sign):
         g0=numpy.eye(self.size)
         if isinstance(y,obs):
             g1=sign*numpy.eye(y.size)
-            return derobs([self,y],self.mean+sign*y.mean,[g0,g1])
+            return pyobs.derobs([self,y],self.mean+sign*y.mean,[g0,g1])
         else:
-            return derobs([self],self.mean+sign*y,[g0])
+            return pyobs.derobs([self],self.mean+sign*y,[g0])
     
     def __add__(self,y):
         return self.__addsub__(y,+1)
@@ -395,30 +395,30 @@ class obs:
         return self.__addsub__(y,-1)
     
     def __neg__(self):
-        return derobs([self],-self.mean,[-numpy.eye(self.size)])
+        return pyobs.derobs([self],-self.mean,[-numpy.eye(self.size)])
     
     def __mul__(self,y):
         if isinstance(y,obs):
-            g0=unary_grad(self.mean,lambda x:x*y.mean)
-            g1=unary_grad(y.mean,lambda x:self.mean*x)
-            return derobs([self,y],self.mean*y.mean,[g0,g1])
+            g0=self.gradient(lambda x:x*y.mean)
+            g1=self.gradient(lambda x:self.mean*x)
+            return pyobs.derobs([self,y],self.mean*y.mean,[g0,g1])
         else:
-            g0=unary_grad(self.mean,lambda x:x*y)
-            return derobs([self],self.mean*y,[g0])
+            g0=self.gradient(lambda x:x*y)
+            return pyobs.derobs([self],self.mean*y,[g0])
     
     def __matmul__(self,y):
         if isinstance(y,obs):
-            g0=unary_grad(self.mean,lambda x: x @ y.mean)
-            g1=unary_grad(y.mean,lambda x:self.mean @ x)
-            return derobs([self,y],self.mean @ y.mean,[g0,g1])
+            g0=self.gradient(lambda x: x @ y.mean)
+            g1=self.gradient(lambda x:self.mean @ x)
+            return pyobs.derobs([self,y],self.mean @ y.mean,[g0,g1])
         else:
-            g0=unary_grad(self.mean,lambda x: x @ y)
-            return derobs([self],self.mean @ y,[g0])
+            g0=self.gradient(lambda x: x @ y)
+            return pyobs.derobs([self],self.mean @ y,[g0])
 
     def reciprocal(self):
         new_mean = numpy.reciprocal(self.mean)
-        g0=unary_grad(self.mean, lambda x:-x*(new_mean**2))
-        return derobs([self], new_mean,[g0])
+        g0=self.gradient( lambda x:-x*(new_mean**2))
+        return pyobs.derobs([self], new_mean,[g0])
     
     def __truediv__(self,y):
         if isinstance(y,obs):
@@ -439,8 +439,8 @@ class obs:
     
     def __pow__(self,a):
         new_mean = self.mean**a
-        g0=unary_grad(self.mean, lambda x: a * x*self.mean**(a-1))
-        return derobs([self], new_mean, [g0])
+        g0=self.gradient( lambda x: a * x*self.mean**(a-1))
+        return pyobs.derobs([self], new_mean, [g0])
     
     def error_core(self,errinfo,plot,pfile):
         sigma_tot = numpy.zeros(self.shape)
@@ -530,7 +530,7 @@ class obs:
             if sum(h)>1:
                 plot_piechart(self.description, sigma, sigma_tot)
             
-        if is_verbose('obs.error'):
+        if pyobs.is_verbose('obs.error'):
             print(f'error executed in {time()-t0:g} secs')
         return [self.mean, numpy.sqrt(sigma_tot)]
 
@@ -567,4 +567,13 @@ class obs:
         
         return tau
         
-
+    def gradient(self,g):
+        s=numpy.size(g(self.mean))
+        grad = numpy.zeros((s,self.size))
+        dx = numpy.zeros(self.size)
+        for i in range(self.size):
+            dx[i] = 1.0
+            grad[:,i] = numpy.reshape(g(numpy.reshape(dx,self.shape)),s)
+            dx[i] = 0.0
+        return grad
+    

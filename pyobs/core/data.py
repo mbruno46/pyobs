@@ -20,30 +20,10 @@
 #################################################################################
 
 import numpy
-from time import time
-from .utils import error_msg, sort_data, is_verbose
-import pyobs.core.mftools as mftools
+import pyobs
 
-#def intersect_idx(*idx):
-#    # if all idx are ranges optimize
-#    flag=0
-#    for arg in idx:
-#        if not type(arg) is range:
-#            flag+=1
-#    if flag==0:
-#        idx0=max([arg.start for arg in idx])
-#        idx1=min([arg.stop for arg in idx])
-#        idx2=min([arg.step for arg in idx])
-#        if idx1>idx0:
-#            return range(idx0,idx1,idx2)
-#        else:
-#            return []
-#    else:
-#        out=set()
-#        for arg in idx:
-#            out=out.intersect(set(arg))
-#        return list(out)
-        
+__all__ = ['rdata','mfdata']
+
 def conv_1D(data,idx,N,wmax):
     if type(idx) is range:
         aux=numpy.array(data,dtype=numpy.float64)
@@ -100,7 +80,7 @@ def conv_ND(data,idx,lat,rrmax):
     aux=numpy.fft.irfftn(aux,s=shape,axes=fft_ax)
     
     aux=numpy.reshape(aux,(v,))
-    return mftools.intrsq(aux,lat,rrmax)
+    return pyobs.core.mftools.intrsq(aux,lat,rrmax)
 
 class delta:
     def __init__(self,mask,idx,data=None,mean=None):
@@ -112,7 +92,7 @@ class delta:
         if (type(idx) is list):
             dc = numpy.unique(numpy.diff(idx))
             if numpy.any(dc<0):
-                error_msg(f'Unsorted idx')
+                pyobs.PyobsError(f'Unsorted idx')
             if len(dc)==1:
                 self.idx = range(idx[0],idx[-1]+dc[0],dc[0])
             else:
@@ -120,11 +100,10 @@ class delta:
         elif (type(idx) is range):
             self.idx = idx
         else:
-            error_msg(f'Unexpected idx')
+            pyobs.PyobsError(f'Unexpected idx')
         self.n = len(self.idx)
 
         self.delta = numpy.zeros((self.size,self.n),dtype=numpy.float64)
-        #self.delta2 = numpy.zeros((self.size,self.n),dtype=numpy.float32)
         
         if not mean is None:
             data=numpy.reshape(data,(self.n,self.size))
@@ -156,7 +135,6 @@ class delta:
             return self.it
         
     def axpy(self,grad,d,hess=None):
-        dt0=dt1=0.0
         N=d.delta.shape[1]
         
         # prepare index list
@@ -171,7 +149,6 @@ class delta:
         for a in self.mask:
             ia=self.get_mask(a)
             
-            t0=time()
             gvec = []
             ib=[]
             for b in d.mask:
@@ -183,10 +160,7 @@ class delta:
                 gvec=numpy.array(gvec,dtype=numpy.float64)
                 self.delta[ia,jlist]  += gvec @ d.delta[ib,:]
             
-            dt0=time()-t0
 
-        if is_verbose('data.axpy'):
-            print(f'data.axpy executed in {dt0:g} secs')
 
             
 class mfdata(delta):
@@ -212,7 +186,7 @@ class mfdata(delta):
             m = [v]*rrmax
         else:
             m = conv_ND(numpy.ones(self.n),self.idx,self.lat,rrmax)
-            Sr = mftools.intrsq(numpy.ones(v),self.lat,rrmax)
+            Sr = pyobs.core.mftools.intrsq(numpy.ones(v),self.lat,rrmax)
             Sr = Sr + 1*(Sr==0.0)
             m /= Sr
         for a in range(self.size):
@@ -241,14 +215,3 @@ class rdata(delta):
         for a in range(self.size):
             g[a,:] = conv_1D(self.delta[a,:],self.idx,self.ncnfg(),wmax)
         return [m, g]
-    
-    
-def merge_idx(idx1,idx2):
-    if (type(idx1) is range) and (type(idx2) is range):
-        id0=min([idx1.start,idx2.start])
-        id1=max([idx1.stop, idx2.stop])
-        id2=min([idx1.step, idx2.step])
-        return range(id0,id1,id2)
-    else:
-        u=set(idx1)
-        return list(sorted(u.union(idx2)))

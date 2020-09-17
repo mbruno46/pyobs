@@ -51,7 +51,7 @@ def get(obj):
     else:
         return f'{size/1024.:.0f} KB'
     
-def memory():
+def info():
     size=0
     for k in book.keys():
         size += book[k]

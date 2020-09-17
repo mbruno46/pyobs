@@ -21,26 +21,10 @@
 
 import numpy
 import scipy
-from pyobs.core.derobs import derobs
+import pyobs
 
-__all__ = ['sum', 'trace','log','exp','cosh','sinh','arccosh',
-          'besselk']
-
-def unary_grad(x,g):
-    shape=x.shape
-    size=numpy.size(x)
-    s=numpy.size(g(x))
-    
-    grad=numpy.zeros((s,size))
-    hess=numpy.zeros((s,size,size))
-    var1=numpy.zeros(size)
-    for i in range(size):
-        var1[i]=1.0
-        tmp = g(numpy.reshape(var1,shape))
-        grad[:,i] = numpy.reshape(tmp,s)
-        var1[i]=0.0
-    return grad
-
+__all__ = ['sum','trace','log','exp',
+           'cosh','sinh','arccosh','besselk']
 
 def sum(x,axis=None):
     """
@@ -66,8 +50,8 @@ def sum(x,axis=None):
     else:
         f=lambda a: numpy.sum(a,axis=axis)
         t=f'sum over axis {axis} of {x.description}'
-    g=unary_grad(x.mean, f)
-    return derobs([x],f(x.mean),[g],desc=t)
+    g=x.gradient(f)
+    return pyobs.derobs([x],f(x.mean),[g],desc=t)
 
 def trace(x, offset=0, axis1=0, axis2=1):
     """
@@ -95,16 +79,16 @@ def trace(x, offset=0, axis1=0, axis2=1):
        >>> tr = pyobs.trace(mat)
     """
     new_mean=numpy.trace(x.mean,offset,axis1,axis2)
-    g=unary_grad(x.mean,lambda x:numpy.trace(x,offset,axis1,axis2))
-    return derobs([x],new_mean,[g],desc=f'trace for axes ({axis1,axis2}) of {x.description}')
+    g=x.gradient(lambda x:numpy.trace(x,offset,axis1,axis2))
+    return pyobs.derobs([x],new_mean,[g],desc=f'trace for axes ({axis1,axis2}) of {x.description}')
     
 #def sin(x):
-#    g=unary_grad(x.mean,lambda x:x*numpy.cos(x.mean))
-#    return derobs([self],numpy.sin(self.mean),[g])
+#    g=x.gradient(lambda x:x*numpy.cos(x.mean))
+#    return pyobs.derobs([self],numpy.sin(self.mean),[g])
 #
 #def cos(x):
 #    g=unary(x.mean,lambda x:-x*numpy.sin(x.mean))
-#    return derobs([self],numpy.cos(self.mean),[g])
+#    return pyobs.derobs([self],numpy.cos(self.mean),[g])
 #
 
 
@@ -123,8 +107,8 @@ def log(x):
     """
     new_mean = numpy.log(x.mean)
     aux = numpy.reciprocal(x.mean)
-    g=unary_grad(x.mean,lambda x: x*aux)
-    return derobs([x],new_mean,[g],desc=f'log of {x.description}')
+    g=x.gradient(lambda x: x*aux)
+    return pyobs.derobs([x],new_mean,[g],desc=f'log of {x.description}')
 
 
 def exp(x):
@@ -141,8 +125,8 @@ def exp(x):
        >>> expA = pyobs.exp(obsA)
     """
     new_mean = numpy.exp(x.mean)
-    g=unary_grad(x.mean,lambda x: x*new_mean)
-    return derobs([x],new_mean,[g],desc=f'exp of {x.description}')
+    g=x.gradient(lambda x: x*new_mean)
+    return pyobs.derobs([x],new_mean,[g],desc=f'exp of {x.description}')
 
 
 def cosh(x):
@@ -160,8 +144,8 @@ def cosh(x):
     """
     new_mean = numpy.cosh(x.mean)
     aux = numpy.sinh(x.mean)
-    g=unary_grad(x.mean,lambda x: x*aux)
-    return derobs([x],new_mean,[g],desc=f'cosh of {x.description}')
+    g=x.gradient(lambda x: x*aux)
+    return pyobs.derobs([x],new_mean,[g],desc=f'cosh of {x.description}')
 
 
 def sinh(x):
@@ -179,8 +163,8 @@ def sinh(x):
     """
     new_mean = numpy.sinh(x.mean)
     aux = numpy.cosh(x.mean)
-    g=unary_grad(x.mean,lambda x: x*aux)
-    return derobs([x],new_mean,[g],desc=f'sinh of {x.description}')
+    g=x.gradient(lambda x: x*aux)
+    return pyobs.derobs([x],new_mean,[g],desc=f'sinh of {x.description}')
     
 def arccosh(x):
     """
@@ -197,8 +181,8 @@ def arccosh(x):
     """
     new_mean = numpy.arccosh(x.mean) 
     aux = numpy.reciprocal(numpy.sqrt(x.mean**2-numpy.ones(x.shape)))  # 1/sqrt(x^2-1)
-    g=unary_grad(x.mean,lambda x: x*aux)
-    return derobs([x],new_mean,[g],desc=f'arccosh of {x.description}')
+    g=x.gradient(lambda x: x*aux)
+    return pyobs.derobs([x],new_mean,[g],desc=f'arccosh of {x.description}')
 
 def besselk(v, x):
     """
@@ -213,5 +197,5 @@ def besselk(v, x):
     """
     new_mean = scipy.special.kv(v, x.mean)
     aux = scipy.special.kv(v-1,x.mean) + scipy.special.kv(v+1,x.mean)
-    g=unary_grad(x.mean, lambda x: -0.5*aux*x)
-    return derobs([x],new_mean,[g],desc=f'BesselK[{v}] of {x.description}')
+    g=x.gradient(lambda x: -0.5*aux*x)
+    return pyobs.derobs([x],new_mean,[g],desc=f'BesselK[{v}] of {x.description}')

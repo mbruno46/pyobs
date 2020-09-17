@@ -1,5 +1,5 @@
 Linear Algebra routines
 -----------------------
 
-.. automodule:: pyobs.tensor.linalg
+.. automodule:: pyobs.linalg
     :members: 

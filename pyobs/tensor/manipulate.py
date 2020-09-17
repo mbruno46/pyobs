@@ -20,10 +20,8 @@
 #################################################################################
 
 import numpy
-from pyobs.ndobs import obs
-from pyobs.core.derobs import derobs
-from pyobs.tensor.unary import unary_grad
-from pyobs.core.utils import error_msg
+import pyobs
+import pyobs
 
 __all__ = ['reshape','concatenate','transpose','sort','diag']
 
@@ -42,7 +40,7 @@ def reshape(x,new_shape):
       This function acts exclusively on the mean
       value.
     """
-    res = obs(x)
+    res = pyobs.obs(x)
     res.shape = new_shape
     res.mean = numpy.reshape(x.mean, new_shape)
     return res
@@ -77,7 +75,7 @@ def concatenate(x,y,axis=0):
     mean=numpy.concatenate((x.mean,y.mean),axis=axis)
     grads=[numpy.concatenate((numpy.eye(x.size),numpy.zeros((y.size,x.size))))]
     grads+=[numpy.concatenate((numpy.zeros((x.size,y.size)),numpy.eye(y.size)))]
-    return derobs([x,y],mean,grads)
+    return pyobs.derobs([x,y],mean,grads)
 
 def transpose(x,axes=None):
     """
@@ -95,8 +93,8 @@ def transpose(x,axes=None):
        obs : the transposed observable
     """
     mean=numpy.transpose(x.mean,axes)
-    grads=unary_grad(x.mean,lambda x:numpy.transpose(x,axes))
-    return derobs([x],mean,[grads])
+    grads=x.gradient(lambda x:numpy.transpose(x,axes))
+    return pyobs.derobs([x],mean,[grads])
 
 def sort(x,axis=-1):
     """
@@ -112,8 +110,8 @@ def sort(x,axis=-1):
     """
     mean=numpy.sort(x.mean,axis)
     idx=numpy.argsort(x.mean,axis)
-    grads=unary_grad(x.mean,lambda x: numpy.take_along_axis(x,idx,axis))
-    return derobs([x],mean,[grads])
+    grads=x.gradient(lambda x: numpy.take_along_axis(x,idx,axis))
+    return pyobs.derobs([x],mean,[grads])
 
 def diag(x):
     """
@@ -128,5 +126,5 @@ def diag(x):
     if len(x.shape)>2:
         error_msg(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
     mean = numpy.diag(x.mean)
-    grads = unary_grad(x.mean, lambda x:numpy.diag(x))
-    return derobs([x],mean,[grads])
+    grads = x.gradient( lambda x:numpy.diag(x))
+    return pyobs.derobs([x],mean,[grads])

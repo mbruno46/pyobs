@@ -22,9 +22,12 @@
 import numpy
 import sys
 
+__all__ = ['PyobsError','check_type','check_not_type',
+        'is_verbose','set_verbose','valerr']
+
 verbose=[]
 
-class Py3obsErr(Exception):
+class PyobsError(Exception):
     pass
 
 def is_verbose(func):
@@ -49,27 +52,27 @@ def valerr(v,e):
         outstr = f'{v:.0f}({e:.0f})'
     return outstr
 
-def union_lists(*lists):
-    a=set()
-    for arg in lists:
-        a=a.union(set(arg))
-    return list(a)
-
-def intersection(*lists):
-    a=set()
-    for arg in lists:
-        a=a.intersection(set(arg))
-    return list(a)
-
-def union_dicts(*dicts):
-    allkeys = {key for d in dicts for key in d}
-    res = {}
-    for key in allkeys:
-        res[key] = union_lists(*[d[key] for d in dicts if key in d])
-    return res
-
-def error_msg(text):
-    raise Py3obsErr(text)
+#def union_lists(*lists):
+#    a=set()
+#    for arg in lists:
+#        a=a.union(set(arg))
+#    return list(a)
+#
+#def intersection(*lists):
+#    a=set()
+#    for arg in lists:
+#        a=a.intersection(set(arg))
+#    return list(a)
+#
+#def union_dicts(*dicts):
+#    allkeys = {key for d in dicts for key in d}
+#    res = {}
+#    for key in allkeys:
+#        res[key] = union_lists(*[d[key] for d in dicts if key in d])
+#    return res
+#
+#def error_msg(text):
+#    raise Py3obsErr(text)
     
 def check_type(obj,s,*t):
     c=0
