@@ -92,7 +92,7 @@ class delta:
         if (type(idx) is list):
             dc = numpy.unique(numpy.diff(idx))
             if numpy.any(dc<0):
-                pyobs.PyobsError(f'Unsorted idx')
+                raise pyobs.PyobsError(f'Unsorted idx')
             if len(dc)==1:
                 self.idx = range(idx[0],idx[-1]+dc[0],dc[0])
             else:
@@ -100,7 +100,7 @@ class delta:
         elif (type(idx) is range):
             self.idx = idx
         else:
-            pyobs.PyobsError(f'Unexpected idx')
+            raise pyobs.PyobsError(f'Unexpected idx')
         self.n = len(self.idx)
 
         self.delta = numpy.zeros((self.size,self.n),dtype=numpy.float64)

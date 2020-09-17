@@ -38,15 +38,15 @@ class chisquare:
             self.n = len(x)
             self.nx=1
         else:
-            pyobs.PyobsError(f'Unexpected x')
+            raise pyobs.PyobsError(f'Unexpected x')
         if len(self.v)!=self.nx:
-            pyobs.PyobsError(f'Unexpected x')
+            raise pyobs.PyobsError(f'Unexpected x')
         self.x = numpy.reshape(x,(self.n,self.nx))
         self.W = numpy.array(W)
         self.f = f
         self.df = df
         if f.__code__.co_varnames != df.__code__.co_varnames:
-            pyobs.PyobsError(f'Unexpected f and df: varnames do not match')
+            raise pyobs.PyobsError(f'Unexpected f and df: varnames do not match')
         self.pars = []
         for vn in f.__code__.co_varnames:
             if not vn in self.v:
@@ -64,9 +64,9 @@ class chisquare:
         
     def __call__(self,y):
         if len(y)!=self.n:
-            pyobs.PyobsError(f'Unexpected length of observable {len(y)} w.r.t. x-axis {self.n}')
+            raise pyobs.PyobsError(f'Unexpected length of observable {len(y)} w.r.t. x-axis {self.n}')
         if numpy.shape(self.W)[0]!=self.n:
-            pyobs.PyobsError(f'Unexpected size of W matrix {numpy.shape(self.W)} w.r.t. x-axis {self.n}')
+            raise pyobs.PyobsError(f'Unexpected size of W matrix {numpy.shape(self.W)} w.r.t. x-axis {self.n}')
         for i in range(self.n):
             self.e[i] = self.f(*self.x[i,:], *self.p) - y[i]
         return self.e @ self.W @ self.e
@@ -133,7 +133,7 @@ class chisquare:
             n = 1
             nx = 1
         else:
-            pyobs.PyobsError(f'Unexpected x')
+            raise pyobs.PyobsError(f'Unexpected x')
         x = numpy.reshape(x,(n,nx))
         res = numpy.zeros((n,len(pdict)))
         
@@ -206,9 +206,9 @@ class mfit:
         elif numpy.ndim(W)==2:
             [r,c]=numpy.shape(W)
             if r!=c:
-                pyobs.PyobsError(f'Rectangular W matrix, must be square')
+                raise pyobs.PyobsError(f'Rectangular W matrix, must be square')
         else:
-            pyobs.PyobsError(f'Unexpected size of W matrix')
+            raise pyobs.PyobsError(f'Unexpected size of W matrix')
         tmp = v.rsplit(',')
         self.csq = {0: chisquare(x,W,f,df,tmp)}
         self.pdict = {}
@@ -254,7 +254,7 @@ class mfit:
             if isinstance(yobs, pyobs.obs):
                 yobs=[yobs]                
         if len(yobs)!=len(self.csq):
-            pyobs.PyobsError(f'Unexpected number of observables for {len(self.csq)} fits')
+            raise pyobs.PyobsError(f'Unexpected number of observables for {len(self.csq)} fits')
         if p0 is None:
             p0=[1.0]*len(self.pdict)
         if min_search is None:

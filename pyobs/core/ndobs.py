@@ -83,7 +83,7 @@ class obs:
                     self.cdata[key] = cdata(orig.cdata[key].grad,orig.cdata[key].cov)
                 pyobs.memory.add(self)
             else:
-                pyobs.PyobsError('Unexpected orig argument')
+                raise pyobs.PyobsError('Unexpected orig argument')
         pyobs.memory.add(self)
         
     def create(self,ename,data,icnfg=None,rname=None,shape=(1,),lat=None):
@@ -144,7 +144,7 @@ class obs:
         t0=time()
         pyobs.check_type(ename,'ename',str)
         if ':' in ename:
-            pyobs.PyobsError(f'Column symbol not allowed in ename {ename}')
+            raise pyobs.PyobsError(f'Column symbol not allowed in ename {ename}')
         pyobs.check_type(shape,'shape',tuple)
         self.shape = shape
         self.size=numpy.prod(shape)
@@ -161,7 +161,7 @@ class obs:
         elif isinstance(data[0],(int,float,numpy.float64,numpy.float32)):
             R=1
         else:
-            pyobs.PyobsError(f'Unexpected data type')
+            raise pyobs.PyobsError(f'Unexpected data type')
             
         if R==1:
             pyobs.check_type(data,f'data',list,numpy.ndarray)
@@ -176,7 +176,7 @@ class obs:
                 pyobs.check_type(icnfg,'icnfg',list,range)
                 pyobs.check_type(icnfg[0],'icnfg[:]',int,numpy.int32,numpy.int64)
                 if len(icnfg)*self.size!=len(data):
-                    pyobs.PyobsError(f'Incompatible icnfg and data, for shape={shape}')
+                    raise pyobs.PyobsError(f'Incompatible icnfg and data, for shape={shape}')
             if numpy.size(self.mean)!=0:
                 N0 = sum([self.rdata[rd].n for rd in self.rdata])
                 mean0 = numpy.reshape(self.mean,(self.size,))
@@ -214,12 +214,12 @@ class obs:
             else:
                 pyobs.check_type(rname,'rname',list)
                 if len(rname)!=R:
-                    pyobs.PyobsError('Incompatible rname and data')
+                    raise pyobs.PyobsError('Incompatible rname and data')
             if not icnfg is None:
                 pyobs.check_type(icnfg,'icnfg',list)
             
             if numpy.size(self.mean)!=0:
-                pyobs.PyobsError('Only a single replica can be added to existing observables')
+                raise pyobs.PyobsError('Only a single replica can be added to existing observables')
             if icnfg is None:
                 icnfg = []
                 for ir in range(len(data)):
@@ -228,7 +228,7 @@ class obs:
             else:
                 for ir in range(len(data)):
                     if len(icnfg[ir])*self.size!=len(data[ir]):
-                        pyobs.PyobsError(f'Incompatible icnfg[{ir}] and data[{ir}], for shape={shape}')
+                        raise pyobs.PyobsError(f'Incompatible icnfg[{ir}] and data[{ir}], for shape={shape}')
             for ir in range(len(data)):
                 key=f'{ename}:{rname[ir]}'
                 if lat is None:
@@ -265,10 +265,10 @@ class obs:
             cov = numpy.array(covariance)
         self.shape = numpy.shape(self.mean)
         if numpy.ndim(self.shape)!=1:
-            pyobs.PyobsError(f'Unexpected value, only 1-D arrays are supported')
+            raise pyobs.PyobsError(f'Unexpected value, only 1-D arrays are supported')
         self.size = numpy.prod(self.shape)
         if cov.shape!=(self.size,) and cov.shape!=(self.size,self.size):
-            pyobs.PyobsError(f'Unexpected shape for covariance {cov.shape}')
+            raise pyobs.PyobsError(f'Unexpected shape for covariance {cov.shape}')
         pyobs.check_type(cname,'cname',str)
         self.cdata[cname] = cdata(numpy.eye(self.size),cov)
         pyobs.memory.update(self)
@@ -295,9 +295,9 @@ class obs:
         """
         pyobs.check_type(name,'name',str)
         if name in self.cdata:
-            pyobs.PyobsError(f'Label {name} already used')
+            raise pyobs.PyobsError(f'Label {name} already used')
         if numpy.shape(err)!=self.shape:
-            pyobs.PyobsError(f'Unexpected error, dimensions do not match {self.shape}')
+            raise pyobs.PyobsError(f'Unexpected error, dimensions do not match {self.shape}')
         cov = numpy.reshape(numpy.array(err)**2, (self.size,))
         grad = numpy.diag(1.0*(numpy.array(err)!=0.0))
         self.cdata[name] = cdata(grad,cov)
@@ -367,7 +367,7 @@ class obs:
             args=[args]
         na=len(args)
         if na!=len(self.shape):
-            pyobs.PyobsError('Unexpected argument')
+            raise pyobs.PyobsError('Unexpected argument')
         new_size=1
         for i in range(na):
             if isinstance(args[i],(slice,numpy.ndarray)):

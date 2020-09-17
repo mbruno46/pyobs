@@ -46,7 +46,7 @@ def inv(x):
        in the last two indexes and broadcast accordingly.
     """
     if (x.shape[-2]!=x.shape[-1]):
-        pyobs.PyobsError(f'Unexpected matrix for inverse with shape={x.shape}')
+        raise pyobs.PyobsError(f'Unexpected matrix for inverse with shape={x.shape}')
     mean=numpy.linalg.inv(x.mean)
     # V Vinv = 1,   dV Vinv + V dVinv = 0 ,  dVinv = - Vinv dV Vinv
     g=x.gradient( lambda x: - mean @ x @ mean)
@@ -75,9 +75,9 @@ def eig(x):
        >>>     print(mat @ v[:,i] - v[:,i] * w[i])
     """
     if len(x.shape)>2:
-        pyobs.PyobsError(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
+        raise pyobs.PyobsError(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
     if numpy.any(numpy.fabs(x.mean/x.mean.T-1.0)>1e-10):
-        pyobs.PyobsError(f'Unexpected non-symmetric matrix: user eigLR')
+        raise pyobs.PyobsError(f'Unexpected non-symmetric matrix: user eigLR')
     
     [w,v] = numpy.linalg.eig(x.mean)
     
@@ -123,7 +123,7 @@ def eigLR(x):
        >>>     print(w[:,i] @ mat - w[:,i] * l[i])
     """
     if len(x.shape)>2:
-        pyobs.PyobsError(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
+        raise pyobs.PyobsError(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
    
     # left and right eigenvectors
     [l,v] = numpy.linalg.eig(x.mean)
