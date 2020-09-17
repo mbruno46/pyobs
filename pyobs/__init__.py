@@ -22,20 +22,20 @@
 from .utils import *
 __all__ = [utils.__all__]
 
-from pyobs.core import *
+from .core import *
 __all__.extend(core.__all__)
 
-from pyobs.tensor import *
+from .tensor import *
 __all__.extend(tensor.__all__)
 
-from pyobs.misc import *
+from .misc import *
 __all__.extend(misc.__all__)
 
-from pyobs.fit.mfit import mfit
-from pyobs.fit import symbolic
+from .fit.mfit import mfit
+from .fit import symbolic
 __all__.extend(['mfit','symbolic'])
 
-from pyobs.version import __version__, __version_full__
+from .version import __version__, __version_full__
 __all__.extend(['__version__'])
 
 from . import qft
