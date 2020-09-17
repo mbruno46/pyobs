@@ -84,7 +84,8 @@ class obs:
                 pyobs.memory.add(self)
             else:
                 pyobs.PyobsError('Unexpected orig argument')
-    
+        pyobs.memory.add(self)
+        
     def create(self,ename,data,icnfg=None,rname=None,shape=(1,),lat=None):
         """
         Create an observable
@@ -235,7 +236,7 @@ class obs:
                 else:
                     self.mfdata[key] = mfdata(mask,icnfg[ir],lat,data[ir],self.mean)
         self.mean = numpy.reshape(self.mean, self.shape)
-        pyobs.memory.add(self)
+        pyobs.memory.update(self)
         if pyobs.is_verbose('obs.create'):
             print(f'obs.create executed in {time()-t0:g} secs')
 
@@ -270,7 +271,7 @@ class obs:
             pyobs.PyobsError(f'Unexpected shape for covariance {cov.shape}')
         pyobs.check_type(cname,'cname',str)
         self.cdata[cname] = cdata(numpy.eye(self.size),cov)
-        pyobs.memory.add(self)
+        pyobs.memory.update(self)
         
     def add_syst_err(self,name,err):
         """
@@ -300,7 +301,7 @@ class obs:
         cov = numpy.reshape(numpy.array(err)**2, (self.size,))
         grad = numpy.diag(1.0*(numpy.array(err)!=0.0))
         self.cdata[name] = cdata(grad,cov)
-        
+        pyobs.memory.update(self)        
         
     def __del__(self):
         pyobs.memory.rm(self)

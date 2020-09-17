@@ -41,6 +41,10 @@ def get_size(obj):
 def add(obj):
     book[id(obj)] = get_size(obj)
     
+def update(obj):
+    if id(obj) in book:
+        book[id(obj)] = get_size(obj)
+    
 def rm(obj):
     del book[id(obj)]
 
@@ -52,10 +56,16 @@ def get(obj):
         return f'{size/1024.:.0f} KB'
     
 def info():
-    size=0
+    tot_size=0
+    print('pyobs allocated memory:')
+    n=1
     for k in book.keys():
-        size += book[k]
-    if size>MB:
-        print(f'pyobs allocated memory {size/MB:.0f} MB\n')
+        size = book[k]
+        tot_size += size
+        print(f' {n}) observable with size {size/MB:g} MB')
+        n+=1
+        
+    if tot_size>MB:
+        print(f' - TOTAL {tot_size/MB:.0f} MB\n')
     else:
-        print(f'pyobs allocated memory {size/1024.:.0f} KB\n')
+        print(f' - TOTAL {tot_size/1024.:.0f} KB\n')

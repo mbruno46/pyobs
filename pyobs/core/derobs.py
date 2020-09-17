@@ -121,7 +121,7 @@ def derobs(inps,mean,grads,desc=None):
                     res.cdata[key] = cdata(numpy.zeros((res.size,d)),inps[i].cdata[key].cov)
                 res.cdata[key].axpy(grads[i], inps[i].cdata[key])
 
-    pyobs.memory.add(res)
+    pyobs.memory.update(res)
     if pyobs.is_verbose('derobs'):
         print(f'derobs executed in {time()-t0:g} secs')
     return res
