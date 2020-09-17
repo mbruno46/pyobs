@@ -449,8 +449,7 @@ class obs:
         sigma = {}
         for ed in self.edata:
             if ed in errinfo:
-                if errinfo[ed].bsize is None:
-                    res = uwerr(self,ed,plot,pfile,errinfo[ed].Stau,errinfo[ed].W)
+                res = uwerr(self,ed,plot,pfile,errinfo[ed].Stau,errinfo[ed].W)
             else:
                 res = uwerr(self,ed,plot,pfile)
             sigma[ed] = numpy.reshape(res[0],self.shape)
