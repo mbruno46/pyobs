@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Tensor Manipulations &#8212; pyobs 1.0.0 documentation</title>
+    <title>Manipulation of observables &#8212; pyobs 1.0.0 documentation</title>
     <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/bootswatch-3.3.4/spacelab/bootstrap.min.css" type="text/css" />
@@ -74,7 +74,7 @@
   <div class="row">
       <div class="col-md-3">
         <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
-<li><a class="reference internal" href="#">Tensor Manipulations</a></li>
+<li><a class="reference internal" href="#">Manipulation of observables</a></li>
 </ul>
 
 <form action="../search.html" method="get">
@@ -90,118 +90,31 @@
       </div>
     <div class="col-md-9 content">
       
-  <div class="section" id="module-pyobs.tensor.manipulate">
-<span id="tensor-manipulations"></span><h1>Tensor Manipulations<a class="headerlink" href="#module-pyobs.tensor.manipulate" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="pyobs.tensor.manipulate.reshape">
-<code class="sig-name descname">reshape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">new_shape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.tensor.manipulate.reshape" title="Permalink to this definition">¶</a></dt>
-<dd><p>Change the shape of the observable</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs"><em>obs</em></a>) – observables to be reshaped</p></li>
-<li><p><strong>new_shape</strong> (<em>tuple</em>) – the new shape of the observable</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>reshaped observable</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs">obs</a></p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>This function acts exclusively on the mean
-value.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pyobs.tensor.manipulate.concatenate">
-<code class="sig-name descname">concatenate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.tensor.manipulate.concatenate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Join two arrays along an existing axis</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>y</strong> (<em>x</em><em>,</em>) – the two observable to concatenate</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – the axis along which the
-observables will be joined. Default is 0.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the concatenated observable</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs">obs</a></p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>If <cite>x</cite> and <cite>y</cite> contain information from separate
-ensembles, they are merged accordingly by keeping
-only the minimal amount of data in memory.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pyobs.tensor.manipulate.transpose">
-<code class="sig-name descname">transpose</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axes</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.tensor.manipulate.transpose" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transpose a tensor along specific axes.
-For an array a with two axes, gives the matrix transpose.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs"><em>obs</em></a>) – input observable</p></li>
-<li><p><strong>axes</strong> (<em>tuple</em><em> or </em><em>list of ints</em><em>, </em><em>optional</em>) – If specified,
-it must be a tuple or list which contains a
-permutation of [0,1,..,N-1] where N is the number of axes of <cite>x</cite>.
-For more details read the documentation of <cite>numpy.transpose</cite></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the transposed observable</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs">obs</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pyobs.tensor.manipulate.sort">
-<code class="sig-name descname">sort</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.tensor.manipulate.sort" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sort a tensor along a specific axis.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs"><em>obs</em></a>) – input observable</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – the axis which is sorted. Default is -1, the</p></li>
-<li><p><strong>axis.</strong> (<em>last</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the sorted observable</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs">obs</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pyobs.tensor.manipulate.diag">
-<code class="sig-name descname">diag</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.tensor.manipulate.diag" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract the diagonal of 2-D array or construct a diagonal matrix from a 1-D array</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs"><em>obs</em></a>) – input observable</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the diagonally projected or extended observable</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs">obs</a></p>
-</dd>
-</dl>
-</dd></dl>
-
+  <div class="section" id="manipulation-of-observables">
+<h1>Manipulation of observables<a class="headerlink" href="#manipulation-of-observables" title="Permalink to this headline">¶</a></h1>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pyobs.reshape.html#pyobs.reshape" title="pyobs.reshape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reshape</span></code></a>(x, new_shape)</p></td>
+<td><p>Change the shape of the observable</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pyobs.concatenate.html#pyobs.concatenate" title="pyobs.concatenate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">concatenate</span></code></a>(x, y[, axis])</p></td>
+<td><p>Join two arrays along an existing axis</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pyobs.transpose.html#pyobs.transpose" title="pyobs.transpose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transpose</span></code></a>(x[, axes])</p></td>
+<td><p>Transpose a tensor along specific axes.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pyobs.sort.html#pyobs.sort" title="pyobs.sort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort</span></code></a>(x[, axis])</p></td>
+<td><p>Sort a tensor along a specific axis.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pyobs.diag.html#pyobs.diag" title="pyobs.diag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diag</span></code></a>(x)</p></td>
+<td><p>Extract the diagonal of 2-D array or construct a diagonal matrix from a 1-D array</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 
 

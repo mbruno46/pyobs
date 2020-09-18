@@ -75,7 +75,7 @@
       <div class="col-md-3">
         <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
 <li><a class="reference internal" href="#">The mfit class</a><ul>
-<li><a class="reference internal" href="#module-pyobs.fit.symbolic">Additional functionalities</a></li>
+<li><a class="reference internal" href="#module-pyobs.symbolic">Additional functionalities</a></li>
 </ul>
 </li>
 </ul>
@@ -93,11 +93,11 @@
       </div>
     <div class="col-md-9 content">
       
-  <div class="section" id="module-pyobs.fit.mfit">
-<span id="the-mfit-class"></span><h1>The mfit class<a class="headerlink" href="#module-pyobs.fit.mfit" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-pyobs">
+<span id="the-mfit-class"></span><h1>The mfit class<a class="headerlink" href="#module-pyobs" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt id="pyobs.fit.mfit.mfit">
-<em class="property">class </em><code class="sig-name descname">mfit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">W</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">'x'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.fit.mfit.mfit" title="Permalink to this definition">¶</a></dt>
+<dt id="pyobs.mfit">
+<em class="property">class </em><code class="sig-prename descclassname">pyobs.</code><code class="sig-name descname">mfit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">W</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">'x'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.mfit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to perform fits to multiple observables, via the minimization
 of the <span class="math notranslate nohighlight">\(\chi^2\)</span> function</p>
 <div class="math notranslate nohighlight">
@@ -150,8 +150,8 @@ below.</p>
 </pre></div>
 </div>
 <dl class="py method">
-<dt id="pyobs.fit.mfit.mfit.eval">
-<code class="sig-name descname">eval</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xax</span></em>, <em class="sig-param"><span class="n">pars</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.fit.mfit.mfit.eval" title="Permalink to this definition">¶</a></dt>
+<dt id="pyobs.mfit.eval">
+<code class="sig-name descname">eval</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xax</span></em>, <em class="sig-param"><span class="n">pars</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.mfit.eval" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluates the function on a list of coordinates using the parameters
 obtained from a <span class="math notranslate nohighlight">\(\chi^2\)</span> minimization.</p>
 <dl class="field-list simple">
@@ -160,7 +160,7 @@ obtained from a <span class="math notranslate nohighlight">\(\chi^2\)</span> min
 <li><p><strong>xax</strong> (<em>array</em><em>,</em><em>list of arrays</em>) – the coordinates <span class="math notranslate nohighlight">\(x_i^\mu\)</span> where
 the function must be evaluated. For combined fits, a list of
 arrays must be passed, one for each fit.</p></li>
-<li><p><strong>pars</strong> (<a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs"><em>obs</em></a>) – the observable returned by calling this class</p></li>
+<li><p><strong>pars</strong> (<a class="reference internal" href="pyobs.html#pyobs.obs" title="pyobs.obs"><em>obs</em></a>) – the observable returned by calling this class</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -171,7 +171,7 @@ arrays must be passed, one for each fit.</p></li>
 </p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs">obs</a>, list of obs</p>
+<dd class="field-odd"><p><a class="reference internal" href="pyobs.html#pyobs.obs" title="pyobs.obs">obs</a>, list of obs</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -186,18 +186,18 @@ arrays must be passed, one for each fit.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyobs.fit.mfit.mfit.pars">
-<code class="sig-name descname">pars</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.fit.mfit.mfit.pars" title="Permalink to this definition">¶</a></dt>
+<dt id="pyobs.mfit.pars">
+<code class="sig-name descname">pars</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.mfit.pars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints the list of parameters</p>
 </dd></dl>
 
 </dd></dl>
 
-<div class="section" id="module-pyobs.fit.symbolic">
-<span id="additional-functionalities"></span><h2>Additional functionalities<a class="headerlink" href="#module-pyobs.fit.symbolic" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pyobs.symbolic">
+<span id="additional-functionalities"></span><h2>Additional functionalities<a class="headerlink" href="#module-pyobs.symbolic" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="pyobs.fit.symbolic.diff">
-<code class="sig-name descname">diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.fit.symbolic.diff" title="Permalink to this definition">¶</a></dt>
+<dt id="pyobs.symbolic.diff">
+<code class="sig-prename descclassname">pyobs.symbolic.</code><code class="sig-name descname">diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.symbolic.diff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Utility function to compute the gradient and hessian of a function using symbolic calculus</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

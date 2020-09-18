@@ -200,6 +200,8 @@ class obs:
             else:
                 self.mfdata[key] = mfdata(mask,icnfg,lat,data,self.mean)
         else:
+            if numpy.size(self.mean)!=0:
+                raise pyobs.PyobsError('Only a single replica can be added to existing observables')
             for ir in range(R):
                 pyobs.check_type(data[ir],f'data[{ir}]',list,numpy.ndarray)
             self.mean=numpy.zeros((self.size,))
@@ -218,8 +220,6 @@ class obs:
             if not icnfg is None:
                 pyobs.check_type(icnfg,'icnfg',list)
             
-            if numpy.size(self.mean)!=0:
-                raise pyobs.PyobsError('Only a single replica can be added to existing observables')
             if icnfg is None:
                 icnfg = []
                 for ir in range(len(data)):

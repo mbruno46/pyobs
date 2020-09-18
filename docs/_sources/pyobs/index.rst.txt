@@ -9,6 +9,7 @@ Python documentation
    unary
    linalg
    fit
+   misc
 
 Indices and tables
 ------------------

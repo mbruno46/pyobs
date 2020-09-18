@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Additional utility functions &#8212; pyobs 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.3.4/spacelab/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+<div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="../index.html"><img src="../_static/pyobs-logo-32px.png">
+         </a>
+      <span class="navbar-text navbar-version pull-left"><b></b></span>
+    </div>
+
+      <div class="collapse navbar-collapse nav-collapse">
+        <ul class="nav navbar-nav">
+          
+              <li><a href="../intro/index.html">Introduction</a></li>
+              <li><a href="../tutorials/index.html">Tutorials</a></li>
+              <li><a href="index.html">Documentation</a></li>
+          
+          
+          
+          
+        </ul>
+
+        
+          
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        
+        
+      </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">Additional utility functions</a></li>
+</ul>
+
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form><div id="navbar-logo" style="margin:auto;text-align:center">
+	<img src="/pyobs/_images/pyobs-logo.png" alt="" width="200" />
+</div>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <div class="section" id="module-pyobs.random">
+<span id="additional-utility-functions"></span><h1>Additional utility functions<a class="headerlink" href="#module-pyobs.random" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="pyobs.random.acrand">
+<code class="sig-prename descclassname">pyobs.random.</code><code class="sig-name descname">acrand</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mu</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">tau</span></em>, <em class="sig-param"><span class="n">N</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.random.acrand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create synthetic autocorrelated Monte Carlo data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mu</strong> (<em>int</em><em> or </em><em>float</em>) – the central value</p></li>
+<li><p><strong>sigma</strong> (<em>float</em>) – the square root of the variance of
+the observable in absence of autocorrelations</p></li>
+<li><p><strong>tau</strong> (<em>float</em>) – the integrated autocorrelation time</p></li>
+<li><p><strong>N</strong> (<em>int</em>) – the number of configurations/measurements</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the synthetic data</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The expected error from a proper autocorrelation analysis
+is the product of <cite>sigma</cite> with the square root of <cite>tau</cite>
+divided by <cite>N</cite>.</p>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">acrand</span><span class="p">(</span><span class="mf">0.1234</span><span class="p">,</span><span class="mf">0.0001</span><span class="p">,</span><span class="mf">4.0</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">obs</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;test-acrand&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+<span class="go">0.12341(26)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyobs.random.acrandn">
+<code class="sig-prename descclassname">pyobs.random.</code><code class="sig-name descname">acrandn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mu</span></em>, <em class="sig-param"><span class="n">cov</span></em>, <em class="sig-param"><span class="n">tau</span></em>, <em class="sig-param"><span class="n">N</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.random.acrandn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create synthetic correlated Monte Carlo 1-D data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mu</strong> (<em>list of array</em>) – the central values of corresponding observable;
+a 1-D array is expected</p></li>
+<li><p><strong>cov</strong> (<em>array</em>) – the covariance matrix of the observable (in absence of
+autocorrelations); if a 1-D array is passed, a diagonal covariance
+matrix is assumed</p></li>
+<li><p><strong>tau</strong> (<em>float</em>) – the integrated autocorrelation time</p></li>
+<li><p><strong>N</strong> (<em>int</em>) – the number of configurations/measurements</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>2-D array with the synthetic data, such that each row</dt><dd><p>corresponds to a configuration</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020, Mattia Bruno.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

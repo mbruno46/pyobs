@@ -1,5 +1,13 @@
-Tensor Manipulations
-====================
+Manipulation of observables
+===========================
 
-.. automodule:: pyobs.tensor.manipulate
-    :members: 
+.. currentmodule:: pyobs
+
+.. autosummary::
+   :toctree: generated 
+
+   reshape
+   concatenate
+   transpose
+   sort
+   diag

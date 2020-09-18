@@ -356,7 +356,7 @@ div.rendered_html tbody tr:hover {
 <span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">numpy</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">data</span><span class="p">),)</span>
 
 <span class="n">yobs</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">obs</span><span class="p">()</span>
-<span class="n">yobs</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;ensA&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">yobs</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;ensA&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -376,9 +376,9 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-0.4970(95)      1.181(29)
--3.283(68)      60.8(1.8)
--9.73(17)       4.778(92)
+0.489(11)       1.168(35)
+-3.43(11)       59.6(1.8)
+-10.27(18)      4.83(14)
 </pre></div></div>
 </div>
 <p>We slice our test observable in various ways. We select rows, columns and specific sub-matrices</p>
@@ -397,9 +397,9 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-first row:  0.4970(95)  1.181(29)
+first row:  0.489(11)   1.168(35)
 
-second column:  1.181(29)       60.8(1.8)       4.778(92)
+second column:  1.168(35)       59.6(1.8)       4.83(14)
 
 </pre></div></div>
 </div>
@@ -425,16 +425,16 @@ second column:  1.181(29)       60.8(1.8)       4.778(92)
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 upper 2x2 matrix
- 0.4970(95)     1.181(29)
--3.283(68)      60.8(1.8)
+ 0.489(11)      1.168(35)
+-3.43(11)       59.6(1.8)
 
 lower 2x2 matrix
- -3.283(68)     60.8(1.8)
--9.73(17)       4.778(92)
+ -3.43(11)      59.6(1.8)
+-10.27(18)      4.83(14)
 
 third 2x2 matrix
- 0.4970(95)     1.181(29)
--9.73(17)       4.778(92)
+ 0.489(11)      1.168(35)
+-10.27(18)      4.83(14)
 
 </pre></div></div>
 </div>
@@ -455,11 +455,11 @@ third 2x2 matrix
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 transpose
- 0.4970(95)     -3.283(68)      -9.73(17)
-1.181(29)       60.8(1.8)       4.778(92)
+ 0.489(11)      -3.43(11)       -10.27(18)
+1.168(35)       59.6(1.8)       4.83(14)
 
 reshape
- 0.4970(95)     1.181(29)       -3.283(68)      60.8(1.8)       -9.73(17)       4.778(92)
+ 0.489(11)      1.168(35)       -3.43(11)       59.6(1.8)       -10.27(18)      4.83(14)
 
 </pre></div></div>
 </div>
@@ -478,7 +478,7 @@ reshape
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 diag of upper 2x2 matrix
- 0.4970(95)     60.8(1.8)
+ 0.489(11)      59.6(1.8)
 
 </pre></div></div>
 </div>

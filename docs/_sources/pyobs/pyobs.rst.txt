@@ -1,6 +1,6 @@
 The obs class
 -------------
 
-.. automodule:: pyobs.ndobs
+.. automodule:: pyobs
     :members: obs
 

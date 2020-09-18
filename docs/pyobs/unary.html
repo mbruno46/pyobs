@@ -74,7 +74,12 @@
   <div class="row">
       <div class="col-md-3">
         <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
-<li><a class="reference internal" href="#">Unary operations</a></li>
+<li><a class="reference internal" href="#">Unary operations</a><ul>
+<li><a class="reference internal" href="#linear-functions">Linear functions</a></li>
+<li><a class="reference internal" href="#exponential-functions">Exponential functions</a></li>
+<li><a class="reference internal" href="#special-functions">Special functions</a></li>
+</ul>
+</li>
 </ul>
 
 <form action="../search.html" method="get">
@@ -90,195 +95,65 @@
       </div>
     <div class="col-md-9 content">
       
-  <div class="section" id="module-pyobs.tensor.unary">
-<span id="unary-operations"></span><h1>Unary operations<a class="headerlink" href="#module-pyobs.tensor.unary" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="pyobs.tensor.unary.sum">
-<code class="sig-name descname">sum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.tensor.unary.sum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sum of array elements over a given axis.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs"><em>obs</em></a>) – array with elements to sum</p></li>
-<li><p><strong>axis</strong> (<em>None</em><em> or </em><em>int</em><em> or </em><em>tuple of ints</em><em>, </em><em>optional</em>) – Axis or
-axes along which a sum is performed. The default, axis=None,
-will sum all elements of the input array.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>sum along the axis</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs">obs</a></p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyobs</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pyobs</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pyobs</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</pre></div>
+  <div class="section" id="unary-operations">
+<h1>Unary operations<a class="headerlink" href="#unary-operations" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="linear-functions">
+<h2>Linear functions<a class="headerlink" href="#linear-functions" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pyobs.sum.html#pyobs.sum" title="pyobs.sum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sum</span></code></a>(x[, axis])</p></td>
+<td><p>Sum of array elements over a given axis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pyobs.trace.html#pyobs.trace" title="pyobs.trace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trace</span></code></a>(x[, offset, axis1, axis2])</p></td>
+<td><p>Return the sum along diagonals of the array.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pyobs.tensor.unary.trace">
-<code class="sig-name descname">trace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">offset</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">axis1</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">axis2</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.tensor.unary.trace" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the sum along diagonals of the array.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs"><em>obs</em></a>) – observable whose diagonal elements are taken</p></li>
-<li><p><strong>offset</strong> (<em>int</em><em>, </em><em>optional</em>) – offset of the diagonal from the main diagonal;
-can be both positive and negative. Defaults to 0.</p></li>
-<li><p><strong>axis2</strong> (<em>axis1</em><em>,</em>) – axes to be used as the first and second
-axis of the 2-D sub-arrays whose diagonals are taken;
-defaults are the first two axes of <cite>x</cite>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the sum of the diagonal elements</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs">obs</a></p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>If <cite>x</cite> is 2-D, the sum along its diagonal with the given offset is returned,
-i.e., the sum of elements <cite>x[i,i+offset]</cite> for all i. If <cite>x</cite> has more than
-two dimensions, then the axes specified by <cite>axis1</cite> and <cite>axis2</cite> are used to
-determine the 2-D sub-arrays whose traces are returned. The shape of the
-resulting array is the same as that of a with <cite>axis1</cite> and <cite>axis2</cite> removed.</p>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tr</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
-</pre></div>
+<div class="section" id="exponential-functions">
+<h2>Exponential functions<a class="headerlink" href="#exponential-functions" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pyobs.log.html#pyobs.log" title="pyobs.log"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log</span></code></a>(x)</p></td>
+<td><p>Return the Natural logarithm element-wise.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pyobs.exp.html#pyobs.exp" title="pyobs.exp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exp</span></code></a>(x)</p></td>
+<td><p>Return the exponential element-wise.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pyobs.cosh.html#pyobs.cosh" title="pyobs.cosh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosh</span></code></a>(x)</p></td>
+<td><p>Return the Hyperbolic cosine element-wise.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pyobs.sinh.html#pyobs.sinh" title="pyobs.sinh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sinh</span></code></a>(x)</p></td>
+<td><p>Return the Hyperbolic sine element-wise.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pyobs.arccosh.html#pyobs.arccosh" title="pyobs.arccosh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">arccosh</span></code></a>(x)</p></td>
+<td><p>Return the inverse Hyperbolic cosine element-wise.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pyobs.tensor.unary.log">
-<code class="sig-name descname">log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.tensor.unary.log" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the Natural logarithm element-wise.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs"><em>obs</em></a>) – input observable</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the logarithm of the input observable, element-wise.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs">obs</a></p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">logA</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">obsA</span><span class="p">)</span>
-</pre></div>
+<div class="section" id="special-functions">
+<h2>Special functions<a class="headerlink" href="#special-functions" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pyobs.besselk.html#pyobs.besselk" title="pyobs.besselk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">besselk</span></code></a>(v, x)</p></td>
+<td><p>Modified Bessel function of the second kind of real order <cite>v</cite>, element-wise.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pyobs.tensor.unary.exp">
-<code class="sig-name descname">exp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.tensor.unary.exp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the exponential element-wise.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs"><em>obs</em></a>) – input observable</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the exponential of the input observable, element-wise.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs">obs</a></p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expA</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">obsA</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pyobs.tensor.unary.cosh">
-<code class="sig-name descname">cosh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.tensor.unary.cosh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the Hyperbolic cosine element-wise.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs"><em>obs</em></a>) – input observable</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the hyperbolic cosine of the input observable, element-wise.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs">obs</a></p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">cosh</span><span class="p">(</span><span class="n">obsA</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pyobs.tensor.unary.sinh">
-<code class="sig-name descname">sinh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.tensor.unary.sinh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the Hyperbolic sine element-wise.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs"><em>obs</em></a>) – input observable</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the hyperbolic sine of the input observable, element-wise.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs">obs</a></p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="n">obsA</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pyobs.tensor.unary.arccosh">
-<code class="sig-name descname">arccosh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.tensor.unary.arccosh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the inverse Hyperbolic cosine element-wise.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs"><em>obs</em></a>) – input observable</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the inverse hyperbolic cosine of the input observable, element-wise.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs">obs</a></p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">arccosh</span><span class="p">(</span><span class="n">obsA</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pyobs.tensor.unary.besselk">
-<code class="sig-name descname">besselk</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.tensor.unary.besselk" title="Permalink to this definition">¶</a></dt>
-<dd><p>Modified Bessel function of the second kind of real order <cite>v</cite>, element-wise.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>v</strong> (<em>float</em>) – order of the Bessel function</p></li>
-<li><p><strong>x</strong> (<a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs"><em>obs</em></a>) – real observable where to evaluate the Bessel function</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the modified bessel function computed for the input observable</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pyobs.html#pyobs.ndobs.obs" title="pyobs.ndobs.obs">obs</a></p>
-</dd>
-</dl>
-</dd></dl>
-
 </div>
 
 
