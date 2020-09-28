@@ -1,3 +1,4 @@
 # ignores following files from language detection
-*.ipynb linguist-detectable=false
-*.html linguist-detectable=false
+.doc-source linguist-documentation
+*.html linguist-documentation
+tutorials linguist-detectable=false
