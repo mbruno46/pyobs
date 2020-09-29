@@ -55,6 +55,6 @@ def load(fname):
         res.mfdata[key].delta = numpy.array(tmp['mfdata'][key]['delta'])
         
     for key in tmp['cdata']:
-        res.cdata[key] = pyobs.core.cdata.cdata(tmp['cdata'][key]['mask'],tmp['cdata'][key]['cov'])
+        res.cdata[key] = pyobs.core.cdata.cdata(tmp['cdata'][key]['grad'],tmp['cdata'][key]['cov'])
     pyobs.memory.update(res)
     return res

@@ -22,3 +22,8 @@ print(v,e)
 print(v,e)
 [v, e] = mfobs.error(errinfo={'test-mfield': pyobs.errinfo(R=[12.0])})
 print(v,e)
+
+def func(x):
+    return x*45 + x**2
+
+assert pyobs.error_bias4(mfobs, func) < func(mfobs).error_of_error()
