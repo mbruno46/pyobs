@@ -32,6 +32,9 @@ assert (a-val) < 3.*da
 assert abs(da - sig/numpy.sqrt(N)) < 3.*dda
 print(f'Estimated error {da[0]:g} vs expeceted {sig/numpy.sqrt(N):g}')
 
+[a, da] = obsA.error(errinfo={'EnsA': pyobs.errinfo(W=0)})
+assert (a-val) < 3.*da
+
 N=4000
 tau=4.0
 

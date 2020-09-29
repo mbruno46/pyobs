@@ -23,18 +23,14 @@
 import numpy
 from scipy import special
 
-try:
+try: #pragma: no cover
     import matplotlib.pyplot as plt
     MATPLOTLIB=True
 except:
     MATPLOTLIB=False
 
 def find_closest(arr,x0):
-    dx=min(numpy.diff(numpy.array(arr)-x0))
-    if isinstance(arr,list):
-        return array.index(x0+dx)
-    elif isinstance(arr,numpy.ndarray):
-        return numpy.where(arr==dx+x0)[0][0]
+    return (numpy.abs(numpy.array(arr) - x0)).argmin()
 
 class variance:
     def __init__(self,n,g,Stau,D,k,fold=False):
@@ -88,23 +84,23 @@ class variance:
                     self.var[a,0] = self.cvar[a,i]
                     self.var[a,1] = self.cvar[a,i] * self.stat_relerr(self.x[i])
                     break
-            if self.xopt[a]==self.x[-1]:
+            if self.xopt[a]==self.x[-1]: # pragma: no cover
                 self.var[a,0] = self.cvar[a,-1]
                 self.var[a,1] = self.cvar[a,-1] * self.stat_relerr(self.x[-1])
                 print(f'Warning: automatic window failed, using {self.xopt[a]}')
 
     def set_opt(self,xopt):
         for a in range(self.size):
-            if isinstance(xopt,int): 
-                if xopt in self.x:
-                    i=self.x.index(xopt)
-                else:
-                    i=find_closest(self.x,xopt)
-            else:
+            if type(xopt) is list:
                 if xopt[a] in self.x:
                     i=self.x.index(xopt[a])
                 else:
                     i=find_closest(self.x,xopt[a])
+            else:
+                if xopt in self.x:
+                    i=self.x.index(xopt)
+                else:
+                    i=find_closest(self.x,xopt)
                 
             self.xopt[a] = self.x[i]
             self.var[a,0] = self.cvar[a,i]
@@ -184,8 +180,9 @@ class mfvar(variance):
         rrmax=x.mfdata[keys[0]].rrmax() #int(min([x.mfdata[kk].rrmax() for kk in keys]))
         size=len(x.mfdata[keys[0]].mask) # we assume all replica have the same mask
 
-        [n, g]=x.mfdata[keys[0]].gamma(rrmax)
-        for i in range(1,len(keys)):
+        n = numpy.zeros((rrmax,))
+        g = numpy.zeros((size,rrmax))
+        for i in range(len(keys)):
             res = x.mfdata[keys[i]].gamma(rrmax)
             n += res[0]
             g += res[1]
@@ -210,8 +207,9 @@ class rvar(variance):
         wmax=int(min([x.rdata[k].wmax() for k in keys]))
         size=len(x.rdata[keys[0]].mask) # we assume all replica have the same mask
 
-        [n, g]=x.rdata[keys[0]].gamma(wmax)
-        for i in range(1,len(keys)):
+        n = numpy.zeros((wmax,))
+        g = numpy.zeros((size,wmax))
+        for i in range(len(keys)):
             res = x.rdata[keys[i]].gamma(wmax)
             n += res[0]
             g += res[1]

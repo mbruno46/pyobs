@@ -34,11 +34,12 @@ class cdata:
         self.grad += grad @ cd.grad
         
     def sigmasq(self):
-        (na,nb) = self.grad.shape
-        sigma = numpy.zeros((na,))
-        for ia in range(na):
-            sigma[ia] = self.grad[ia,:] @ self.cov[:,:] @ self.grad.T[:,ia]
-        return sigma
+        return numpy.diag(self.cov)
+        #(na,nb) = self.grad.shape
+        #sigma = numpy.zeros((na,))
+        #for ia in range(na):
+        #    sigma[ia] = self.grad[ia,:] @ self.cov[:,:] @ self.grad.T[:,ia]
+        #return sigma
     
     def reduce(self):
         self.cov = self.grad @ self.cov @ self.grad.T

@@ -120,6 +120,7 @@ def derobs(inps,mean,grads,desc=None):
                     d=inps[i].cdata[key].cov.shape[0]
                     res.cdata[key] = cdata(numpy.zeros((res.size,d)),inps[i].cdata[key].cov)
                 res.cdata[key].axpy(grads[i], inps[i].cdata[key])
+        res.cdata[key].reduce()
 
     pyobs.memory.update(res)
     if pyobs.is_verbose('derobs'):
