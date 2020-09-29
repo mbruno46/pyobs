@@ -25,6 +25,15 @@ assert numpy.any(abs(dc0 - numpy.reshape(dc, (len(xax)//2,2)))) < 1e-12
 corr1 = corr[0:4]
 corr2 = corr[4:]
 
+tmp = pyobs.observable()
+tmp = pyobs.concatenate(tmp, corr1)
+del tmp
+
+tmp = pyobs.observable()
+tmp = pyobs.concatenate(corr1, tmp)
+del tmp
+
+
 corr3 = pyobs.concatenate(corr1,corr2)
 print(corr3)
 [c0, dc0] = corr3.error()

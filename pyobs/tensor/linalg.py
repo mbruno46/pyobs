@@ -45,7 +45,7 @@ def inv(x):
        `x` is treated as a stack of matrices residing 
        in the last two indexes and broadcast accordingly.
     """
-    if (x.shape[-2]!=x.shape[-1]):
+    if (x.shape[-2]!=x.shape[-1]): # pragma: no cover
         raise pyobs.PyobsError(f'Unexpected matrix for inverse with shape={x.shape}')
     mean=numpy.linalg.inv(x.mean)
     # V Vinv = 1,   dV Vinv + V dVinv = 0 ,  dVinv = - Vinv dV Vinv
@@ -74,9 +74,9 @@ def eig(x):
        >>>     # check eigenvalue equation  
        >>>     print(mat @ v[:,i] - v[:,i] * w[i])
     """
-    if len(x.shape)>2:
+    if len(x.shape)>2: # pragma: no cover
         raise pyobs.PyobsError(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
-    if numpy.any(numpy.fabs(x.mean/x.mean.T-1.0)>1e-10):
+    if numpy.any(numpy.fabs(x.mean/x.mean.T-1.0)>1e-10): # pragma: no cover
         raise pyobs.PyobsError(f'Unexpected non-symmetric matrix: user eigLR')
     
     [w,v] = numpy.linalg.eig(x.mean)
@@ -122,7 +122,7 @@ def eigLR(x):
        >>>     print(mat @ v[:,i] - v[:,i] * l[i])
        >>>     print(w[:,i] @ mat - w[:,i] * l[i])
     """
-    if len(x.shape)>2:
+    if len(x.shape)>2: # pragma: no cover
         raise pyobs.PyobsError(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
    
     # left and right eigenvectors

@@ -23,6 +23,15 @@ print(corr)
 mat = pyobs.reshape(corr, (T//8,T//8))
 flist = ['sum', 'trace','log','exp','cosh','sinh','arccosh']
 
+for f in ['sum']:
+    [v0, e0] = pyobs.__dict__[f](mat,axis=0).error()
+    func = lambda x: numpy.__dict__[f](x,axis=0)
+    mean = func(mat.mean)
+    g = pyobs.num_grad(mat, func)
+    [v1, e1] = pyobs.derobs([mat], mean, [g]).error()
+    assert numpy.all(numpy.fabs(e1-e0) < 1e-10)
+
+
 for f in flist:
     [v0, e0] = pyobs.__dict__[f](mat).error()
     mean = numpy.__dict__[f](mat.mean)

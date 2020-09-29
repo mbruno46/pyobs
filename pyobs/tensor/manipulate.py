@@ -21,7 +21,6 @@
 
 import numpy
 import pyobs
-import pyobs
 
 __all__ = ['reshape','concatenate','transpose','sort','diag']
 
@@ -62,16 +61,16 @@ def concatenate(x,y,axis=0):
        ensembles, they are merged accordingly by keeping
        only the minimal amount of data in memory.
     """
-    if x.size==0 and x.shape==[]:
-        return obs(y)
+    if x.size==0 and x.shape==[]: 
+        return pyobs.observable(y)
     if y.size==0 and y.shape==[]:
-        return obs(x)
+        return pyobs.observable(x)
     
-    if len(x.shape)!=len(y.shape):
-        error_msg(f'Incompatible dimensions between {x.shape} and {y.shape}')
-    for d in range(len(x.shape)):
+    if len(x.shape)!=len(y.shape): # pragma: no cover
+        raise pyobs.PyobsError(f'Incompatible dimensions between {x.shape} and {y.shape}')
+    for d in range(len(x.shape)): # pragma: no cover
         if (d!=axis) and (x.shape[d]!=y.shape[d]):
-            error_msg(f'Incompatible dimensions between {x.shape} and {y.shape} for axis={axis}')
+            raise pyobs.PyobsError(f'Incompatible dimensions between {x.shape} and {y.shape} for axis={axis}')
     mean=numpy.concatenate((x.mean,y.mean),axis=axis)
     grads=[numpy.concatenate((numpy.eye(x.size),numpy.zeros((y.size,x.size))))]
     grads+=[numpy.concatenate((numpy.zeros((x.size,y.size)),numpy.eye(y.size)))]
@@ -123,8 +122,8 @@ def diag(x):
     Returns:
        obs : the diagonally projected or extended observable
     """
-    if len(x.shape)>2:
-        error_msg(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
+    if len(x.shape)>2: # pragma: no cover
+        raise pyobs.PyobsError(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
     mean = numpy.diag(x.mean)
     grads = x.gradient( lambda x:numpy.diag(x))
     return pyobs.derobs([x],mean,[grads])
