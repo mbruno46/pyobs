@@ -21,7 +21,7 @@ def save(fname, obs):
 
 def load(fname):
     tmp = json.loads(gzip.open(fname, 'r').read())
-    res = pyobs.obs(desc=tmp['description'])
+    res = pyobs.observable(desc=tmp['description'])
     res.www = list(tmp['www'])
 
     res.mean = numpy.array(tmp['mean'])

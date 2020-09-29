@@ -241,7 +241,7 @@ def uwerr(x,ed,plot=False,pfile=None,Stau=1.5,W=None):
         rv.set_opt(W)
     rv.correct_gamma_bias()
     tau = rv.tau()*0.5
-    if plot:
+    if plot: # pragma: no cover
         rv.plot('icnfg',x.description,ed,pfile)
     return rv.sigma() + [tau]
 
@@ -253,6 +253,6 @@ def mferr(x,mfd,plot=False,pfile=None,k=1,Stau=1.5,R=None):
         mfv.set_opt(R)
     #rv.correct_gamma_bias()
     tau = mfv.tau()
-    if plot:
+    if plot: # pragma: no cover
         mfv.plot('|R|/a',x.description,mfd,pfile)
     return mfv.sigma() + [tau]

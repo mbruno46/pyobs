@@ -4,7 +4,7 @@ import numpy
 
 data = pyobs.random.acrandn([2.31,3.14],[0.2**2,0.1**2],4.0,3000)
 
-test = pyobs.obs(desc='save/load test')
+test = pyobs.observable(desc='save/load test')
 test.create('test',data.flatten(),icnfg=range(0,3000*4,4),rname='rep1',shape=(2,))
 
 [v, e] = test.error()

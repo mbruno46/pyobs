@@ -1,8 +1,6 @@
 import pyobs
 import numpy
 
-pyobs.set_verbose('data.axpy')
-
 mu=[3.14, 6.14]
 cov=numpy.array([[0.01, 0.002], [0.002,0.02]])**2
 N=500
@@ -13,12 +11,12 @@ mask = [True]*N
 mask[1] = False
 mask[-1] = False
 
-obsA = pyobs.obs()
+obsA = pyobs.observable()
 obsA.create('test',data[:,0][mask],icnfg=[0]+list(range(2,N-1)))
 print(obsA)
 [a, da] = obsA.error()
 
-obsB = pyobs.obs()
+obsB = pyobs.observable()
 obsB.create('test',data[:,1],icnfg=range(0,N))
 [b, db] = obsB.error()
 

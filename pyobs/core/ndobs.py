@@ -32,19 +32,19 @@ from .data import rdata, mfdata
 from .cdata import cdata
 from .error import uwerr, mferr, plot_piechart
 
-__all__ = ['obs']
+__all__ = ['observable']
 
-class obs:
+class observable:
     """
     Class defining an observable
 
     Parameters:
-       orig (obs, optional): creates a copy of orig
+       orig (observable, optional): creates a copy of orig
        desc (str, optional): description of the observable
     
     Examples:
-       >>> from pyobs import obs
-       >>> a = obs(desc='test')
+       >>> from pyobs import observable
+       >>> a = observable(desc='test')
     """
     
     def __init__(self,orig=None,desc='unknown'):
@@ -61,7 +61,7 @@ class obs:
             self.mfdata = {}
             self.cdata = {}
         else:
-            if isinstance(orig,obs):
+            if isinstance(orig,observable):
                 self.description = orig.description
                 self.www = orig.www
                 self.shape = orig.shape
@@ -112,33 +112,33 @@ class obs:
            
         Examples:
            >>> data = [0.43, 0.42, ... ] # a scalar observable
-           >>> a = pyobs.obs(desc='test')
+           >>> a = pyobs.observable(desc='test')
            >>> a.create('EnsembleA',data)
 
            >>> data0 = [0.43,0.42, ... ] # replica 0
            >>> data1 = [0.40,0.41, ... ] # replica 1
-           >>> a = pyobs.obs(desc='test')
+           >>> a = pyobs.observable(desc='test')
            >>> a.create('EnsembleA',[data0,data1],rname=['r0','r1'])
 
            >>> data = [0.43, 0.42, 0.44, ... ]
            >>> icnfg= [  10,   11,   13, ... ]
-           >>> a = pyobs.obs(desc='test')
+           >>> a = pyobs.observable(desc='test')
            >>> a.create('EnsembleA',data,icnfg=icnfg)
 
            >>> data = [1.0, 2.0, 3.0, 4.0, ... ]
-           >>> a = pyobs.obs(desc='matrix')
+           >>> a = pyobs.observable(desc='matrix')
            >>> a.create('EnsembleA',data,shape=(2,2))
        
         Examples:
            >>> data = [0.43, 0.42, 0.44, ... ]
            >>> lat = [64,32,32,32]
-           >>> a = pyobs.obs(desc='test-mf')
+           >>> a = pyobs.observable(desc='test-mf')
            >>> a.create('EnsembleA',data,lat=lat)
            
            >>> data = [0.43, 0.42, 0.44, ... ]
            >>> idx = [0, 2, 4, 6, ...] # measurements on all even points of time-slice
            >>> lat = [32, 32, 32]
-           >>> a = pyobs.obs(desc='test-mf')
+           >>> a = pyobs.observable(desc='test-mf')
            >>> a.create('EnsembleA',data,lat=lat,icnfg=idx)           
         """
         t0=time()
@@ -237,8 +237,8 @@ class obs:
                     self.mfdata[key] = mfdata(mask,icnfg[ir],lat,data[ir],self.mean)
         self.mean = numpy.reshape(self.mean, self.shape)
         pyobs.memory.update(self)
-        if pyobs.is_verbose('obs.create'):
-            print(f'obs.create executed in {time()-t0:g} secs')
+        if pyobs.is_verbose('create'):
+            print(f'create executed in {time()-t0:g} secs')
 
         
     def create_from_cov(self,cname,value,covariance):
@@ -252,7 +252,7 @@ class obs:
               same length as `value`, a diagonal covariance matrix is assumed.
         
         Examples:
-           >>> mpi = pyobs.obs(desc='pion masses, charged and neutral')
+           >>> mpi = pyobs.observable(desc='pion masses, charged and neutral')
            >>> mpi.create_cd('mpi-pdg18',[139.57061,134.9770],[0.00023**2,0.0005**2])
            >>> print(mpi)
            139.57061(23)    134.97700(50)
@@ -284,7 +284,7 @@ class obs:
         
         Examples:
            >>> data = [0.198638, 0.403983, 1.215960, 1.607684, 0.199049, ... ]
-           >>> vec = pyobs.obs(desc='vector')
+           >>> vec = pyobs.observable(desc='vector')
            >>> vec.create('A',data,shape=(4,))
            >>> print(vec)
            0.201(13)    0.399(26)    1.199(24)    1.603(47)
@@ -383,7 +383,7 @@ class obs:
     
     def __addsub__(self,y,sign):
         g0=numpy.eye(self.size)
-        if isinstance(y,obs):
+        if isinstance(y,observable):
             g1=sign*numpy.eye(y.size)
             return pyobs.derobs([self,y],self.mean+sign*y.mean,[g0,g1])
         else:
@@ -399,7 +399,7 @@ class obs:
         return pyobs.derobs([self],-self.mean,[-numpy.eye(self.size)])
     
     def __mul__(self,y):
-        if isinstance(y,obs):
+        if isinstance(y,observable):
             g0=self.gradient(lambda x:x*y.mean)
             g1=self.gradient(lambda x:self.mean*x)
             return pyobs.derobs([self,y],self.mean*y.mean,[g0,g1])
@@ -408,7 +408,7 @@ class obs:
             return pyobs.derobs([self],self.mean*y,[g0])
     
     def __matmul__(self,y):
-        if isinstance(y,obs):
+        if isinstance(y,observable):
             g0=self.gradient(lambda x: x @ y.mean)
             g1=self.gradient(lambda x:self.mean @ x)
             return pyobs.derobs([self,y],self.mean @ y.mean,[g0,g1])
@@ -422,7 +422,7 @@ class obs:
         return pyobs.derobs([self], new_mean,[g0])
     
     def __truediv__(self,y):
-        if isinstance(y,obs):
+        if isinstance(y,observable):
             return self * y.reciprocal()
         else:
             return self * numpy.reciprocal(y)
@@ -509,14 +509,14 @@ class obs:
            
            
         Examples:
-           >>> obsA = pyobs.obs('obsA')
+           >>> obsA = pyobs.observable('obsA')
            >>> obsA.create('A',dataA) # create the observable A from ensemble A
            >>> [v,e] = obsA.error() # collect central value and error in v,e
            >>> einfo = {'A': errinfo(Stau=3.0)} # specify non-standard Stau for ensemble A
            >>> [_,e1] = obsA.error(errinfo=einfo)
            >>> print(e,e1) # check difference in error estimation
         
-           >>> obsB = pyobs.obs('obsB')
+           >>> obsB = pyobs.observable('obsB')
            >>> obsB.create('B',dataB) # create the observable B from ensemble B
            >>> obsC = obsA * obsB # derived observable with fluctuations from ensembles A,B
            >>> einfo = {'A': errinfo(Stau=3.0), 'B': errinfo(W=30)}
@@ -530,7 +530,7 @@ class obs:
             if sum(h)>1:
                 plot_piechart(self.description, sigma, sigma_tot)
             
-        if pyobs.is_verbose('obs.error'):
+        if pyobs.is_verbose('error'):
             print(f'error executed in {time()-t0:g} secs')
         return [self.mean, numpy.sqrt(sigma_tot)]
 

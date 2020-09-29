@@ -52,28 +52,6 @@ def valerr(v,e):
         outstr = f'{v:.0f}({e:.0f})'
     return outstr
 
-#def union_lists(*lists):
-#    a=set()
-#    for arg in lists:
-#        a=a.union(set(arg))
-#    return list(a)
-#
-#def intersection(*lists):
-#    a=set()
-#    for arg in lists:
-#        a=a.intersection(set(arg))
-#    return list(a)
-#
-#def union_dicts(*dicts):
-#    allkeys = {key for d in dicts for key in d}
-#    res = {}
-#    for key in allkeys:
-#        res[key] = union_lists(*[d[key] for d in dicts if key in d])
-#    return res
-#
-#def error_msg(text):
-#    raise Py3obsErr(text)
-    
 def check_type(obj,s,*t):
     c=0
     for tt in t:
@@ -86,10 +64,10 @@ def check_not_type(obj,s,t):
     if type(obj) is t:
         raise TypeError(f'Unexpected type for {s}')
     
-def sort_data(idx,data):
-    out = numpy.zeros(numpy.shape(data))
-    new_idx = list(numpy.sort(idx))
-    for i in range(len(new_idx)):
-        j=idx.index(new_idx[i])
-        out[i,:] = data[j,:]
-    return [new_idx, out]
+#def sort_data(idx,data):
+#    out = numpy.zeros(numpy.shape(data))
+#    new_idx = list(numpy.sort(idx))
+#    for i in range(len(new_idx)):
+#        j=idx.index(new_idx[i])
+#        out[i,:] = data[j,:]
+#    return [new_idx, out]

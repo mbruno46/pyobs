@@ -17,7 +17,7 @@ N = 1000
 tau = 1.0
 
 data = pyobs.random.acrandn(y,dy,tau,N)
-corr = pyobs.obs()
+corr = pyobs.observable()
 corr.create('test',data.flatten(),shape=(T,))
 
 [c, dc] = corr.error()
@@ -26,7 +26,8 @@ W = 1./dc**2
 fit = pyobs.mfit(numpy.arange(T),W,f,df)
 
 pars = fit(corr)
-print('fitted pars = ',pars)
+fit.parameters()
+print(pars)
 
 [v, e] = pars[0].error()
 assert abs(a-v) < 2.*e

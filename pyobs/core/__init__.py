@@ -1,8 +1,8 @@
-from .ndobs import obs
-__all__ = ['obs']
+from .ndobs import observable
+__all__ = ['observable']
 
-from .derobs import derobs, num_grad, errbias4
-__all__.extend(['derobs','num_grad','errbias4'])
+from .derobs import derobs, num_grad, error_bias4
+__all__.extend(['derobs','num_grad','error_bias4'])
 
 from . import memory
 __all__.extend(['memory'])

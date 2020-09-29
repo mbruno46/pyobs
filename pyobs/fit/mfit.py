@@ -227,7 +227,7 @@ class mfit:
             res.pdict[key] = self.pdict[key]
         return res
     
-    def pars(self):
+    def parameters(self):
         """
         Prints the list of parameters
         """
@@ -251,7 +251,7 @@ class mfit:
         if len(self.csq)>1:
             pyobs.check_type(yobs,'yobs',list)
         else:
-            if isinstance(yobs, pyobs.obs):
+            if isinstance(yobs, pyobs.observable):
                 yobs=[yobs]                
         if len(yobs)!=len(self.csq):
             raise pyobs.PyobsError(f'Unexpected number of observables for {len(self.csq)} fits')
@@ -318,7 +318,7 @@ class mfit:
         
         if not type(xax) is list:
             xax = [xax]
-        pyobs.check_type(pars,'pars',pyobs.obs)
+        pyobs.check_type(pars,'pars',pyobs.observable)
         N = len(xax)
         if N!=len(self.csq):
             raise pyobs.PyobsError(f'Coordinates and Paramters do not match number of internal functions')

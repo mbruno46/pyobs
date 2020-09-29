@@ -21,7 +21,7 @@ def save(fname, obs):
           languages (json format is widely supported).
 
      Examples:
-        >>> obsA = pyobs.obs('obsA')
+        >>> obsA = pyobs.observable('obsA')
         >>> obsA.create('A',data)
         >>> pyobs.save('~/analysis/obsA.json.gz', obsA)
      """    

@@ -53,7 +53,7 @@ def lm(fun,x0,jac,hess,opts={'TolX':1e-8,'Tol':1e-6,'LAMBDA_START':1e-4,'maxiter
         
         f1=fun(x)
         # forces the algorithm to increase lambda and rejects current parameters
-        if numpy.isnan(f1):
+        if numpy.isnan(f1): # pragma: no cover
             f1=f0+1.0
 
         if (abs(f1/f0-1.)>opts['Tol']):
@@ -61,7 +61,7 @@ def lm(fun,x0,jac,hess,opts={'TolX':1e-8,'Tol':1e-6,'LAMBDA_START':1e-4,'maxiter
                 if lam<opts['LAMBDA_MAX']:
                     lam *= step
                     x-=dx
-                else:
+                else: # pragma: no cover
                     print('Warning: Levenberg-Marquardt: lambda parameter too large: stuck in valley')
             else:
                 lam = lam/step
@@ -72,6 +72,6 @@ def lm(fun,x0,jac,hess,opts={'TolX':1e-8,'Tol':1e-6,'LAMBDA_START':1e-4,'maxiter
             msg = f'Levenberg-Marquardt: converged {opts["Tol"]:.1e} per-cent tolerance on fun'
             break
             
-    if i==opts['maxiter']:
+    if i==opts['maxiter']: # pragma: no cover
         msg = f'Levenberg-Marquardt: did not converge in {opts["maxiter"]} iterations'
     return outputformat(x,f0,i,msg)

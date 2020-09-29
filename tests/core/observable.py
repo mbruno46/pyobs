@@ -1,7 +1,7 @@
 import pyobs
 import numpy
 
-pyobs.set_verbose('obs.create')
+pyobs.set_verbose('create')
 
 val=0.5
 sig=val*0.01
@@ -10,19 +10,23 @@ N=1000
 tau=0.0
 
 data = pyobs.random.acrand(val,sig,tau,N)
-obsA = pyobs.obs()
+obsA = pyobs.observable()
+try:
+    obsA.create(12,data)
+except TypeError:
+    print('catched error')
 obsA.create('EnsA',data,rname='r001')
 obsA.peek()
 print(obsA)
 
-obsB = pyobs.obs(obsA)
+obsB = pyobs.observable(obsA)
 
 data2 = pyobs.random.acrand(val,sig,tau,N)
-obsC = pyobs.obs()
+obsC = pyobs.observable()
 obsC.create('EnsA',[data[0::2],data2],icnfg=[range(0,N,2),range(100,100+N)],rname=['r001','r002'])
 obsC.peek()
 
-obsD = pyobs.obs()
+obsD = pyobs.observable()
 obsD.create('EnsA',[data,data2])
 
 print('obsC = ',obsC)

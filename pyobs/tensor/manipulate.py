@@ -40,7 +40,7 @@ def reshape(x,new_shape):
       This function acts exclusively on the mean
       value.
     """
-    res = pyobs.obs(x)
+    res = pyobs.observable(x)
     res.shape = new_shape
     res.mean = numpy.reshape(x.mean, new_shape)
     return res

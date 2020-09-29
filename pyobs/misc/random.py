@@ -44,7 +44,7 @@ def acrand(mu,sigma,tau,N):
 
     Examples:
        >>> data = pyobs.random.acrand(0.1234,0.0001,4.0,1000)
-       >>> obs = pyobs.obs(desc='test-acrand')
+       >>> obs = pyobs.observable(desc='test-acrand')
        >>> obs.create('A',data)
        >>> print(obs)
        0.12341(26)
@@ -79,7 +79,7 @@ def acrandn(mu,cov,tau,N):
        numpy.ndarray : 2-D array with the synthetic data, such that each row 
           corresponds to a configuration
     """
-    if len(mu)!=numpy.shape(cov)[0]:
+    if len(mu)!=numpy.shape(cov)[0]: # pragma: no cover
         raise ValueError
     nf=len(mu)
     if tau>0:

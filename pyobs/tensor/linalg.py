@@ -36,7 +36,7 @@ def inv(x):
     
     Examples:
        >>> from pyobs.linalg import inv
-       >>> a = pyobs.obs()
+       >>> a = pyobs.observable()
        >>> a.create('A',data,shape=(2,2))
        >>> ainv = pyobs.inv(a)
     

@@ -1,7 +1,7 @@
 import pyobs
 import numpy
 
-pyobs.set_verbose('obs.error')
+pyobs.set_verbose('error')
 
 val=0.5
 sig=val*0.01
@@ -10,7 +10,7 @@ N=1000
 tau=0.0
 
 data = pyobs.random.acrand(val,sig,tau,N)
-obsA = pyobs.obs()
+obsA = pyobs.observable()
 obsA.create('EnsA',data)
 
 [a,da] = obsA.error()
@@ -23,7 +23,7 @@ N=10000
 tau=0.0
 
 data = pyobs.random.acrand(val,sig,tau,N)
-obsA = pyobs.obs()
+obsA = pyobs.observable()
 obsA.create('EnsA',data)
 
 [a,da] = obsA.error()
@@ -36,7 +36,7 @@ N=4000
 tau=4.0
 
 data = pyobs.random.acrand(val,sig,tau,N)
-obsA = pyobs.obs()
+obsA = pyobs.observable()
 obsA.create('EnsA',data)
 
 [a,da] = obsA.error()

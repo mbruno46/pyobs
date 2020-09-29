@@ -44,10 +44,10 @@ def derobs(inps,mean,grads,desc=None):
     pyobs.check_type(mean,'mean',numpy.ndarray,int,float,numpy.float32,numpy.float64)
     pyobs.check_type(grads,'grads',list)
     if len(inps)!=len(grads):
-        error_msg('Incompatible inps and grads')
+        raise pyobs.PyobsError('Incompatible inps and grads')
     if desc is None:
         desc=', '.join(set([i.description for i in inps]))
-    res = pyobs.obs(desc=desc)
+    res = pyobs.observable(desc=desc)
     if isinstance(mean,(int,float,numpy.float32,numpy.float64)):
         res.mean = numpy.reshape(mean,(1,))
     else:
@@ -81,8 +81,8 @@ def derobs(inps,mean,grads,desc=None):
                             if lat is None:
                                 lat = data.lat
                             else:
-                                if numpy.any(lat != data.lat):
-                                    error_msg(f'Unexpected lattice size for master fields with same tag')
+                                if numpy.any(lat != data.lat): # pragma: no cover
+                                    raise pyobs.PyobsError(f'Unexpected lattice size for master fields with same tag')
             if len(new_mask)>0:
                 if datatype=='rdata':
                     res.__dict__[datatype][key] = rdata(list(set(new_mask)), new_idx)
@@ -128,7 +128,7 @@ def derobs(inps,mean,grads,desc=None):
 
 
 def num_grad(x,f,eps=2e-4):
-    if isinstance(x,pyobs.obs):
+    if isinstance(x,pyobs.observable):
         x0 = x.mean
     else:
         x0 = numpy.array(x)
@@ -170,23 +170,23 @@ def num_hess(x0,f,eps=2e-4):
             
     return ddf
 
-def errbias4(x,f):
-    pyobs.check_type(x,'x',pyobs.obs)
+def error_bias4(x,f):
+    pyobs.check_type(x,'x',pyobs.observable)
     [x0,dx0] = x.error()
     bias4 = numpy.zeros((x.size,))
     hess = num_hess(x0, f)
     
     def core(data):
-        oid = numpy.array(x.rdata[key].mask)
+        oid = numpy.array(data.mask)
         idx = numpy.ix_(oid,oid)
-        d2 = numpy.einsum('abc,bj,cj->aj',hess[:,idx[0],idx[1]],x.rdata[key].delta,x.rdata[key].delta)
+        d2 = numpy.einsum('abc,bj,cj->aj',hess[:,idx[0],idx[1]],data.delta,data.delta)
         dd2 = numpy.sum(d2,axis=1)
-        return dd2**2 /x.rdata[key].n**4
+        return dd2**2 /data.n**4
     
     for key in x.rdata:
-        bias4 +=core(x.rdata)
+        bias4 +=core(x.rdata[key])
         
     for key in x.mfdata:
-        bias4 +=core(x.mfdata)       
+        bias4 +=core(x.mfdata[key])   
     
     return numpy.sqrt(bias4)
