@@ -33,7 +33,7 @@ def load(fname):
         if (type(tmp['rdata'][key]['idx']) is str):
             regex=re.compile('[(,)]')
             h = regex.split(tmp['rdata'][key]['idx'])
-            if h[0]!='range':
+            if h[0]!='range': # pragma: no cover
                 raise pyobs.PyobsError('Unexpected idx')
             res.rdata[key] = pyobs.core.data.rdata(tmp['rdata'][key]['mask'],range(int(h[1]),int(h[2]),int(h[3])))
         else:
@@ -45,8 +45,8 @@ def load(fname):
         if (type(tmp['mfdata'][key]['idx']) is str):
             regex=re.compile('[(,)]')
             h = regex.split(tmp['mfdata'][key]['idx'])
-            if h[0]!='range':
-                error_msg('Unexpected idx')
+            if h[0]!='range': # pragma: no cover
+                raise pyobs.PyobsError('Unexpected idx')
             res.mfdata[key] = pyobs.core.data.mfdata(tmp['mfdata'][key]['mask'],
                                                      range(int(h[1]),int(h[2]),int(h[3])),tmp['mfdata'][key]['lat'])
         else:

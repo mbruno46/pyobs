@@ -30,4 +30,28 @@ for key in test.rdata:
 for key in test.mfdata:
     assert numpy.all(test1.mfdata[key].delta == test2.mfdata[key].delta)
     
+try:
+    pyobs.save('./test-io.json.gz',test1)
+    assert False
+except pyobs.PyobsError:
+    print('error caught')
+
+try:
+    pyobs.save('./test-io.dat',test1)
+    assert False
+except pyobs.PyobsError:
+    print('error caught')
+    
+try:
+    pyobs.load('./test-io-2.json.gz')
+    assert False
+except pyobs.PyobsError:
+    print('error caught')
+
+try:
+    pyobs.load('./test-io-2.dat')
+    assert False
+except pyobs.PyobsError:
+    print('error caught')
+
 os.popen('rm ./test-io.json.gz')
