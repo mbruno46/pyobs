@@ -135,7 +135,7 @@ class variance:
             out1[a] = self.var[mask.index(a),1] / self.N
         return [out0, out1]
     
-    def plot(self,xlab,desc,ed,pfile):
+    def plot(self,xlab,desc,ed,pfile): # pragma: no cover
         if not MATPLOTLIB:
             pass
 
@@ -158,7 +158,7 @@ class variance:
             plt.legend(loc='upper right')
             plt.show()
 
-def plot_piechart(desc,errs,tot):
+def plot_piechart(desc,errs,tot): # pragma: no cover
     if not MATPLOTLIB:
         pass
 

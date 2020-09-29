@@ -1,4 +1,4 @@
-#################################################################################
+e################################################################################
 #
 # obs.py: definition and properties of the core class of the library
 # Copyright (C) 2020 Mattia Bruno
@@ -359,7 +359,7 @@ class obs:
                 out += '\n'
         return out
     
-    def __repr__(self):
+    def __repr__(self): # pragma: no cover
         return self.__str__()
     
     def __getitem__(self,args):
@@ -525,7 +525,7 @@ class obs:
         t0=time()
         [sigma, sigma_tot, _] = self.error_core(errinfo,plot,pfile)
         
-        if plot:
+        if plot: # pragma: no cover
             h=[len(self.edata),len(self.mfname),len(self.cdata)]
             if sum(h)>1:
                 plot_piechart(self.description, sigma, sigma_tot)
