@@ -24,7 +24,8 @@ html: Makefile
 	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS)
 	@if [ ! -d "$(BUILDDIR)/html/_images" ]; then mkdir "$(BUILDDIR)/html/_images"; fi
 	@cp -p $(SOURCEDIR)/pyobs-logo.png $(BUILDDIR)/html/_images
-	@touch "$(BUILDDIR)/html/.nojekyll"
+	#@touch "$(BUILDDIR)/html/.nojekyll"
+	@if [ -d "../docs" ]; then rm -r ../docs; fi
 	@cp -r "$(BUILDDIR)/html" ../docs
 	@cp _config.yml ../docs
 

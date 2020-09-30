@@ -1,24 +1,22 @@
-version x.y.z:
+Future milestones:
  - jackknife error support
- - support for saving and loading observables
+ - IO with bdio file format and pyobs binary format
+ - expected chi square and quality of fit
+ - finite volume quantization condition for 2->2
 
-version 1.0.0, 15.09.2020:
- - __pow__, matrix_power, diag implemented
+version 1.0.0, 30.09.2020:
+ - IO with json file format supported
  - pip install supported
  - error of the error and 4th moment bias supported
  - support for code coverage and automatic unit tests
- - flexible fit modules
- - documentation and tutorials for mfit class
+ - flexible fit modules (Levenberg-Marquardt minimizer)
+ - documentation and tutorials
  - symbolic differentiation for fit functions
- - Levenberg-Marquardt minimizer implemented
- - matmul via @ operand supported
  - support for eigenvalue/eigenvectors (including non-symmetric case)
  - support for exp, log, cosh, arccosh, besselk
  - fast C++ extensions for master-field case
- - re-designed rdata and mfdata classes
- - introduced errinfo class, error method to obs
  - overloaded basic math operations (+,-,*,/)
- - tensor operations: unary support (sum, trace), getitem 
+ - tensor operations: unary support (sum, trace), matmul via @ operand
  - basic tensor manipulation (reshape, concatenate) and getitem
  - FFT for autocorrelations
  - support for external data with known covariances and systematic errors

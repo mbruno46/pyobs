@@ -27,3 +27,5 @@ def func(x):
     return x*45 + x**2
 
 assert pyobs.error_bias4(mfobs, func) < func(mfobs).error_of_error()
+
+print(mfobs.tauint())

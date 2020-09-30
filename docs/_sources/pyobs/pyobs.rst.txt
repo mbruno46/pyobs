@@ -1,6 +1,6 @@
-The obs class
--------------
+The class observable
+--------------------
 
 .. automodule:: pyobs
-    :members: obs
+    :members: observable
 

@@ -25,7 +25,7 @@ After installation it can be imported like any other package
 .. code-block:: python
 
    >>> import pyobs
-   >>> help(pyobs.obs)
+   >>> help(pyobs.observable)
 
 * **pip install from remote repository**
 

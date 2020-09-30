@@ -53,7 +53,7 @@ def load(fname):
     
     if 'json' in fname:
         fmt = json
-    else:
+    else: # pragma: no cover
         raise pyobs.PyobsError(f'Format not supported')
         
     return fmt.load(fname)

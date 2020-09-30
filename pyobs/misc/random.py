@@ -44,7 +44,7 @@ def acrand(mu,sigma,tau,N):
 
     Examples:
        >>> data = pyobs.random.acrand(0.1234,0.0001,4.0,1000)
-       >>> obs = pyobs.observable(desc='test-acrand')
+       >>> obs = pyobs.observable(description='test-acrand')
        >>> obs.create('A',data)
        >>> print(obs)
        0.12341(26)

@@ -1,6 +1,6 @@
 ################################################################################
 #
-# obs.py: definition and properties of the core class of the library
+# ndobs.py: definition and properties of the core class of the library
 # Copyright (C) 2020 Mattia Bruno
 # 
 # This program is free software; you can redistribute it and/or
@@ -40,17 +40,17 @@ class observable:
 
     Parameters:
        orig (observable, optional): creates a copy of orig
-       desc (str, optional): description of the observable
+       description (str, optional): description of the observable
     
     Examples:
        >>> from pyobs import observable
-       >>> a = observable(desc='test')
+       >>> a = observable(description='test')
     """
     
-    def __init__(self,orig=None,desc='unknown'):
+    def __init__(self,orig=None,description='unknown'):
         if orig is None:
-            pyobs.check_type(desc,'text',str)
-            self.description = desc
+            pyobs.check_type(description,'text',str)
+            self.description = description
             self.www = [pwd.getpwuid(os.getuid())[0], os.uname()[1], datetime.datetime.now().strftime('%c')]
             self.shape = []
             self.size = 0
@@ -112,33 +112,33 @@ class observable:
            
         Examples:
            >>> data = [0.43, 0.42, ... ] # a scalar observable
-           >>> a = pyobs.observable(desc='test')
+           >>> a = pyobs.observable(description='test')
            >>> a.create('EnsembleA',data)
 
            >>> data0 = [0.43,0.42, ... ] # replica 0
            >>> data1 = [0.40,0.41, ... ] # replica 1
-           >>> a = pyobs.observable(desc='test')
+           >>> a = pyobs.observable(description='test')
            >>> a.create('EnsembleA',[data0,data1],rname=['r0','r1'])
 
            >>> data = [0.43, 0.42, 0.44, ... ]
            >>> icnfg= [  10,   11,   13, ... ]
-           >>> a = pyobs.observable(desc='test')
+           >>> a = pyobs.observable(description='test')
            >>> a.create('EnsembleA',data,icnfg=icnfg)
 
            >>> data = [1.0, 2.0, 3.0, 4.0, ... ]
-           >>> a = pyobs.observable(desc='matrix')
+           >>> a = pyobs.observable(description='matrix')
            >>> a.create('EnsembleA',data,shape=(2,2))
        
         Examples:
            >>> data = [0.43, 0.42, 0.44, ... ]
            >>> lat = [64,32,32,32]
-           >>> a = pyobs.observable(desc='test-mf')
+           >>> a = pyobs.observable(description='test-mf')
            >>> a.create('EnsembleA',data,lat=lat)
            
            >>> data = [0.43, 0.42, 0.44, ... ]
            >>> idx = [0, 2, 4, 6, ...] # measurements on all even points of time-slice
            >>> lat = [32, 32, 32]
-           >>> a = pyobs.observable(desc='test-mf')
+           >>> a = pyobs.observable(description='test-mf')
            >>> a.create('EnsembleA',data,lat=lat,icnfg=idx)           
         """
         t0=time()
@@ -252,7 +252,7 @@ class observable:
               same length as `value`, a diagonal covariance matrix is assumed.
         
         Examples:
-           >>> mpi = pyobs.observable(desc='pion masses, charged and neutral')
+           >>> mpi = pyobs.observable(description='pion masses, charged and neutral')
            >>> mpi.create_cd('mpi-pdg18',[139.57061,134.9770],[0.00023**2,0.0005**2])
            >>> print(mpi)
            139.57061(23)    134.97700(50)
@@ -284,7 +284,7 @@ class observable:
         
         Examples:
            >>> data = [0.198638, 0.403983, 1.215960, 1.607684, 0.199049, ... ]
-           >>> vec = pyobs.observable(desc='vector')
+           >>> vec = pyobs.observable(description='vector')
            >>> vec.create('A',data,shape=(4,))
            >>> print(vec)
            0.201(13)    0.399(26)    1.199(24)    1.603(47)
@@ -554,6 +554,9 @@ class observable:
         """
         Estimates the integrated autocorrelation time and its error for every
         ensemble, with the automatic windowing procedure.
+
+        Notes:
+           To be added in future versions: support for arbitrary values of Stau
         """
         # to be improved - add errinfo
         tau = {}

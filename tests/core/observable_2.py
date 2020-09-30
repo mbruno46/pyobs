@@ -12,3 +12,13 @@ data = pyobs.random.acrandn(val,cov,tau,N)
 obsA = pyobs.observable()
 obsA.create('EnsA',data.flatten(),shape=(2,))
 print(obsA)
+
+print(obsA[0] - obsA[1])
+
+print(-obsA)
+
+print(obsA @ numpy.array([2.,3.]))
+
+print(1.0 + obsA)
+print(3.4 - obsA)
+print(3.14 / obsA)

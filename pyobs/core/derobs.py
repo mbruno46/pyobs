@@ -38,16 +38,16 @@ def merge_idx(idx1,idx2):
         return list(sorted(u.union(idx2)))
 
     
-def derobs(inps,mean,grads,desc=None):
+def derobs(inps,mean,grads,description=None):
     t0=time()
     pyobs.check_type(inps,'inps',list)
     pyobs.check_type(mean,'mean',numpy.ndarray,int,float,numpy.float32,numpy.float64)
     pyobs.check_type(grads,'grads',list)
     if len(inps)!=len(grads):
         raise pyobs.PyobsError('Incompatible inps and grads')
-    if desc is None:
-        desc=', '.join(set([i.description for i in inps]))
-    res = pyobs.observable(desc=desc)
+    if description is None:
+        description=', '.join(set([i.description for i in inps]))
+    res = pyobs.observable(description=description)
     if isinstance(mean,(int,float,numpy.float32,numpy.float64)):
         res.mean = numpy.reshape(mean,(1,))
     else:

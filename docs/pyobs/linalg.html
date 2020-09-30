@@ -98,18 +98,18 @@
 <dd><p>Compute the inverse of a square matrix</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<a class="reference internal" href="pyobs.html#pyobs.obs" title="pyobs.obs"><em>obs</em></a>) – Matrix to be inverted</p>
+<dd class="field-odd"><p><strong>x</strong> (<em>obs</em>) – Matrix to be inverted</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>(Multiplicative) inverse of <cite>x</cite></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pyobs.html#pyobs.obs" title="pyobs.obs">obs</a></p>
+<dd class="field-odd"><p>obs</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyobs.linalg</span> <span class="kn">import</span> <span class="n">inv</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">obs</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ainv</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 </pre></div>
@@ -127,7 +127,7 @@ in the last two indexes and broadcast accordingly.</p>
 The central values are computed using the <cite>numpy.linalg.eig</cite> routine.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<a class="reference internal" href="pyobs.html#pyobs.obs" title="pyobs.obs"><em>obs</em></a>) – a symmetric square matrix (observable) with dimensions <cite>NxN</cite></p>
+<dd class="field-odd"><p><strong>x</strong> (<em>obs</em>) – a symmetric square matrix (observable) with dimensions <cite>NxN</cite></p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>a vector observable with the eigenvalues and a matrix observable whose columns correspond to the eigenvectors</p>
@@ -157,7 +157,7 @@ square matrix observable. The central values are computed using
 the <cite>numpy.linalg.eig</cite> routine.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<a class="reference internal" href="pyobs.html#pyobs.obs" title="pyobs.obs"><em>obs</em></a>) – a square matrix (observable) with dimensions <cite>NxN</cite>;</p>
+<dd class="field-odd"><p><strong>x</strong> (<em>obs</em>) – a square matrix (observable) with dimensions <cite>NxN</cite>;</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>a vector observable with the eigenvalues and two
@@ -188,7 +188,7 @@ usage of <cite>eig</cite> is recommended for better performance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<a class="reference internal" href="pyobs.html#pyobs.obs" title="pyobs.obs"><em>obs</em></a>) – a symmetric square matrix (observable) with dimensions <cite>NxN</cite></p></li>
+<li><p><strong>x</strong> (<em>obs</em>) – a symmetric square matrix (observable) with dimensions <cite>NxN</cite></p></li>
 <li><p><strong>a</strong> (<em>float</em>) – the power</p></li>
 </ul>
 </dd>
@@ -196,7 +196,7 @@ usage of <cite>eig</cite> is recommended for better performance.</p>
 <dd class="field-even"><p>the matrix raised to the power <cite>a</cite></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pyobs.html#pyobs.obs" title="pyobs.obs">obs</a></p>
+<dd class="field-odd"><p>obs</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>

@@ -33,7 +33,7 @@ assert dp - numpy.sqrt((dt*m**2)**2 + (2.0*t*m*dm)**2) < 1e-10
 phi_copy = pyobs.observable(phi)
 print(f'phi_copy = {phi}')
 
-masses = pyobs.observable(desc='pion, kaon')
+masses = pyobs.observable(description='pion, kaon')
 masses.create_from_cov('pion/kaon',[134.9766,497.648],[0.0006**2,0.022**2])
 print('masses = ',masses)
 
