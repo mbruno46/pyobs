@@ -22,3 +22,11 @@ print(obsA @ numpy.array([2.,3.]))
 print(1.0 + obsA)
 print(3.4 - obsA)
 print(3.14 / obsA)
+
+pyobs.memory.info()
+obsB = obsA[0]
+obsB += obsA[1]
+pyobs.memory.info()
+obsB.peek()
+
+obsB -= obsA[0]

@@ -443,6 +443,21 @@ class observable:
         g0=self.gradient( lambda x: a * x*self.mean**(a-1))
         return pyobs.derobs([self], new_mean, [g0])
     
+    # in-place operations
+    def __iadd__(self,y):
+        tmp = self + y
+        del self
+        self = pyobs.observable(tmp)
+        del tmp
+        return self
+    
+    def __isub__(self,y):
+        tmp = self - y
+        del self
+        self = pyobs.observable(tmp)
+        del tmp
+        return self
+        
     def error_core(self,errinfo,plot,pfile):
         sigma_tot = numpy.zeros(self.shape)
         dsigma_tot = numpy.zeros(self.shape)
