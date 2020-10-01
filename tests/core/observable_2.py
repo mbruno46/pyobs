@@ -30,3 +30,8 @@ pyobs.memory.info()
 obsB.peek()
 
 obsB -= obsA[0]
+
+obsB *= 8.0
+
+obsB /= obsA[0]**2
+print(obsB)

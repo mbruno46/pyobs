@@ -457,7 +457,21 @@ class observable:
         self = pyobs.observable(tmp)
         del tmp
         return self
-        
+    
+    def __imul__(self,y):
+        tmp = self * y
+        del self
+        self = pyobs.observable(tmp)
+        del tmp
+        return self
+    
+    def __itruediv__(self,y):
+        tmp = self / y
+        del self
+        self = pyobs.observable(tmp)
+        del tmp
+        return self
+    
     def error_core(self,errinfo,plot,pfile):
         sigma_tot = numpy.zeros(self.shape)
         dsigma_tot = numpy.zeros(self.shape)
