@@ -22,7 +22,7 @@
 import numpy
 import pyobs
 
-__all__ = ['reshape','concatenate','transpose','sort','diag']
+__all__ = ['reshape','concatenate','transpose','sort','diag','repeat','tile']
 
 def reshape(x,new_shape):
     """
@@ -127,3 +127,33 @@ def diag(x):
     mean = numpy.diag(x.mean)
     grads = x.gradient( lambda x:numpy.diag(x))
     return pyobs.derobs([x],mean,[grads])
+
+def repeat(x,repeats,axis=None):
+    """
+    Repeats elements of an observables.
+    
+    Parameters:
+       x (observable): input observable
+       repeats (int): the number of repetitions of each element
+       axis (int, optional): the axis along which to repeat the values.
+    
+    Returns:
+       observable: output with same shape as `x` except along the axis 
+           with repeated elements.
+    """
+    f = lambda x: numpy.repeat(x, repeats=repeats, axis=axis)
+    mean = f(x.mean)
+    grads = x.gradient(f)
+    return pyobs.derobs([x],mean,[grads])
+
+def tile(x, reps):
+    """
+    Constructs an observable by repeating `x` `reps` times.
+    
+    Notes:
+       Check the documentation of `numpy.tile` for more details 
+       on the input arguments and function behavior.
+    """
+    f = lambda x: numpy.tile(x, reps)
+    grads = x.gradient(f)
+    return pyobs.derobs([x], f(x.mean), [grads])

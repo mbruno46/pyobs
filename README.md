@@ -43,7 +43,7 @@ The documentation together with tutorials
 can be accessed in [HTML][1] format or [PDF][2].
 
 [1]: https://mbruno46.github.io/pyobs
-[2]: ./doc/pyobs-doc.pdf
+[2]: ./docs/pyobs-doc.pdf
 
 If you use this library in your publications please consider citing:
 

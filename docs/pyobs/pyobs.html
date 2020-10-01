@@ -94,19 +94,19 @@
 <span id="the-class-observable"></span><h1>The class observable<a class="headerlink" href="#module-pyobs" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="pyobs.observable">
-<em class="property">class </em><code class="sig-prename descclassname">pyobs.</code><code class="sig-name descname">observable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">orig</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">desc</span><span class="o">=</span><span class="default_value">'unknown'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observable" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyobs.</code><code class="sig-name descname">observable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">orig</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">'unknown'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class defining an observable</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>orig</strong> (<a class="reference internal" href="#pyobs.observable" title="pyobs.observable"><em>observable</em></a><em>, </em><em>optional</em>) – creates a copy of orig</p></li>
-<li><p><strong>desc</strong> (<em>str</em><em>, </em><em>optional</em>) – description of the observable</p></li>
+<li><p><strong>description</strong> (<em>str</em><em>, </em><em>optional</em>) – description of the observable</p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyobs</span> <span class="kn">import</span> <span class="n">observable</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">observable</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">observable</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="py method">
@@ -124,7 +124,7 @@ with the systematic error</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.198638</span><span class="p">,</span> <span class="mf">0.403983</span><span class="p">,</span> <span class="mf">1.215960</span><span class="p">,</span> <span class="mf">1.607684</span><span class="p">,</span> <span class="mf">0.199049</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">vec</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vec</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">vec</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
 <span class="go">0.201(13)    0.399(26)    1.199(24)    1.603(47)</span>
@@ -166,38 +166,38 @@ a new replica to the same ensemble.</p>
 </div>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.43</span><span class="p">,</span> <span class="mf">0.42</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span> <span class="c1"># a scalar observable</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;EnsembleA&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.43</span><span class="p">,</span><span class="mf">0.42</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span> <span class="c1"># replica 0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data1</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.40</span><span class="p">,</span><span class="mf">0.41</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span> <span class="c1"># replica 1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;EnsembleA&#39;</span><span class="p">,[</span><span class="n">data0</span><span class="p">,</span><span class="n">data1</span><span class="p">],</span><span class="n">rname</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;r0&#39;</span><span class="p">,</span><span class="s1">&#39;r1&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.43</span><span class="p">,</span> <span class="mf">0.42</span><span class="p">,</span> <span class="mf">0.44</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">icnfg</span><span class="o">=</span> <span class="p">[</span>  <span class="mi">10</span><span class="p">,</span>   <span class="mi">11</span><span class="p">,</span>   <span class="mi">13</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;EnsembleA&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">icnfg</span><span class="o">=</span><span class="n">icnfg</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;matrix&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;matrix&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;EnsembleA&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 </pre></div>
 </div>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.43</span><span class="p">,</span> <span class="mf">0.42</span><span class="p">,</span> <span class="mf">0.44</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">lat</span> <span class="o">=</span> <span class="p">[</span><span class="mi">64</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">32</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;test-mf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;test-mf&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;EnsembleA&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">lat</span><span class="o">=</span><span class="n">lat</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.43</span><span class="p">,</span> <span class="mf">0.42</span><span class="p">,</span> <span class="mf">0.44</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="c1"># measurements on all even points of time-slice</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">lat</span> <span class="o">=</span> <span class="p">[</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;test-mf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;test-mf&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;EnsembleA&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">lat</span><span class="o">=</span><span class="n">lat</span><span class="p">,</span><span class="n">icnfg</span><span class="o">=</span><span class="n">idx</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -218,7 +218,7 @@ same length as <cite>value</cite>, a diagonal covariance matrix is assumed.</p><
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mpi</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;pion masses, charged and neutral&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mpi</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;pion masses, charged and neutral&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mpi</span><span class="o">.</span><span class="n">create_cd</span><span class="p">(</span><span class="s1">&#39;mpi-pdg18&#39;</span><span class="p">,[</span><span class="mf">139.57061</span><span class="p">,</span><span class="mf">134.9770</span><span class="p">],[</span><span class="mf">0.00023</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="mf">0.0005</span><span class="o">**</span><span class="mi">2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">mpi</span><span class="p">)</span>
 <span class="go">139.57061(23)    134.97700(50)</span>

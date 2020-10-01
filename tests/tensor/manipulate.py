@@ -49,3 +49,9 @@ assert numpy.any(abs(dc0 - dc[idx])) < 1e-12
 
 [c0, dc0] = pyobs.diag(corr).error()
 assert numpy.any(abs(dc0 - numpy.diag(dc))) < 1e-12
+
+print('repeat')
+print(pyobs.repeat(corr[0:4],3))
+
+print('tile')
+print(pyobs.tile(corr[0:4],(3,1)))

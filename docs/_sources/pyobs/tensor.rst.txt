@@ -9,5 +9,7 @@ Manipulation of observables
    reshape
    concatenate
    transpose
-   sort
    diag
+   sort
+   repeat
+   tile

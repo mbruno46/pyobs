@@ -121,7 +121,7 @@ divided by <cite>N</cite>.</p>
 </div>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">acrand</span><span class="p">(</span><span class="mf">0.1234</span><span class="p">,</span><span class="mf">0.0001</span><span class="p">,</span><span class="mf">4.0</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;test-acrand&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;test-acrand&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
 <span class="go">0.12341(26)</span>
