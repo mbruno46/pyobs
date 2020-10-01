@@ -22,7 +22,7 @@
 import numpy
 import pyobs
 
-__all__ = ['reshape','concatenate','transpose','sort','diag','repeat','tile']
+__all__ = ['reshape','concatenate','transpose','sort','diag','repeat','tile','stack']
 
 def reshape(x,new_shape):
     """
@@ -139,7 +139,7 @@ def repeat(x,repeats,axis=None):
     
     Returns:
        observable: output with same shape as `x` except along the axis 
-           with repeated elements.
+                   with repeated elements.
     """
     f = lambda x: numpy.repeat(x, repeats=repeats, axis=axis)
     mean = f(x.mean)
@@ -157,3 +157,25 @@ def tile(x, reps):
     f = lambda x: numpy.tile(x, reps)
     grads = x.gradient(f)
     return pyobs.derobs([x], f(x.mean), [grads])
+
+def stack(obs, axis=0):
+    """
+    Join a list of observables along a new axis.
+    
+    Parameters:
+       obs (list of observables): each observable must have the same shape
+       axis (int, optional): the axis along which the observables are stacked
+   
+    Returns:
+       observable: the stacked observables
+    """
+    pyobs.check_type(obs,'obs',list)
+    pyobs.check_type(obs[0],'obs',pyobs.observable)
+    arr = [o.mean for o in obs]
+    f = lambda x: numpy.stack(x, axis=axis)
+    grads = []
+    for j in range(len(obs)):
+        arr0 = [numpy.zeros(obs[i].shape) for i in range(0,j)]
+        arr1 = [numpy.zeros(obs[i].shape) for i in range(j+1,len(obs))]
+        grads += [obs[j].gradient(lambda x: f(arr0+[x]+arr1))]
+    return pyobs.derobs(obs, f(arr), grads)

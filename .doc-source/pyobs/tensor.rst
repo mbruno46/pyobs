@@ -13,3 +13,4 @@ Manipulation of observables
    sort
    repeat
    tile
+   stack
