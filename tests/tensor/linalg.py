@@ -8,7 +8,8 @@ data = pyobs.random.acrandn(mat,cov,1.0,4000)
 
 omat = pyobs.observable()
 omat.create('test',data.flatten(),shape=(2,2))
-print(omat)
+[v, e] = omat.error()
+print(pyobs.valerr(v,e))
 
 #check inverse
 def func(x):
