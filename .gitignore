@@ -5,14 +5,13 @@ __pycache__/
 *.pyc
 *.ipynb*
 *.so
-!tutorials/*ipynb
+!doc/tutorials/*ipynb
 
 # ignores vim swap files
 *.swp
 
 # ignores files from doc
 doctrees/
-sphinx-build
 html/
 
 # ignores output from local coverage
