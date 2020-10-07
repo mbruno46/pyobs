@@ -32,4 +32,4 @@ jobs:
       with:
        path: doc
        doc-branch: 'documentation'
-       pypackges: 'nbsphinx IPython pandoc'
+       pypackages: 'nbsphinx IPython pandoc'
