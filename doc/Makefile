@@ -20,7 +20,6 @@ help:
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 html: Makefile
-	@cp ../tutorials/*.ipynb $(SOURCEDIR)/tutorials
 	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS)
 	@if [ ! -d "$(BUILDDIR)/html/_images" ]; then mkdir "$(BUILDDIR)/html/_images"; fi
 	@cp -p $(SOURCEDIR)/pyobs-logo.png $(BUILDDIR)/html/_images
