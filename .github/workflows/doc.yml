@@ -25,9 +25,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install numpy sphinx
         pip install ./pyobs
+	sudo apt-get install pandoc
 
     - name: Deploy doc
       uses: mbruno46/deploy-sphinx-doc@main
       with:
        path: doc
        doc-branch: 'documentation'
+       pypackges: 'nbsphinx IPython pandoc'
