@@ -1,4 +1,0 @@
-# ignores following files from language detection
-.doc-source/* linguist-documentation
-docs/* linguist-documentation
-tutorials/* -linguist-detectable 
