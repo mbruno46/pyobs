@@ -62,49 +62,47 @@ def valerr(v,e):
     else:
         raise PyobsError('valerr supports up to 2D arrays')
 
-def textable(mat,cols=None,fmt=None):
+def textable(mat, fmt=None):
     """
     Formats a matrix to a tex table.
     
     Parameters:
        mat (array): 2D array
-       cols (list, optional): an index from 0 to M, with M smaller
-           than the number of columns `mat`. It specifies which columns
-           go together in a value-error combination.
-       fmt (list, optional): a list of formats for each columns; it is 
-           ignored on the columns corresponding to a value-error combination.
-           Accepted values are 'd' for integers, '.2f' for floats with 2 digit
+       fmt (list, optional): a list of formats for each columns; if 0 is passed
+           on two consecutive columns the program assumes that they correspond
+           to value and error and prints them together in a single column; otherwise
+           accepted values are 'd' for integers, '.2f' for floats with 2 digit
            precision, etc ...
            
     Returns:
-       str: the tex table
+       list of str: a list where each element is a line of the tex table
        
     Examples:
        >>> tsl = [0,1,2,3,4] # time-slice
        >>> [c, dc] = correlator.error()
        >>> mat = numpy.c_[tsl, c, dc] # pack data
-       >>> pyobs.textable(mat, cols=[0,1,1], fmt=['d',0,0])
+       >>> pyobs.textable(mat, fmt=['d',0,0])
     """
     
     if numpy.ndim(mat)!=2:
         raise PyobsError('textable supports only 2D arrays')
     
     (n,m) = numpy.shape(mat)
-    if cols is None:
-        cols = range(m)
     if fmt is None:
         fmt = ['.2f']*m
         
-    outstr = ''
+    outstr = []
     for a in range(n):
-        (idx,rep) = numpy.unique(cols, return_counts=True)
         h= []
-        for i in range(len(idx)):
-            if rep[i]==1:
-                h += [f'%{fmt[i]}' % mat[a,idx[i]]]
-            elif rep[i]==2:
-                h += [valerr(mat[a,idx[i]],mat[a,idx[i]+1])]
-        outstr = f'{outstr}{" & ".join(h)}\n'
+        i=0
+        while (i<m):
+            if fmt[i]==0:
+                h += [valerr(mat[a,i],mat[a,i+1])]
+                i += 2
+            else:
+                h += [f'%{fmt[i]}' % mat[a,i]]
+                i += 1
+        outstr += [fr'{" & ".join(h)} \\ ']
     
     return outstr
         

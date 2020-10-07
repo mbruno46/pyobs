@@ -38,4 +38,4 @@ print(obsB)
 
 [c,dc] = obsA.error()
 mat = numpy.c_[[0,1],c,dc]
-print(pyobs.textable(mat,cols=[0,1,1],fmt=['d',0,0]))
+print(pyobs.textable(mat,fmt=['d',0,0]))
