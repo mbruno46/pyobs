@@ -158,6 +158,39 @@ matrix is assumed</p></li>
 </dl>
 </dd></dl>
 
+<span class="target" id="module-pyobs"></span><dl class="py function">
+<dt id="pyobs.textable">
+<code class="sig-prename descclassname">pyobs.</code><code class="sig-name descname">textable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mat</span></em>, <em class="sig-param"><span class="n">cols</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fmt</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.textable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats a matrix to a tex table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mat</strong> (<em>array</em>) – 2D array</p></li>
+<li><p><strong>cols</strong> (<em>list</em><em>, </em><em>optional</em>) – an index from 0 to M, with M smaller
+than the number of columns <cite>mat</cite>. It specifies which columns
+go together in a value-error combination.</p></li>
+<li><p><strong>fmt</strong> (<em>list</em><em>, </em><em>optional</em>) – a list of formats for each columns; it is
+ignored on the columns corresponding to a value-error combination.
+Accepted values are ‘d’ for integers, ‘.2f’ for floats with 2 digit
+precision, etc …</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the tex table</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tsl</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span> <span class="c1"># time-slice</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="n">dc</span><span class="p">]</span> <span class="o">=</span> <span class="n">correlator</span><span class="o">.</span><span class="n">error</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">tsl</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">dc</span><span class="p">]</span> <span class="c1"># pack data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pyobs</span><span class="o">.</span><span class="n">textable</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">fmt</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </div>
 
 

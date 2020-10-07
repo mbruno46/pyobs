@@ -35,3 +35,7 @@ obsB *= 8.0
 
 obsB /= obsA[0]**2
 print(obsB)
+
+[c,dc] = obsA.error()
+mat = numpy.c_[[0,1],c,dc]
+print(pyobs.textable(mat,cols=[0,1,1],fmt=['d',0,0]))
