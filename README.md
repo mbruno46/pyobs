@@ -1,22 +1,36 @@
 
 [![Build/Test](https://github.com/mbruno46/pyobs/workflows/Build/Test/badge.svg)](https://github.com/mbruno46/pyobs/actions?query=workflow%3ABuild%2FTest)
+![Build Doc](https://github.com/mbruno46/pyobs/workflows/Build%20Doc/badge.svg)
 [![codecov](https://codecov.io/gh/mbruno46/pyobs/branch/master/graph/badge.svg)](https://codecov.io/gh/mbruno46/pyobs)
+[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
-<img src="/docs/_images/pyobs-logo.png" width="25%">
+# pyobs 
 
-# pyobs
+<!--- <img src="/doc/pyobs-logo.png" width="15%"> --->
 
 A Python library to analyse data generated 
 from (Monte Carlo) Markov chains.
 
-## Authors
+- **Website:** https://mbruno46.github.io/pyobs/
+- **Documentation:** https://mbruno46.github.io/pyobs/
+- **Examples:** [tests](./tests), [tutorials](./doc/tutorials)
+- **Source code:** https://github.com/mbruno46/pyobs/
+- **Bug reports:** https://github.com/mbruno46/pyobs/issues
+
+If you use this library in your publications please consider citing:
+
+* U. Wolff, "Monte Carlo errors with less errors". Comput.Phys.Commun. 156 (2004) 143-153.
+* S. Schaefer, R. Sommer, F. Virotta, "Critical slowing down and error analysis in lattice QCD simulations". Nucl.Phys.B 845 (2011) 93-119.
+* M. Bruno, R. Sommer, In preparation.
+
+### Authors
 
 Copyright (C) 2020, Mattia Bruno
 
 ## Installation
 
-To install the library directly in the local python distribution,
-simply run the following commands
+To install the library directly in your local python distribution,
+simply run
 
 ```bash
 pip install git+https://github.com/mbruno46/pyobs.git@master#egg=pyobs
@@ -28,27 +42,27 @@ After installation, `pyobs` can be imported like any other package
 
 ```python
 import pyobs
-from pyobs import obs
-help(pyobs)
+help(pyobs.observable)
 ```
 
 The library can also be installed from a local clone of
-the repository or in *developer mode*, as described in the 
-documentation (see link below). Recompilation of the 
-C++ extensions might be necessary in this case.
+the repository in *developer mode*, as described in the 
+documentation. Recompilation of the C++ extensions might 
+be necessary in this case.
 
-## Documentation
+## Example
 
-The documentation together with tutorials
-can be accessed in [HTML][1] format or [PDF][2].
+```python
+import numpy
+import pyobs
 
-[1]: https://mbruno46.github.io/pyobs
-[2]: ./docs/pyobs-doc.pdf
+data = numpy.loadtxt('plaquette.dat')
 
-If you use this library in your publications please consider citing:
+plaq = pyobs.observable(description='the plaquette')
+plaq.create('ensembleA',data)
 
-* U. Wolff, "Monte Carlo errors with less errors". Comput.Phys.Commun. 156 (2004) 143-153.
-* F. Virotta, "Critical slowing down and error analysis of lattice QCD simulations." PhD thesis.
-* S. Schaefer, R. Sommer, F. Virotta, "Critical slowing down and error analysis in lattice QCD simulations". Nucl.Phys.B 845 (2011) 93-119.
-* M. Bruno, R. Sommer, In preparation.
+# perform arbitrary operations
+print(plaq, plaq**2)
 
+logplaq = pyobs.log(plaq)
+```
