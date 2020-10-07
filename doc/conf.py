@@ -13,7 +13,7 @@
 import os
 import sys
 cwd=os.getcwd()
-p=cwd.split('pyobs')[0]+'pyobs'
+p=f'{cwd}/../'
 print(p)
 sys.path.append(p)
 import pyobs
@@ -67,7 +67,7 @@ autosummary_generate = True
 # a list of builtin themes.
 #
 html_theme = 'jupyter'
-html_theme_path = [p+'/doc/']
+html_theme_path = [p+'/doc']
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
