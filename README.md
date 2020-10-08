@@ -19,8 +19,8 @@ from (Monte Carlo) Markov chains.
 
 If you use this library in your publications please consider citing:
 
-* U. Wolff, "Monte Carlo errors with less errors". Comput.Phys.Commun. 156 (2004) 143-153.
-* S. Schaefer, R. Sommer, F. Virotta, "Critical slowing down and error analysis in lattice QCD simulations". Nucl.Phys.B 845 (2011) 93-119.
+* U. Wolff, [Monte Carlo errors with less errors](https://inspirehep.net/literature/621085). *Comput.Phys.Commun.* 156 (2004) 143-153.
+* S. Schaefer, R. Sommer, F. Virotta, [Critical slowing down and error analysis in lattice QCD simulations](https://inspirehep.net/literature/871175). *Nucl.Phys.B* 845 (2011) 93-119.
 * M. Bruno, R. Sommer, In preparation.
 
 ### Authors
