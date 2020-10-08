@@ -304,8 +304,8 @@ class mfit:
            pars (obs) : the observable returned by calling this class
 
         Returns:
-           obs, list of obs : observables corresponding to the functions evaluated
-                              at the coordinates `xax`.
+           list of obs : observables corresponding to the functions evaluated 
+                         at the coordinates `xax`.
                               
         Examples:
            >>> fit1 = mfit(xax,W,f,df)

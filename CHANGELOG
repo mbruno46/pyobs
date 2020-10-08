@@ -3,6 +3,7 @@ Future milestones:
  - IO with bdio file format and pyobs binary format
  - expected chi square and quality of fit
  - finite volume quantization condition for 2->2
+ - exponential tail
 
 version 1.0.0, 30.09.2020:
  - IO with json file format supported

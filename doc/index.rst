@@ -52,7 +52,7 @@ After installation it can be imported like any other package
 The library can alternatively be used without installation
 by adding the appropriate path to `sys`.
 In this case it is recommended to recompile the C++ extensions
-manually with `python setup.py buil_ext`. 
+manually with `python setup.py build_ext`. 
 
 .. code-block:: python
 

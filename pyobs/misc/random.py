@@ -76,8 +76,7 @@ def acrandn(mu,cov,tau,N):
        N (int): the number of configurations/measurements
 
     Returns:
-       numpy.ndarray : 2-D array with the synthetic data, such that each row 
-          corresponds to a configuration
+       numpy.ndarray : 2-D array with the synthetic data, such that each row corresponds to a configuration
     """
     if len(mu)!=numpy.shape(cov)[0]: # pragma: no cover
         raise ValueError
