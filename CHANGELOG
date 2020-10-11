@@ -5,7 +5,7 @@ Future milestones:
  - finite volume quantization condition for 2->2
  - exponential tail
 
-version 1.0.0, 30.09.2020:
+version 1.0.0-alpha, 11.10.2020:
  - IO with json file format supported
  - pip install supported
  - error of the error and 4th moment bias supported
