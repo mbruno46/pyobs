@@ -23,7 +23,8 @@ import numpy
 import sys
 
 __all__ = ['PyobsError','check_type','check_not_type',
-        'is_verbose','set_verbose','valerr','textable']
+        'is_verbose','set_verbose','valerr','textable',
+          'slice_tensor']
 
 verbose=[]
 
@@ -117,7 +118,42 @@ def check_type(obj,s,*t):
 def check_not_type(obj,s,t):
     if type(obj) is t:
         raise TypeError(f'Unexpected type for {s}')
+
+def slice_tensor(t,*args):
+    """
+    Selects subparts of a tensor.
     
+    Parameters:
+       t (array): N-D array
+       *args (list): a series of lists or arrays with the indices
+                     used for the extraction. `[]` is interpreted 
+                     as taking all elements along that given axis.
+    
+    Returns:
+       array: the sliced tensor
+       
+    Examples:
+       >>> mat = numpy.arange(12).reshape(2,2,3)
+       >>> pyobs.slice_tensor(mat,[],[0],[0,3])
+       array([[[0, 2]],
+              [[6, 8]]])
+    """
+    n=len(args)
+    s=numpy.shape(t)
+    if len(args)!=len(s):
+        raise TypeError(f'Dimensions of tensor do not match indices')
+    
+    aa=[]
+    for a in args:
+        ia = args.index(a)
+        if (a is None) or (not a):
+            aa.append(range(s[ia]))
+        elif isinstance(a,(numpy.ndarray,list)):
+            aa.append(a)
+
+    return t[numpy.ix_(*aa)]
+
+
 #def sort_data(idx,data):
 #    out = numpy.zeros(numpy.shape(data))
 #    new_idx = list(numpy.sort(idx))

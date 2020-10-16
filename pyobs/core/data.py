@@ -146,20 +146,8 @@ class delta:
             jlist.append(self.get_idx(k))
         jlist=numpy.array(jlist,dtype=numpy.int)
         
-        for a in self.mask:
-            ia=self.get_mask(a)
-            
-            gvec = []
-            ib=[]
-            for b in d.mask:
-                if abs(grad[a,b])>1e-14:
-                    gvec.append(grad[a,b])
-                    ib.append(d.get_mask(b))
-            if ib:
-                ib=numpy.array(ib,dtype=numpy.int)
-                gvec=numpy.array(gvec,dtype=numpy.float64)
-                self.delta[ia,jlist]  += gvec @ d.delta[ib,:]
-            
+        gvec = numpy.array(pyobs.slice_tensor(grad, self.mask, d.mask),dtype=numpy.float64)
+        self.delta[:,jlist] += gvec @ d.delta
 
 
             

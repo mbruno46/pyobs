@@ -90,14 +90,15 @@ def acrandn(mu,cov,tau,N):
     r=numpy.reshape( numpy.random.normal(0.0,1.0,N*nf), (N,nf) )
     rn=numpy.zeros((N,nf))
     rn[0,:] = ff*r[0,:]
+
     for i in range(N):
         rn[i,:] = ff*r[i,:] + f*rn[i-1,:]
-    
-    if numpy.ndim(cov)==1:
-        cov=numpy.diag(cov)
-    [w,v] = numpy.linalg.eig(cov)
 
-    Q = numpy.diag(numpy.sqrt(w)) @ v.T
-    for i in range(N):
-        rn[i,:] = rn[i,:] @ Q + numpy.array(mu)
-    return rn
+    if numpy.ndim(cov)==1:
+        Q = numpy.diag(numpy.sqrt(cov))
+    else:
+        [w,v] = numpy.linalg.eig(cov)
+        Q = numpy.diag(numpy.sqrt(w)) @ v.T
+    #for i in range(N):
+    #    rn[i,:] = rn[i,:] @ Q + numpy.array(mu)
+    return rn @ Q + numpy.array(mu)
