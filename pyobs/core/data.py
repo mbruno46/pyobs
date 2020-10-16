@@ -106,10 +106,7 @@ class delta:
         self.delta = numpy.zeros((self.size,self.n),dtype=numpy.float64)
         
         if not mean is None:
-            data=numpy.reshape(data,(self.n,self.size))
-            for i in range(self.n):
-                for a in range(self.size):
-                    self.delta[a,i] = data[i,a] - mean[a]
+            self.delta = numpy.reshape(data,(self.n,self.size)).T - numpy.stack([mean]*self.n,axis=1)
         
     def ncnfg(self):
         if type(self.idx) is range:
