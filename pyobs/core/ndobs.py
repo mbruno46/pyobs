@@ -373,7 +373,6 @@ class observable:
             if isinstance(args[i],(slice,numpy.ndarray)):
                 new_size *= numpy.size(numpy.arange(self.shape[i])[args[i]])
         grad=numpy.zeros((new_size,self.size))
-        hess=numpy.zeros((new_size,self.size,self.size))
         idx = numpy.reshape(range(self.size),self.shape)[tuple(args)]
         a=0
         for b in idx.flatten():

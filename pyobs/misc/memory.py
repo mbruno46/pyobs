@@ -73,8 +73,10 @@ def info():
 def available():
     platform = sys.platform
     if platform == "linux" or platform == "linux2":
-        print('bla')
-    elif platform == "darwin":
+        out = os.popen('cat /proc/meminfo').readlines()
+        mem = out[2].split('MemAvailable:')[1].split('kB')[0].strip()
+        bb = int(mem)*1024.
+    elif platform == "darwin": # pragma no cover
         out = os.popen('vm_stat').readlines()
         size = int(out[0].split('page size of')[1].split('bytes')[0].strip())
         pages = float(out[1].split(':')[1].strip())
