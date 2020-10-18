@@ -69,3 +69,22 @@ def info():
         print(f' - TOTAL {tot_size/MB:.0f} MB\n')
     else:
         print(f' - TOTAL {tot_size/1024.:.0f} KB\n')
+
+def available():
+    platform = sys.platform
+    if platform == "linux" or platform == "linux2":
+        print('bla')
+    elif platform == "darwin":
+        out = os.popen('vm_stat').readlines()
+        size = int(out[0].split('page size of')[1].split('bytes')[0].strip())
+        pages = float(out[1].split(':')[1].strip())
+        bb = pages * size
+    elif platform == "win32":
+        raise 
+    
+    if bb>GB:
+        print(f' - Available memory {bb/GB:.0f} GB\n')
+    else:
+        print(f' - Available memory {bb/MB:.0f} MB\n')
+    
+    return bb

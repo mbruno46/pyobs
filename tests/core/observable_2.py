@@ -39,3 +39,10 @@ print(obsB)
 [c,dc] = obsA.error()
 mat = numpy.c_[[0,1],c,dc]
 print(pyobs.textable(mat,fmt=['d',0,0]))
+
+obsC = pyobs.concatenate(obsA[0],obsA[1]**2)
+obsA[1] = obsA[1]**2
+[v1, e1] = obsC.error()
+[v2, e2] = obsA.error()
+assert numpy.any(abs(v1-v2)) < 1e-10
+assert numpy.any(abs(e1-e2)) < 1e-10

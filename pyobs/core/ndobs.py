@@ -381,6 +381,25 @@ class observable:
             a+=1
         return pyobs.derobs([self],self.mean[tuple(args)],[grad])
     
+    def __setitem__(self,args,yobs):
+        if isinstance(args,(int,numpy.int32,numpy.int64,slice,numpy.ndarray)):
+            args=[args]
+            if yobs.shape==(1):
+                raise pyobs.PyobsError('Dimensions do not match')
+        elif self.mean[tuple(args)].shape != yobs.shape:
+            raise pyobs.PyobsError('Dimensions do not match')
+        idx = numpy.arange(self.size).reshape(self.shape)[tuple(args)]
+        submask = idx.flatten()
+        self.mean[tuple(args)] = yobs.mean
+        for key in yobs.rdata:
+            if not key in self.rdata:
+                raise pyobs.PyobsError('Ensembles do not match; can not assign item')
+            self.rdata[key].assign(submask,yobs.rdata[key])
+        for key in yobs.mfdata:
+            if not key in self.mfdata:
+                raise pyobs.PyobsError('Ensembles do not match; can not assign item')
+            self.mfdata[key].assign(submask,yobs.mfdata[key])
+        
     def __addsub__(self,y,sign):
         g0=numpy.eye(self.size)
         if isinstance(y,observable):

@@ -146,7 +146,12 @@ class delta:
         gvec = numpy.array(pyobs.slice_tensor(grad, self.mask, d.mask),dtype=numpy.float64)
         self.delta[:,jlist] += gvec @ d.delta
 
-
+    def assign(self,submask,rd):
+        if len(submask)!=len(rd.mask):
+            raise pyobs.PyobsError('Dimensions do not match in assignment')
+        for i in range(len(submask)):
+            j = self.mask.index(submask[i])
+            self.delta[j,:] = rd.delta[i,:]
             
 class mfdata(delta):
     def __init__(self,mask,idx,lat,data=None,mean=None):

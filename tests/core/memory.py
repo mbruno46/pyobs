@@ -27,3 +27,4 @@ obsB.peek()
 del obsB
 
 pyobs.memory.info()
+pyobs.memory.available()
