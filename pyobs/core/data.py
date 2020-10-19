@@ -143,11 +143,8 @@ class delta:
             jlist.append(self.get_idx(k))
         jlist=numpy.array(jlist,dtype=numpy.int)
         
-        #gvec = numpy.array(pyobs.slice_tensor(grad, self.mask, d.mask),dtype=numpy.float64)
-        import time
-        t0=time.time()
-        grad.apply(jlist, self, d)
-        print(time.time()-t0)
+        # apply gradient
+        self.delta[:,jlist] += grad.apply(d,self.mask)
 
     def assign(self,submask,rd):
         if len(submask)!=len(rd.mask):

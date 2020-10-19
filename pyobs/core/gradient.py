@@ -64,19 +64,19 @@ class gradient:
         elif self.gtype is 'diag':
             return mask
         elif self.gtype is 'slice':
-            idx = numpy.nonzero(numpy.in1d(self.grad,mask))
-            if idx[0].size>0:
+            idx = numpy.nonzero(numpy.in1d(self.grad,mask))[0]
+            if idx.size>0:
                 return list(numpy.arange(self.Na)[idx])
             else:
                 return None
         
-    def apply(self,icnfgs,dx,dy):
+    def apply(self,d,mask):
         if self.gtype is 'full':
-            gvec = pyobs.slice_ndarray(self.grad, dx.mask, dy.mask)
-            dx.delta[:,icnfgs] += gvec @ dy.delta
+            gvec = pyobs.slice_ndarray(self.grad, mask, d.mask)
+            return gvec @ d.delta
         elif self.gtype is 'diag':
-            dx.delta[:,icnfgs] += self.grad[dy.mask,None] * dy.delta
+            return self.grad[d.mask,None] * d.delta
         elif self.gtype is 'slice':
-            idx = numpy.nonzero(numpy.in1d(self.grad,dy.mask))
-            dx.delta[:,icnfgs] = dy.delta[idx,:]
+            idx = numpy.nonzero(numpy.in1d(self.grad,d.mask))[0]
+            return d.delta[idx,:]
             
