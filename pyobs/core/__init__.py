@@ -9,3 +9,6 @@ __all__.extend(['errinfo'])
 
 from . import mftools
 __all__.extend(['mftools'])
+
+from .gradient import gradient
+__all__.extend(['gradient'])

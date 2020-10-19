@@ -48,12 +48,7 @@ def derobs(inps,mean,grads,description=None):
     if description is None:
         description=', '.join(set([i.description for i in inps]))
     res = pyobs.observable(description=description)
-    if isinstance(mean,(int,float,numpy.float32,numpy.float64)):
-        res.mean = numpy.reshape(mean,(1,))
-    else:
-        res.mean = numpy.array(mean)
-    res.shape = numpy.shape(res.mean)
-    res.size = numpy.prod(res.shape)
+    res.set_mean(mean)
     
     def core(datatype):
         allkeys = []
@@ -69,10 +64,9 @@ def derobs(inps,mean,grads,description=None):
             for i in range(len(inps)):
                 if key in inps[i].__dict__[datatype]:
                     data = inps[i].__dict__[datatype][key]
-                    oid = numpy.array(data.mask,dtype=numpy.int)
-                    h = numpy.sum(grads[i][:,oid]!=0.0,axis=1)
-                    if numpy.sum(h)>0:
-                        new_mask += list(numpy.arange(res.size)[h>0])
+                    h = grads[i].get_mask(data.mask)
+                    if not h is None:
+                        new_mask += h
                         if not new_idx:
                             new_idx = data.idx
                         else:
