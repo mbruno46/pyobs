@@ -50,7 +50,7 @@ def sum(x,axis=None):
     else:
         f=lambda a: numpy.sum(a,axis=axis)
         t=f'sum over axis {axis} of {x.description}'
-    g=x.gradient(f)
+    g=pyobs.gradient(f, x.shape)
     return pyobs.derobs([x],f(x.mean),[g],description=t)
 
 def trace(x, offset=0, axis1=0, axis2=1):
@@ -79,7 +79,7 @@ def trace(x, offset=0, axis1=0, axis2=1):
        >>> tr = pyobs.trace(mat)
     """
     new_mean=numpy.trace(x.mean,offset,axis1,axis2)
-    g=x.gradient(lambda x:numpy.trace(x,offset,axis1,axis2))
+    g=pyobs.gradient(lambda x:numpy.trace(x,offset,axis1,axis2), x.shape)
     return pyobs.derobs([x],new_mean,[g],description=f'trace for axes ({axis1,axis2}) of {x.description}')
     
 #def sin(x):
@@ -107,7 +107,7 @@ def log(x):
     """
     new_mean = numpy.log(x.mean)
     aux = numpy.reciprocal(x.mean)
-    g=x.gradient(lambda x: x*aux)
+    g=pyobs.gradient(lambda xx: xx*aux, x.shape, gtype='diag')
     return pyobs.derobs([x],new_mean,[g],description=f'log of {x.description}')
 
 
@@ -125,7 +125,7 @@ def exp(x):
        >>> expA = pyobs.exp(obsA)
     """
     new_mean = numpy.exp(x.mean)
-    g=x.gradient(lambda x: x*new_mean)
+    g=pyobs.gradient(lambda xx: xx*new_mean, x.shape, gtype='diag')
     return pyobs.derobs([x],new_mean,[g],description=f'exp of {x.description}')
 
 
@@ -144,7 +144,7 @@ def cosh(x):
     """
     new_mean = numpy.cosh(x.mean)
     aux = numpy.sinh(x.mean)
-    g=x.gradient(lambda x: x*aux)
+    g=pyobs.gradient(lambda xx: xx*aux, x.shape, gtype='diag')
     return pyobs.derobs([x],new_mean,[g],description=f'cosh of {x.description}')
 
 
@@ -163,7 +163,7 @@ def sinh(x):
     """
     new_mean = numpy.sinh(x.mean)
     aux = numpy.cosh(x.mean)
-    g=x.gradient(lambda x: x*aux)
+    g=pyobs.gradient(lambda xx: xx*aux, x.shape, gtype='diag')
     return pyobs.derobs([x],new_mean,[g],description=f'sinh of {x.description}')
     
 def arccosh(x):
@@ -181,7 +181,7 @@ def arccosh(x):
     """
     new_mean = numpy.arccosh(x.mean) 
     aux = numpy.reciprocal(numpy.sqrt(x.mean**2-numpy.ones(x.shape)))  # 1/sqrt(x^2-1)
-    g=x.gradient(lambda x: x*aux)
+    g=pyobs.gradient(lambda x: x*aux, x.shape, gtype='diag')
     return pyobs.derobs([x],new_mean,[g],description=f'arccosh of {x.description}')
 
 def besselk(v, x):
@@ -197,5 +197,5 @@ def besselk(v, x):
     """
     new_mean = scipy.special.kv(v, x.mean)
     aux = scipy.special.kv(v-1,x.mean) + scipy.special.kv(v+1,x.mean)
-    g=x.gradient(lambda x: -0.5*aux*x)
+    g=pyobs.gradient(lambda x: -0.5*aux*x, x.shape, gtype='diag')
     return pyobs.derobs([x],new_mean,[g],description=f'BesselK[{v}] of {x.description}')

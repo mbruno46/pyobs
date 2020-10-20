@@ -153,8 +153,9 @@ class delta:
         jlist=numpy.array(jlist,dtype=numpy.int)
         
         # apply gradient
-        self.delta[:,jlist] += grad.apply(d,self.mask)
-
+        #self.delta[:,jlist] += grad.apply(d,self.mask)
+        grad.apply(self.delta, self.mask, jlist, d.delta, d.mask)
+        
     def assign(self,submask,rd):
         if len(submask)!=len(rd.mask):
             raise pyobs.PyobsError('Dimensions do not match in assignment')

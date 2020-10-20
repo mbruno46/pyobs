@@ -27,33 +27,19 @@ def load(fname):
     res.mean = numpy.array(tmp['mean'])
     res.shape = tuple(tmp['shape'])
     res.size=numpy.prod(res.shape)
-    res.edata = list(tmp['edata'])
+    res.ename = list(tmp['ename'])
     
-    for key in tmp['rdata']:
-        if (type(tmp['rdata'][key]['idx']) is str):
+    for key in tmp['delta']:
+        if (type(tmp['delta'][key]['idx']) is str):
             regex=re.compile('[(,)]')
-            h = regex.split(tmp['rdata'][key]['idx'])
+            h = regex.split(tmp['delta'][key]['idx'])
             if h[0]!='range': # pragma: no cover
                 raise pyobs.PyobsError('Unexpected idx')
-            res.rdata[key] = pyobs.core.data.rdata(tmp['rdata'][key]['mask'],range(int(h[1]),int(h[2]),int(h[3])))
+            res.delta[key] = pyobs.core.data.delta(tmp['delta'][key]['mask'],range(int(h[1]),int(h[2]),int(h[3])),tmp['delta'][key]['lat'])
         else:
-            res.rdata[key] = pyobs.core.data.rdata(tmp['rdata'][key]['mask'],tmp['rdata'][key]['idx'])
-        res.rdata[key].delta = numpy.array(tmp['rdata'][key]['delta'])
-        
-    res.mfname = list(tmp['mfname'])
-    for key in tmp['mfdata']:
-        if (type(tmp['mfdata'][key]['idx']) is str):
-            regex=re.compile('[(,)]')
-            h = regex.split(tmp['mfdata'][key]['idx'])
-            if h[0]!='range': # pragma: no cover
-                raise pyobs.PyobsError('Unexpected idx')
-            res.mfdata[key] = pyobs.core.data.mfdata(tmp['mfdata'][key]['mask'],
-                                                     range(int(h[1]),int(h[2]),int(h[3])),tmp['mfdata'][key]['lat'])
-        else:
-            res.mfdata[key] = pyobs.core.data.mfdata(tmp['mfdata'][key]['mask'],
-                                                     tmp['mfdata'][key]['idx'],tmp['mfdata'][key]['lat'])
-        res.mfdata[key].delta = numpy.array(tmp['mfdata'][key]['delta'])
-        
+            res.delta[key] = pyobs.core.data.delta(tmp['delta'][key]['mask'],tmp['delta'][key]['idx'],tmp['delta'][key]['lat'])
+        res.delta[key].delta = numpy.array(tmp['delta'][key]['delta'])
+                
     for key in tmp['cdata']:
         res.cdata[key] = pyobs.core.cdata.cdata(tmp['cdata'][key]['grad'],tmp['cdata'][key]['cov'])
     pyobs.memory.update(res)

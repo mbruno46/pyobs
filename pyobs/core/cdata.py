@@ -31,7 +31,7 @@ class cdata:
             self.cov = numpy.array(cov)
         
     def axpy(self,grad,cd):
-        self.grad += grad @ cd.grad
+        grad.apply(self.grad, range(len(self.grad)), None, cd.grad, range(len(cd.grad)))
         
     def sigmasq(self):
         return numpy.diag(self.cov)

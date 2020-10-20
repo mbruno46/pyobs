@@ -167,19 +167,13 @@ class observable:
                 if len(icnfg)*self.size!=len(data):
                     raise pyobs.PyobsError(f'Incompatible icnfg and data, for shape={shape}')
             if numpy.size(self.mean)!=0:
-                N0 = sum([self.rdata[rd].n for rd in self.rdata])
+                N0 = sum([self.delta[key].n for key in self.delta])
                 mean0 = numpy.reshape(self.mean,(self.size,))
                 mean1 = numpy.mean(numpy.reshape(data,(nc,self.size)),0)
                 self.mean = (N0*mean0 + nc*mean1)/(N0+nc)
-                d = nc*(mean0-mean1)/(N0+nc)
-                if lat is None:
-                    for rd in self.rdata:
-                        for i in range(self.rdata[rd].n):
-                            self.rdata[rd].delta[:,i] += d
-                else:
-                    for mfd in self.mfdata:
-                        for i in range(self.mfdata[mfd].n):
-                            self.mfdata[mfd].delta[:,i] += d
+                shift = nc*(mean0-mean1)/(N0+nc)
+                for key in self.delta:
+                    self.delta[key].delta += shift[:,None]
             else:
                 self.mean=numpy.mean(numpy.reshape(data,(nc,self.size)),0)
                 
@@ -378,7 +372,7 @@ class observable:
     def __setitem__(self,args,yobs):
         if isinstance(args,(int,numpy.int32,numpy.int64,slice,numpy.ndarray)):
             args=[args]
-            if yobs.shape!=(1):
+            if yobs.shape!=(1,):
                 raise pyobs.PyobsError('Dimensions do not match')
         elif self.mean[tuple(args)].shape != yobs.shape:
             raise pyobs.PyobsError('Dimensions do not match')
@@ -403,7 +397,8 @@ class observable:
     def __addsub__(self,y,sign):
         g0 = pyobs.gradient(lambda x: x, self.shape, gtype='diag')
         if isinstance(y,observable):
-            return pyobs.derobs([self,y],self.mean+sign*y.mean,[g0,g0])
+            g1 = pyobs.gradient(lambda x: sign*x, y.shape, gtype='diag')
+            return pyobs.derobs([self,y],self.mean+sign*y.mean,[g0,g1])
         else:
             return pyobs.derobs([self],self.mean+sign*y,[g0])
     
@@ -501,7 +496,7 @@ class observable:
         sigma = {}
         for e in self.ename:
             if e in errinfo:
-                res = gamma_error(self,e,plot,pfile,errinfo[ed])
+                res = gamma_error(self,e,plot,pfile,errinfo[e])
             else:
                 res = gamma_error(self,e,plot,pfile)
             sigma[e] = numpy.reshape(res[0],self.shape)

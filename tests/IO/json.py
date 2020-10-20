@@ -24,12 +24,9 @@ test2 = pyobs.load('./test-io.json.gz')
 assert numpy.all(e==e2)
 assert numpy.all(test1.mean == test2.mean)
 
-for key in test.rdata:
-    assert numpy.all(test1.rdata[key].delta == test2.rdata[key].delta)
+for key in test.delta:
+    assert numpy.all(test1.delta[key].delta == test2.delta[key].delta)
 
-for key in test.mfdata:
-    assert numpy.all(test1.mfdata[key].delta == test2.mfdata[key].delta)
-    
 try:
     pyobs.save('./test-io.json.gz',test1)
     assert False

@@ -49,7 +49,7 @@ def inv(x):
         raise pyobs.PyobsError(f'Unexpected matrix for inverse with shape={x.shape}')
     mean=numpy.linalg.inv(x.mean)
     # V Vinv = 1,   dV Vinv + V dVinv = 0 ,  dVinv = - Vinv dV Vinv
-    g=x.gradient( lambda x: - mean @ x @ mean)
+    g=pyobs.gradient( lambda x: - mean @ x @ mean, x.shape)
     return pyobs.derobs([x],mean,[g])
 
 def eig(x):
@@ -82,7 +82,7 @@ def eig(x):
     [w,v] = numpy.linalg.eig(x.mean)
     
     # d l_n = (v_n, dA v_n)
-    gw=x.gradient( lambda x: numpy.diag(v.T @ x @ v))
+    gw=pyobs.gradient( lambda x: numpy.diag(v.T @ x @ v), x.shape)
 
     # d v_n = sum_{m \neq n} (w_m, dA v_n) / (l_n - l_m) w_m
     def gradv(y):
@@ -94,7 +94,7 @@ def eig(x):
                     gv[:,n] += tmp[m,n]/(w[n]-w[m])*v[:,m]
         return gv
 
-    gv=x.gradient( gradv)
+    gv=pyobs.gradient(gradv, x.shape)
     return [pyobs.derobs([x],w,[gw]), pyobs.derobs([x],v,[gv])]
 
 def eigLR(x):
@@ -130,7 +130,7 @@ def eigLR(x):
     [l,w] = numpy.linalg.eig(x.mean.T)
     
     # d l_n = (w_n, dA v_n) / (w_n, v_n)
-    gl=x.gradient( lambda x: numpy.diag(w.T @ x @ v)/numpy.diag(w.T @ v))
+    gl=pyobs.gradient( lambda x: numpy.diag(w.T @ x @ v)/numpy.diag(w.T @ v), x.shape)
 
     # d v_n = sum_{m \neq n} (w_m, dA v_n) / (l_n - l_m) w_m
     def gradv(y):
@@ -141,7 +141,7 @@ def eigLR(x):
                 if n!=m:
                     gv[:,n] += tmp[m,n]/(l[n]-l[m])*w[:,m]
         return gv
-    gv=x.gradient( gradv)
+    gv=pyobs.gradient( gradv, x.shape)
     
     # d w_n = sum_{m \neq n} (v_m, dA^T w_n) / (l_n - l_m) v_m
     def gradw(y):
@@ -153,7 +153,7 @@ def eigLR(x):
                     gw[:,n] += tmp[m,n]/(l[n]-l[m])*v[:,m]
         return gw
     
-    gw=x.gradient( gradw)
+    gw=pyobs.gradient( gradw, x.shape)
     return [pyobs.derobs([x],l,[gl]), pyobs.derobs([x],v,[gv]), pyobs.derobs([x],w,[gw])]
 
 def matrix_power(x,a):

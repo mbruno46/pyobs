@@ -28,7 +28,8 @@ for f in ['sum']:
     func = lambda x: numpy.__dict__[f](x,axis=0)
     mean = func(mat.mean)
     g = pyobs.num_grad(mat, func)
-    [v1, e1] = pyobs.derobs([mat], mean, [g]).error()
+    g0 = pyobs.gradient(g)
+    [v1, e1] = pyobs.derobs([mat], mean, [g0]).error()
     assert numpy.all(numpy.fabs(e1-e0) < 1e-10)
 
 
@@ -36,7 +37,8 @@ for f in flist:
     [v0, e0] = pyobs.__dict__[f](mat).error()
     mean = numpy.__dict__[f](mat.mean)
     g = pyobs.num_grad(mat, numpy.__dict__[f])
-    [v1, e1] = pyobs.derobs([mat], mean, [g]).error()
+    g0 = pyobs.gradient(g)
+    [v1, e1] = pyobs.derobs([mat], mean, [g0]).error()
     assert numpy.all(numpy.fabs(e1-e0) < 1e-10)
     
 mat = pyobs.reshape(corr, (T//8,T//8))
@@ -49,6 +51,7 @@ for i in range(len(flist)):
     f = lambda x: scipy.special.__dict__[slist[i]](args[i], x)
     mean = f(mat.mean)
     g = pyobs.num_grad(mat, f)
-    [v1, e1] = pyobs.derobs([mat], mean, [g]).error()
+    g0 = pyobs.gradient(g)
+    [v1, e1] = pyobs.derobs([mat], mean, [g0]).error()
     assert numpy.all(numpy.fabs(e1-e0) < 1e-10)
     

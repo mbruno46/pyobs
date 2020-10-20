@@ -46,7 +46,7 @@ def einsum(subscripts, *operands):
             continue
 
         f = lambda x: numpy.einsum(subscripts, *[means[j] for j in range(i)], x, *[means[j] for j in range(i+1,len(operands))])
-        grads.append(operands[i].gradient(f))
+        grads.append(pyobs.gradient(f, operands[i].shape)) # non-optimized for large number of observables
     
     new_mean = numpy.einsum(subscripts, *means)
     return pyobs.derobs(inps, new_mean, grads)

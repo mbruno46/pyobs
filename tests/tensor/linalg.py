@@ -15,7 +15,8 @@ print(pyobs.valerr(v,e))
 def func(x):
     return numpy.linalg.inv(x)
 g = pyobs.num_grad(omat, func)
-[v0, e0] = pyobs.derobs([omat], func(omat.mean), [g]).error()
+g0 = pyobs.gradient(g)
+[v0, e0] = pyobs.derobs([omat], func(omat.mean), [g0]).error()
 [v1, e1] = pyobs.linalg.inv(omat).error()
 
 assert numpy.all(numpy.fabs(v0-v1) < 1e-12)
@@ -27,14 +28,16 @@ def func(x):
 
 omatsym = (omat + pyobs.transpose(omat))*0.5
 g = pyobs.num_grad(omatsym, func)
-[v0, e0] = pyobs.derobs([omatsym], func(omatsym.mean), [g]).error()
+g0 = pyobs.gradient(g)
+[v0, e0] = pyobs.derobs([omatsym], func(omatsym.mean), [g0]).error()
 [v1, e1] = (pyobs.linalg.eig(omatsym)[0]).error()
 
 assert numpy.all(numpy.fabs(v0-v1) < 1e-12)
 assert numpy.all(numpy.fabs(e0-e1) < 1e-10)
 
 g = pyobs.num_grad(omat, func)
-[v0, e0] = pyobs.derobs([omat], func(omat.mean), [g]).error()
+g0 = pyobs.gradient(g)
+[v0, e0] = pyobs.derobs([omat], func(omat.mean), [g0]).error()
 [v1, e1] = (pyobs.linalg.eigLR(omat)[0]).error()
 
 assert numpy.all(numpy.fabs(v0-v1) < 1e-12)
@@ -46,14 +49,16 @@ def func(x):
 
 omatsym = (omat + pyobs.transpose(omat))*0.5
 g = pyobs.num_grad(omatsym, func)
-[v0, e0] = pyobs.derobs([omatsym], func(omatsym.mean), [g]).error()
+g0 = pyobs.gradient(g)
+[v0, e0] = pyobs.derobs([omatsym], func(omatsym.mean), [g0]).error()
 [v1, e1] = (pyobs.linalg.eig(omatsym)[1]).error()
 
 assert numpy.all(numpy.fabs(v0-v1) < 1e-12)
 assert numpy.all(numpy.fabs(e0-e1) < 1e-10)
 
 g = pyobs.num_grad(omat, func)
-[v0, e0] = pyobs.derobs([omat], func(omat.mean), [g]).error()
+g0 = pyobs.gradient(g)
+[v0, e0] = pyobs.derobs([omat], func(omat.mean), [g0]).error()
 [v1, e1] = (pyobs.linalg.eigLR(omat)[1]).error()
 
 assert numpy.all(numpy.fabs(v0-v1) < 1e-12)
@@ -64,7 +69,8 @@ def func(x):
     return numpy.linalg.eig(x.T)[1]
 
 g = pyobs.num_grad(omat, func)
-[v0, e0] = pyobs.derobs([omat], func(omat.mean), [g]).error()
+g0 = pyobs.gradient(g)
+[v0, e0] = pyobs.derobs([omat], func(omat.mean), [g0]).error()
 [v1, e1] = (pyobs.linalg.eigLR(omat)[2]).error()
 
 assert numpy.all(numpy.fabs(v0-v1) < 1e-12)

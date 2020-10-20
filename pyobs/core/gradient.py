@@ -24,7 +24,13 @@ import numpy
 
 # grad is Na x Ni matrix
 class gradient:
-    def __init__(self,g,shape,gtype='full'):
+    def __init__(self,g,shape=(),gtype='full'):
+        if not callable(g):
+            (self.Na, self.Ni) = numpy.shape(g)
+            self.gtype = 'full'
+            self.grad = g
+            return
+        
         self.Na=numpy.size(g(numpy.ones(shape)))
         self.Ni=numpy.prod(shape)
         self.gtype = gtype
@@ -37,9 +43,11 @@ class gradient:
                 raise pyobs.PyobsError('diagonal gradient error')
         elif gtype is 'slice':
             gsh = self.Na
+        elif gtype is 'extend':
+            gsh = self.Ni
         else:
             raise pyobs.PyobsError('gradient error')
-            
+                
         self.grad = numpy.zeros(gsh,dtype=numpy.float64)
         
         if gtype is 'full':
@@ -52,6 +60,8 @@ class gradient:
             self.grad = g(numpy.ones(shape)).flatten()
         elif gtype is 'slice':
             self.grad = numpy.reshape(g(numpy.arange(self.Ni).reshape(shape)),self.Na)
+        elif gtype is 'extend':
+            self.grad = numpy.nonzero(g(numpy.ones(shape)).flatten())[0]
             
     def get_mask(self,mask):
         idx = numpy.array(mask,dtype=numpy.int32)
@@ -69,14 +79,35 @@ class gradient:
                 return list(numpy.arange(self.Na)[idx])
             else:
                 return None
+        elif self.gtype is 'extend':
+            return list(self.grad)
         
-    def apply(self,d,mask):
+    # note: slice mode assumes that destination delta
+    # has appropriate size matching gradient and mask,
+    # which is guaranteed by get_mask above.
+    
+    # u = grad @ v
+    def apply(self,u,umask,uidx,v,vmask):
         if self.gtype is 'full':
-            gvec = pyobs.slice_ndarray(self.grad, mask, d.mask)
-            return gvec @ d.delta
+            gvec = pyobs.slice_ndarray(self.grad, umask, vmask)
+            if uidx is None:
+                u += gvec @ v
+            else:
+                u[:,uidx] += gvec @ v            
         elif self.gtype is 'diag':
-            return self.grad[d.mask,None] * d.delta
+            if uidx is None:
+                u += self.grad[vmask,None] * v
+            else:
+                u[:,uidx] += self.grad[vmask,None] * v
         elif self.gtype is 'slice':
-            idx = numpy.nonzero(numpy.in1d(self.grad,d.mask))[0]
-            return d.delta[idx,:]
-            
+            idx = numpy.nonzero(numpy.in1d(vmask,self.grad))[0]
+            if uidx is None:
+                u += v[idx]
+            else:
+                u[:,uidx] += v[idx,:]
+        elif self.gtype is 'extend':
+            idx = numpy.nonzero(numpy.in1d(umask,self.grad))[0]
+            if uidx is None:
+                u[idx] += v
+            else:
+                u[numpy.ix_(idx,uidx)] += v

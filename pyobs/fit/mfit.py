@@ -282,7 +282,7 @@ class mfit:
         g=[]
         for i in range(len(yobs)):
             tmp=self.csq[i].gvec(self.pdict, res.x)
-            g.append(Hinv @ tmp)
+            g.append(pyobs.gradient(Hinv @ tmp))
             
         if pyobs.is_verbose('mfit.run') or pyobs.is_verbose('mfit'):
             print(f'chisquare = {res.fun}')
@@ -325,5 +325,5 @@ class mfit:
         out = []
         for ic in self.csq:
             [m, g] = self.csq[ic].eval(xax[ic], self.pdict, pars.mean)
-            out.append( pyobs.derobs([pars], m, [g]) )
+            out.append( pyobs.derobs([pars], m, [pyobs.gradient(g)]) )
         return out
