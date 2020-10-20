@@ -170,54 +170,38 @@ def plot_piechart(desc,errs,tot): # pragma: no cover
         plt.pie(x[:,a], labels=errs.keys(), autopct='%.0f%%', radius=1.0)
         plt.axis('equal')
         plt.show()
-        
-class mfvar(variance):
-    def __init__(self,x,mfd,k,Stau):
-        keys=[]
-        for rn in x.mfdata:
-            if rn.split(':')[0]==mfd:
-                keys.append(rn)
-        rrmax=x.mfdata[keys[0]].rrmax() #int(min([x.mfdata[kk].rrmax() for kk in keys]))
-        size=len(x.mfdata[keys[0]].mask) # we assume all replica have the same mask
 
-        n = numpy.zeros((rrmax,))
-        g = numpy.zeros((size,rrmax))
+class var(variance):
+    def __init__(self,x,name,Stau,k):
+        keys=[]
+        self.ismf = False
+        for rn in x.delta:
+            if rn.split(':')[0]==name:
+                keys.append(rn)
+                if not x.delta[rn].lat is None:
+                    self.ismf = True
+        if self.ismf:
+            xmax=x.delta[keys[0]].rrmax() #int(min([x.mfdata[kk].rrmax() for kk in keys]))
+        else:
+            xmax=int(min([x.delta[k].wmax() for k in keys]))
+            
+        size=len(x.delta[keys[0]].mask) # we assume all replica have the same mask
+        
+        n = numpy.zeros((xmax,))
+        g = numpy.zeros((size,xmax))
         for i in range(len(keys)):
-            res = x.mfdata[keys[i]].gamma(rrmax)
+            res = x.delta[keys[i]].gamma(xmax)
             n += res[0]
             g += res[1]
 
-        D=len(x.mfdata[keys[0]].lat)
-        variance.__init__(self,n,g,Stau,D,k)
+        if self.ismf:
+            D=len(x.delta[keys[0]].lat)
+            variance.__init__(self,n,g,Stau,D,k)
+        else:
+            variance.__init__(self,n,g,Stau,1,k,fold=True)
         self.full_size = x.size
-        self.mask = x.mfdata[keys[0]].mask
+        self.mask = x.delta[keys[0]].mask
         
-    def sigma(self):
-        return self.reshape(self.full_size,self.mask)
-    
-    def tau(self):
-        return self.tauint(self.full_size,self.mask)
-    
-class rvar(variance):
-    def __init__(self,x,ed,Stau):
-        keys=[]
-        for rn in x.rdata:
-            if rn.split(':')[0]==ed:
-                keys.append(rn)
-        wmax=int(min([x.rdata[k].wmax() for k in keys]))
-        size=len(x.rdata[keys[0]].mask) # we assume all replica have the same mask
-
-        n = numpy.zeros((wmax,))
-        g = numpy.zeros((size,wmax))
-        for i in range(len(keys)):
-            res = x.rdata[keys[i]].gamma(wmax)
-            n += res[0]
-            g += res[1]
-        
-        variance.__init__(self,n,g,Stau,1,0,fold=True)
-        self.full_size = x.size
-        self.mask = x.rdata[keys[0]].mask
-    
     def sigma(self):
         return self.reshape(self.full_size,self.mask)
     
@@ -225,32 +209,27 @@ class rvar(variance):
         return self.tauint(self.full_size,self.mask)
 
 class errinfo:
-    def __init__(self,Stau=1.5,k=0,W=None,R=None):
+    def __init__(self,Stau=1.5,k=0,W=None):
         self.Stau = Stau
         self.k = k
         self.W = W
-        self.R = R
-        
-def uwerr(x,ed,plot=False,pfile=None,Stau=1.5,W=None):
-    rv = rvar(x,ed,Stau)
-    if W is None:
-        rv.find_opt()
-    else:
-        rv.set_opt(W)
-    rv.correct_gamma_bias()
-    tau = rv.tau()*0.5
-    if plot: # pragma: no cover
-        rv.plot('icnfg',x.description,ed,pfile)
-    return rv.sigma() + [tau]
 
-def mferr(x,mfd,plot=False,pfile=None,k=1,Stau=1.5,R=None):
-    mfv = mfvar(x,mfd,k,Stau)
-    if R is None:
-        mfv.find_opt()
+def gamma_error(x,name,plot=False,pfile=None,einfo=None):
+    if einfo is None:
+        einfo = errinfo()
+    
+    v = var(x,name,einfo.Stau,einfo.k)
+    if einfo.W is None:
+        v.find_opt()
     else:
-        mfv.set_opt(R)
-    #rv.correct_gamma_bias()
-    tau = mfv.tau()
-    if plot: # pragma: no cover
-        mfv.plot('|R|/a',x.description,mfd,pfile)
-    return mfv.sigma() + [tau]
+        v.set_opt(einfo.W)
+    
+    if not v.ismf:
+        v.correct_gamma_bias()
+        tau = v.tau()*0.5
+    else:
+        tau = v.tau()
+        
+    if plot:
+        v.plot('|R|/a' if v.ismf else 'icnfg',x.description,name,pfile)
+    return v.sigma() + [tau]

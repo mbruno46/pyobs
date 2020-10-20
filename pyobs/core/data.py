@@ -22,7 +22,7 @@
 import numpy
 import pyobs
 
-__all__ = ['rdata','mfdata']
+__all__ = ['delta']
 
 def conv_1D(data,idx,N,wmax):
     if type(idx) is range:
@@ -83,12 +83,16 @@ def conv_ND(data,idx,lat,rrmax):
     return pyobs.core.mftools.intrsq(aux,lat,rrmax)
 
 class delta:
-    def __init__(self,mask,idx,data=None,mean=None):
+    def __init__(self,mask,idx,data=None,mean=None,lat=None):
         # idx is expected to be a list or range
         self.size = len(mask)
         self.mask = [m for m in mask]
         self.it=0
-        
+        if lat is None:
+            self.lat = None
+        else:
+            self.lat = numpy.array(lat,dtype=numpy.int32)
+
         if (type(idx) is list):
             dc = numpy.unique(numpy.diff(idx))
             if numpy.any(dc<0):
@@ -107,13 +111,18 @@ class delta:
         
         if not mean is None:
             self.delta = numpy.reshape(data,(self.n,self.size)).T - numpy.stack([mean]*self.n,axis=1)
+
+    def copy(self):
+        res = delta(self.mask,self.idx,lat=self.lat)
+        res.delta = numpy.array(self.delta)
+        return res
         
     def ncnfg(self):
         if type(self.idx) is range:
             return self.n
         else:
             return int(self.idx[-1]-self.idx[0])
-        
+            
     def get_mask(self,a):
         if a in self.mask:
             return self.mask.index(a)
@@ -152,56 +161,34 @@ class delta:
         for i in range(len(submask)):
             j = self.mask.index(submask[i])
             self.delta[j,:] = rd.delta[i,:]
-            
-class mfdata(delta):
-    def __init__(self,mask,idx,lat,data=None,mean=None):
-        delta.__init__(self,mask,idx,data,mean)
-        self.lat = numpy.array(lat,dtype=numpy.int32)
-    
-    def copy(self):
-        res = mfdata(self.mask,self.idx,self.lat)
-        res.delta = numpy.array(self.delta)
-        return res
+
+    def gamma(self,xmax):
+        g=numpy.zeros((self.size,xmax))
+        if self.lat is None:
+            wmax = xmax
+            m = conv_1D(numpy.ones(self.n),self.idx,self.ncnfg(),wmax)
+            for a in range(self.size):
+                g[a,:] = conv_1D(self.delta[a,:],self.idx,self.ncnfg(),wmax)
+        else:
+            rrmax = xmax
+            v=self.vol()
+            if v==len(self.idx):
+                m = [v]*rrmax
+            else:
+                m = conv_ND(numpy.ones(self.n),self.idx,self.lat,rrmax)
+                Sr = pyobs.core.mftools.intrsq(numpy.ones(v),self.lat,rrmax)
+                Sr = Sr + 1*(Sr==0.0)
+                m /= Sr
+            for a in range(self.size):
+                g[a,:] = conv_ND(self.delta[a,:],self.idx,self.lat,rrmax)
+        return [m, g]
+        
+    # replica ensemble utility functions
+    def wmax(self):
+        return self.ncnfg()//2
     
     def rrmax(self):
         return int(numpy.sum((self.lat/2)**2)+1)
 
     def vol(self):
         return numpy.prod(self.lat)
-    
-    def gamma(self,rrmax):
-        g=numpy.zeros((self.size,rrmax))
-        v=numpy.prod(self.lat)
-        if v==len(self.idx):
-            m = [v]*rrmax
-        else:
-            m = conv_ND(numpy.ones(self.n),self.idx,self.lat,rrmax)
-            Sr = pyobs.core.mftools.intrsq(numpy.ones(v),self.lat,rrmax)
-            Sr = Sr + 1*(Sr==0.0)
-            m /= Sr
-        for a in range(self.size):
-            g[a,:] = conv_ND(self.delta[a,:],self.idx,self.lat,rrmax)
-        return [m, g]        
-        
-    def gamma_norm(self,rrmax):
-        g=numpy.zeros((self.size,rrmax))
-        m = conv_ND(numpy.ones(self.n),self.idx,self.lat,rrmax)
-        for a in range(self.size):
-            g[a,:] = conv_ND(self.delta[a,:],self.idx,self.lat,rrmax)
-        return [m, g]        
-    
-class rdata(delta):
-    def wmax(self):
-        return self.ncnfg()//2
-    
-    def copy(self):
-        res = rdata(self.mask,self.idx)
-        res.delta = numpy.array(self.delta)
-        return res
-    
-    def gamma(self,wmax):
-        g=numpy.zeros((self.size,wmax))
-        m = conv_1D(numpy.ones(self.n),self.idx,self.ncnfg(),wmax)
-        for a in range(self.size):
-            g[a,:] = conv_1D(self.delta[a,:],self.idx,self.ncnfg(),wmax)
-        return [m, g]

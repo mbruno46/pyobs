@@ -29,7 +29,7 @@ class cdata:
             self.cov = numpy.diag(cov)
         else:
             self.cov = numpy.array(cov)
-    
+        
     def axpy(self,grad,cd):
         self.grad += grad @ cd.grad
         
@@ -43,3 +43,6 @@ class cdata:
     def copy(self,cd):
         self.grad = numpy.array(cd.grad)
         self.cov = numpy.array(cd.cov)
+
+    def assign(self,mask,cd):
+        self.cov[numpy.ix_[mask,mask]] = cd.cov
