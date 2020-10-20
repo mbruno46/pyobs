@@ -365,16 +365,17 @@ class observable:
         na=len(args)
         if na!=len(self.shape):
             raise pyobs.PyobsError('Unexpected argument')
-        f = lambda x: x[args]
+        if self.mean[tuple(args)].size==1:
+            f = lambda x: numpy.reshape(x[tuple(args)],(1,))
+        else:
+            f = lambda x: x[tuple(args)]
         g0 = pyobs.gradient(f, self.shape, gtype='slice')
         return pyobs.derobs([self], f(self.mean), [g0])
     
     def __setitem__(self,args,yobs):
         if isinstance(args,(int,numpy.int32,numpy.int64,slice,numpy.ndarray)):
             args=[args]
-            if yobs.shape!=(1,):
-                raise pyobs.PyobsError('Dimensions do not match')
-        elif self.mean[tuple(args)].shape != yobs.shape:
+        if self.mean[tuple(args)].shape != yobs.shape:
             raise pyobs.PyobsError('Dimensions do not match')
         self.mean[tuple(args)] = yobs.mean
 
@@ -414,8 +415,8 @@ class observable:
     
     def __mul__(self,y):
         if isinstance(y,observable):
-            g0 = pyobs.gradient(lambda x: x*y.mean, self.shape, gtype='diag')
-            g1 = pyobs.gradient(lambda x: self.mean*x, self.shape, gtype='diag')
+            g0 = pyobs.gradient(lambda x: x*y.mean, self.shape, gtype='full')
+            g1 = pyobs.gradient(lambda x: self.mean*x, y.shape, gtype='full')
             return pyobs.derobs([self,y],self.mean*y.mean,[g0,g1])
         else:
             g0 = pyobs.gradient(lambda x: x*y, self.shape, gtype='diag')
@@ -423,11 +424,11 @@ class observable:
     
     def __matmul__(self,y):
         if isinstance(y,observable):
-            g0 = pyobs.gradient(lambda x: x @ y.mean, self.shape, gtype='full')
-            g1 = pyobs.gradient(lambda x: self.mean @ x, self.shape, gtype='full')
+            g0 = pyobs.gradient(lambda x: x @ y.mean, self.shape)
+            g1 = pyobs.gradient(lambda x: self.mean @ x, y.shape)
             return pyobs.derobs([self,y],self.mean @ y.mean,[g0,g1])
         else:
-            g0 = pyobs.gradient(lambda x: x @ y, self.shape, gtype='full')
+            g0 = pyobs.gradient(lambda x: x @ y, self.shape)
             return pyobs.derobs([self],self.mean @ y,[g0])
 
     def reciprocal(self):
@@ -496,7 +497,7 @@ class observable:
         sigma = {}
         for e in self.ename:
             if e in errinfo:
-                res = gamma_error(self,e,plot,pfile,errinfo[e])
+                res = gamma_error(self,e,plot,pfile,errinfo[ed])
             else:
                 res = gamma_error(self,e,plot,pfile)
             sigma[e] = numpy.reshape(res[0],self.shape)
