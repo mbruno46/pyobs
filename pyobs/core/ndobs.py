@@ -415,8 +415,17 @@ class observable:
     
     def __mul__(self,y):
         if isinstance(y,observable):
-            g0 = pyobs.gradient(lambda x: x*y.mean, self.shape, gtype='full')
-            g1 = pyobs.gradient(lambda x: self.mean*x, y.shape, gtype='full')
+            if self.shape==y.shape:
+                g0 = pyobs.gradient(lambda x: x*y.mean, self.shape, gtype='diag')
+                g1 = pyobs.gradient(lambda x: self.mean*x, y.shape, gtype='diag')
+            elif self.shape==(1,):
+                g0 = pyobs.gradient(lambda x: x*y.mean, self.shape, gtype='full')
+                g1 = pyobs.gradient(lambda x: self.mean*x, y.shape, gtype='diag')
+            elif y.shape==(1,):
+                g0 = pyobs.gradient(lambda x: x*y.mean, self.shape, gtype='diag')
+                g1 = pyobs.gradient(lambda x: self.mean*x, y.shape, gtype='full')
+            else:
+                raise pyobs.PyobsError('Shape mismatch, cannot multiply')
             return pyobs.derobs([self,y],self.mean*y.mean,[g0,g1])
         else:
             g0 = pyobs.gradient(lambda x: x*y, self.shape, gtype='diag')
