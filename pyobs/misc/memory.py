@@ -23,7 +23,7 @@ import sys, os, numpy
 
 book = {}
 MB=1024.**2
-GB=1024.**2
+GB=1024.**3
 
 def get_size(obj):
     size=sys.getsizeof(obj)
@@ -85,7 +85,7 @@ def available():
         raise 
     
     if bb>GB:
-        print(f' - Available memory {bb/GB:.0f} GB\n')
+        print(f' - Available memory {bb/GB:.2f} GB\n')
     else:
         print(f' - Available memory {bb/MB:.0f} MB\n')
     

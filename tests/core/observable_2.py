@@ -44,5 +44,5 @@ obsC = pyobs.concatenate(obsA[0],obsA[1]**2)
 obsA[1] = obsA[1]**2
 [v1, e1] = obsC.error()
 [v2, e2] = obsA.error()
-assert numpy.any(abs(v1-v2)) < 1e-10
-assert numpy.any(abs(e1-e2)) < 1e-10
+assert numpy.all(abs(v1-v2) < 1e-12)
+assert numpy.all(abs(e1-e2) < 1e-12)

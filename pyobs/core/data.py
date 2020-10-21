@@ -159,9 +159,8 @@ class delta:
     def assign(self,submask,rd):
         if len(submask)!=len(rd.mask):
             raise pyobs.PyobsError('Dimensions do not match in assignment')
-        for i in range(len(submask)):
-            j = self.mask.index(submask[i])
-            self.delta[j,:] = rd.delta[i,:]
+        a = numpy.nonzero(numpy.in1d(self.mask,submask))[0]
+        self.delta[a,:] = rd.delta
 
     def gamma(self,xmax):
         g=numpy.zeros((self.size,xmax))

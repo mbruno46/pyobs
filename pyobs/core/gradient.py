@@ -24,15 +24,15 @@ import numpy
 
 # grad is Na x Ni matrix
 class gradient:
-    def __init__(self,g,shape=(),gtype='full'):
+    def __init__(self,g,x0=None,gtype='full'):
         if not callable(g):
             (self.Na, self.Ni) = numpy.shape(g)
             self.gtype = 'full'
             self.grad = g
             return
         
-        self.Na=numpy.size(g(numpy.ones(shape)))
-        self.Ni=numpy.prod(shape)
+        self.Na=numpy.size(g(x0))
+        self.Ni=numpy.size(x0)
         self.gtype = gtype
         
         if gtype is 'full':
@@ -54,14 +54,14 @@ class gradient:
             dx = numpy.zeros(self.Ni)
             for i in range(self.Ni):
                 dx[i] = 1.0
-                self.grad[:,i] = numpy.reshape(g(numpy.reshape(dx,shape)),self.Na)
+                self.grad[:,i] = numpy.reshape(g(numpy.reshape(dx,x0.shape)),self.Na)
                 dx[i] = 0.0
         elif gtype is 'diag':
-            self.grad = g(numpy.ones(shape)).flatten()
+            self.grad = g(numpy.ones(x0.shape)).flatten()
         elif gtype is 'slice':
-            self.grad = numpy.reshape(g(numpy.arange(self.Ni).reshape(shape)),self.Na)
+            self.grad = numpy.reshape(g(numpy.arange(self.Ni).reshape(x0.shape)),self.Na)
         elif gtype is 'extend':
-            self.grad = numpy.nonzero(g(numpy.ones(shape)).flatten())[0]
+            self.grad = numpy.nonzero(g(numpy.ones(x0.shape)).flatten())[0]
             
     def get_mask(self,mask):
         idx = numpy.array(mask,dtype=numpy.int32)

@@ -316,6 +316,7 @@ class observable:
                 if rn[0]==name:
                     outstr = f'    - {"Replica" if self.delta[key].lat is None else "Master-field"} {rn[1]}'
                     outstr = f'{outstr} with {"ncnfg" if self.delta[key].lat is None else "sites"} {self.delta[key].n}'
+                    print(outstr)
                     mm=self.delta[key].ncnfg()*8.*2. if self.delta[key].lat is None else (self.delta[key].vol()+1)*8.
                     m=(mm>m)*mm + (mm<=m)*m
             print(f'         temporary additional memory required {m/1024.**2:.2g} MB')
@@ -356,7 +357,7 @@ class observable:
         if na!=len(self.shape):
             raise pyobs.PyobsError('Unexpected argument')
         f = lambda x: pyobs.slice_ndarray(x, *args)
-        g0 = pyobs.gradient(f, self.shape, gtype='slice')
+        g0 = pyobs.gradient(f, self.mean, gtype='slice')
         return pyobs.derobs([self], f(self.mean), [g0])
     
     def __getitem__(self,args):
@@ -369,19 +370,23 @@ class observable:
             f = lambda x: numpy.reshape(x[tuple(args)],(1,))
         else:
             f = lambda x: x[tuple(args)]
-        g0 = pyobs.gradient(f, self.shape, gtype='slice')
+        g0 = pyobs.gradient(f, self.mean, gtype='slice')
         return pyobs.derobs([self], f(self.mean), [g0])
     
     def __setitem__(self,args,yobs):
         if isinstance(args,(int,numpy.int32,numpy.int64,slice,numpy.ndarray)):
             args=[args]
-        if self.mean[tuple(args)].shape != yobs.shape:
-            raise pyobs.PyobsError('Dimensions do not match')
+        if (self.mean[tuple(args)].size==1):
+            if yobs.size!=1:
+                raise pyobs.PyobsError('set item : dimensions do not match')
+        else:
+            if self.mean[tuple(args)].shape != yobs.shape:
+                raise pyobs.PyobsError('set item : dimensions do not match')
         self.mean[tuple(args)] = yobs.mean
 
         idx = numpy.arange(self.size).reshape(self.shape)[tuple(args)]
         submask = idx.flatten()
-
+        
         for key in yobs.delta:
             if not key in self.delta:
                 raise pyobs.PyobsError('Ensembles do not match; can not set item')
@@ -391,14 +396,14 @@ class observable:
             if not key in self.cdata:
                 raise pyobs.PyobsError('Covariance data do not match; can not set item')
             self.cdata[key].assign(submask,yobs.cdata[key])
-
+        
     ##################################
     # overloaded basic math operations
 
     def __addsub__(self,y,sign):
-        g0 = pyobs.gradient(lambda x: x, self.shape, gtype='diag')
+        g0 = pyobs.gradient(lambda x: x, self.mean, gtype='diag')
         if isinstance(y,observable):
-            g1 = pyobs.gradient(lambda x: sign*x, y.shape, gtype='diag')
+            g1 = pyobs.gradient(lambda x: sign*x, y.mean, gtype='diag')
             return pyobs.derobs([self,y],self.mean+sign*y.mean,[g0,g1])
         else:
             return pyobs.derobs([self],self.mean+sign*y,[g0])
@@ -410,39 +415,39 @@ class observable:
         return self.__addsub__(y,-1)
     
     def __neg__(self):
-        g0 = pyobs.gradient(lambda x: -x, self.shape, gtype='diag')
+        g0 = pyobs.gradient(lambda x: -x, self.mean, gtype='diag')
         return pyobs.derobs([self],-self.mean,[g0])
     
     def __mul__(self,y):
         if isinstance(y,observable):
             if self.shape==y.shape:
-                g0 = pyobs.gradient(lambda x: x*y.mean, self.shape, gtype='diag')
-                g1 = pyobs.gradient(lambda x: self.mean*x, y.shape, gtype='diag')
+                g0 = pyobs.gradient(lambda x: x*y.mean, self.mean, gtype='diag')
+                g1 = pyobs.gradient(lambda x: self.mean*x, y.mean, gtype='diag')
             elif self.shape==(1,):
-                g0 = pyobs.gradient(lambda x: x*y.mean, self.shape, gtype='full')
-                g1 = pyobs.gradient(lambda x: self.mean*x, y.shape, gtype='diag')
+                g0 = pyobs.gradient(lambda x: x*y.mean, self.mean, gtype='full')
+                g1 = pyobs.gradient(lambda x: self.mean*x, y.mean, gtype='diag')
             elif y.shape==(1,):
-                g0 = pyobs.gradient(lambda x: x*y.mean, self.shape, gtype='diag')
-                g1 = pyobs.gradient(lambda x: self.mean*x, y.shape, gtype='full')
+                g0 = pyobs.gradient(lambda x: x*y.mean, self.mean, gtype='diag')
+                g1 = pyobs.gradient(lambda x: self.mean*x, y.mean, gtype='full')
             else:
                 raise pyobs.PyobsError('Shape mismatch, cannot multiply')
             return pyobs.derobs([self,y],self.mean*y.mean,[g0,g1])
         else:
-            g0 = pyobs.gradient(lambda x: x*y, self.shape, gtype='diag')
+            g0 = pyobs.gradient(lambda x: x*y, self.mean, gtype='diag')
             return pyobs.derobs([self],self.mean*y,[g0])
     
     def __matmul__(self,y):
         if isinstance(y,observable):
-            g0 = pyobs.gradient(lambda x: x @ y.mean, self.shape)
-            g1 = pyobs.gradient(lambda x: self.mean @ x, y.shape)
+            g0 = pyobs.gradient(lambda x: x @ y.mean, self.mean)
+            g1 = pyobs.gradient(lambda x: self.mean @ x, y.mean)
             return pyobs.derobs([self,y],self.mean @ y.mean,[g0,g1])
         else:
-            g0 = pyobs.gradient(lambda x: x @ y, self.shape)
+            g0 = pyobs.gradient(lambda x: x @ y, self.mean)
             return pyobs.derobs([self],self.mean @ y,[g0])
 
     def reciprocal(self):
         new_mean = numpy.reciprocal(self.mean)
-        g0 = pyobs.gradient(lambda x: -x*(new_mean**2), self.shape, gtype='diag')
+        g0 = pyobs.gradient(lambda x: -x*(new_mean**2), self.mean, gtype='diag')
         return pyobs.derobs([self], new_mean,[g0])
     
     def __truediv__(self,y):
@@ -464,7 +469,7 @@ class observable:
     
     def __pow__(self,a):
         new_mean = self.mean**a
-        g0 = pyobs.gradient(lambda x: a * x*self.mean**(a-1), self.shape, gtype='diag')
+        g0 = pyobs.gradient(lambda x: a * x*self.mean**(a-1), self.mean, gtype='diag')
         return pyobs.derobs([self], new_mean, [g0])
     
     # in-place operations
@@ -506,7 +511,7 @@ class observable:
         sigma = {}
         for e in self.ename:
             if e in errinfo:
-                res = gamma_error(self,e,plot,pfile,errinfo[ed])
+                res = gamma_error(self,e,plot,pfile,errinfo[e])
             else:
                 res = gamma_error(self,e,plot,pfile)
             sigma[e] = numpy.reshape(res[0],self.shape)

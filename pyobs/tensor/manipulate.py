@@ -73,8 +73,8 @@ def concatenate(x,y,axis=0):
             raise pyobs.PyobsError(f'Incompatible dimensions between {x.shape} and {y.shape} for axis={axis}')
     f = lambda xx,yy: numpy.concatenate((xx,yy), axis=axis)
     mean = f(x.mean,y.mean)
-    gx = pyobs.gradient(lambda xx: f(xx,numpy.zeros(y.shape)), x.shape, gtype='extend')
-    gy = pyobs.gradient(lambda yy: f(numpy.zeros(x.shape),yy), y.shape, gtype='extend')
+    gx = pyobs.gradient(lambda xx: f(xx,numpy.zeros(y.shape)), x.mean, gtype='extend')
+    gy = pyobs.gradient(lambda yy: f(numpy.zeros(x.shape),yy), y.mean, gtype='extend')
     return pyobs.derobs([x,y], mean, [gx,gy])
 
 def transpose(x,axes=None):
@@ -93,7 +93,7 @@ def transpose(x,axes=None):
        obs : the transposed observable
     """
     f = lambda x: numpy.transpose(x, axes)
-    gx = pyobs.gradient(f, x.shape, gtype='slice')
+    gx = pyobs.gradient(f, x.mean, gtype='slice')
     return pyobs.derobs([x], f(x.mean), [gx])
 
 def sort(x,axis=-1):
@@ -110,7 +110,7 @@ def sort(x,axis=-1):
     """
     mean = numpy.sort(x.mean,axis)
     idx = numpy.argsort(x.mean,axis)
-    gx = pyobs.gradient(lambda x: numpy.take_along_axis(x,idx,axis), x.shape) # non-optimized for large number of observables
+    gx = pyobs.gradient(lambda x: numpy.take_along_axis(x,idx,axis), x.mean) # non-optimized for large number of observables
     return pyobs.derobs([x],mean,[gx])
 
 def diag(x):
@@ -127,9 +127,9 @@ def diag(x):
         raise pyobs.PyobsError(f'Unexpected matrix with shape {x.shape}; only 1-D and 2-D arrays are supported')
     f = lambda x: numpy.diag(x)
     if len(x.shape)==2:
-        gx = pyobs.gradient(f, x.shape, gtype='slice')
+        gx = pyobs.gradient(f, x.mean, gtype='slice')
     else:
-        gx = pyobs.gradient(f, x.shape) # non-optimized for large number of observables
+        gx = pyobs.gradient(f, x.mean) # non-optimized for large number of observables
     return pyobs.derobs([x],f(x.mean),[gx])
 
 def repeat(x,repeats,axis=None):
@@ -147,7 +147,7 @@ def repeat(x,repeats,axis=None):
     """
     f = lambda x: numpy.repeat(x, repeats=repeats, axis=axis)
     mean = f(x.mean)
-    gx = pyobs.gradient(f, x.shape, gtype='full') # non-optimized for large number of observables
+    gx = pyobs.gradient(f, x.mean, gtype='full') # non-optimized for large number of observables
     return pyobs.derobs([x],mean,[gx])
 
 def tile(x, reps):
@@ -159,7 +159,7 @@ def tile(x, reps):
        on the input arguments and function behavior.
     """
     f = lambda x: numpy.tile(x, reps)
-    gx = pyobs.gradient(f, x.shape, gtype='full') # non-optimized for large number of observables
+    gx = pyobs.gradient(f, x.mean, gtype='full') # non-optimized for large number of observables
     return pyobs.derobs([x], f(x.mean), [gx])
 
 def stack(obs, axis=0):
@@ -181,5 +181,5 @@ def stack(obs, axis=0):
     for j in range(len(obs)):
         arr0 = [numpy.zeros(obs[i].shape) for i in range(0,j)]
         arr1 = [numpy.zeros(obs[i].shape) for i in range(j+1,len(obs))]
-        grads += [pyobs.gradient(lambda x: f(arr0+[x]+arr1), obs[j].shape, gtype='extend')]
+        grads += [pyobs.gradient(lambda x: f(arr0+[x]+arr1), obs[j].mean, gtype='extend')]
     return pyobs.derobs(obs, f(arr), grads)
