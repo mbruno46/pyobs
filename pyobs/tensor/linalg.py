@@ -76,7 +76,7 @@ def eig(x):
     """
     if len(x.shape)>2: # pragma: no cover
         raise pyobs.PyobsError(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
-    if numpy.any(numpy.fabs(x.mean/x.mean.T-1.0)>1e-10): # pragma: no cover
+    if numpy.any(numpy.fabs(x.mean - x.mean.T)>1e-10): # pragma: no cover
         raise pyobs.PyobsError(f'Unexpected non-symmetric matrix: user eigLR')
     
     [w,v] = numpy.linalg.eig(x.mean)
