@@ -454,7 +454,7 @@ class observable:
         if isinstance(y,observable):
             return self * y.reciprocal()
         else:
-            return self * numpy.reciprocal(y)
+            return self * (1 / y)
    
     #__array_priority__=1000
     __array_ufunc__ = None
