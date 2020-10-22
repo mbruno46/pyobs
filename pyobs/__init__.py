@@ -33,9 +33,8 @@ __all__.extend(tensor.__all__)
 from .misc import *
 __all__.extend(misc.__all__)
 
-from .fit.mfit import mfit
-from .fit import symbolic
-__all__.extend(['mfit','symbolic'])
+from .fit import *
+__all__.extend(fit.__all__)
 
 from .version import __version__, __version_full__
 __all__.extend(['__version__'])

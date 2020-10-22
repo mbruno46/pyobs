@@ -31,6 +31,8 @@ except:
     def display(x):
         sympy.pprint(x)
 
+__all__ = ['diff']
+
 def diff(f,x,dx):
     """
     Utility function to compute the gradient and hessian of a function using symbolic calculus

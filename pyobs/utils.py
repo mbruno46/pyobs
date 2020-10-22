@@ -130,10 +130,10 @@ def slice_ndarray(t,*args):
                      as taking all elements along that given axis.
     
     Returns:
-       array: the sliced N-D array. Note that the number of dimensions
-              does not change even when only a single coordinate is
-              selected along a given axis.
-       
+       array: the sliced N-D array. 
+       Note that the number of dimensions does not change even 
+       when only a single coordinate is selected along a given axis.
+    
     Examples:
        >>> mat = numpy.arange(12).reshape(2,2,3)
        >>> pyobs.slice_tensor(mat,[],[0],[0,3])

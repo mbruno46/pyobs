@@ -1,6 +1,6 @@
 The class observable
 --------------------
 
-.. automodule:: pyobs
-    :members: observable
+.. autoclass:: pyobs.observable
+    :members: 
 

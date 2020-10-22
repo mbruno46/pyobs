@@ -20,14 +20,12 @@
 #################################################################################
 
 import numpy
-import sympy
-import copy
 from time import time
 
 import pyobs
-#from scipy.optimize import minimize
 from .minimize import lm
 
+__all__ = ['mfit']
 
 class chisquare:
     def __init__(self,x,W,f,df,v):
@@ -302,11 +300,11 @@ class mfit:
               the function must be evaluated. For combined fits, a list of 
               arrays must be passed, one for each fit.
            pars (obs) : the observable returned by calling this class
-
+        
         Returns:
            list of obs : observables corresponding to the functions evaluated 
-                         at the coordinates `xax`.
-                              
+           at the coordinates `xax`.
+        
         Examples:
            >>> fit1 = mfit(xax,W,f,df)
            >>> pars = fit1(yobs1)

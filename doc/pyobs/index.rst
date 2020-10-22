@@ -10,6 +10,7 @@ Python documentation
    linalg
    fit
    misc
+   io
 
 Indices and tables
 ------------------
