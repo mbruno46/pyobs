@@ -1,4 +1,4 @@
-from . import json
+from . import json, default
 import pyobs
 import os
 import datetime
@@ -27,8 +27,10 @@ def save(fname, obs):
      """    
     if os.path.isfile(fname) is True:
         raise pyobs.PyobsError(f'File {fname} already exists')
-          
-    if 'json' in fname:
+    
+    if 'pyobs' in fname:
+        fmt = default
+    elif 'json' in fname:
         fmt = json
     else:
         raise pyobs.PyobsError(f'Format not supported')
@@ -51,7 +53,9 @@ def load(fname):
     if not os.path.isfile(fname):
         raise pyobs.PyobsError(f'File {fname} does not exists')
     
-    if 'json' in fname:
+    if 'pyobs' in fname:
+        fmt = default 
+    elif 'json' in fname:
         fmt = json
     else: # pragma: no cover
         raise pyobs.PyobsError(f'Format not supported')

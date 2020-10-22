@@ -2,6 +2,7 @@ import json
 import gzip
 import re
 
+import time
 import pyobs
 import numpy
 
@@ -15,10 +16,13 @@ def __encoder__(obj):
     return obj.__dict__
 
 def save(fname, obs):
+    dt = -time.time()
     with gzip.open(fname, 'wt') as f:
-        tofile = json.dumps(obs, indent=2, default=__encoder__ )
-        f.write( tofile )
-
+        json.dump(obs, f, indent=2, default=__encoder__ )
+    dt += time.time()
+    b = pyobs.memory.book[id(obs)]
+    print(f'Written {b/1024.**2:g} MB at {b/dt/1024.**2:g} MB/s')
+    
 def load(fname):
     tmp = json.loads(gzip.open(fname, 'r').read())
     res = pyobs.observable(description=tmp['description'])
@@ -35,9 +39,9 @@ def load(fname):
             h = regex.split(tmp['delta'][key]['idx'])
             if h[0]!='range': # pragma: no cover
                 raise pyobs.PyobsError('Unexpected idx')
-            res.delta[key] = pyobs.core.data.delta(tmp['delta'][key]['mask'],range(int(h[1]),int(h[2]),int(h[3])),tmp['delta'][key]['lat'])
+            res.delta[key] = pyobs.core.data.delta(tmp['delta'][key]['mask'],range(int(h[1]),int(h[2]),int(h[3])),lat=tmp['delta'][key]['lat'])
         else:
-            res.delta[key] = pyobs.core.data.delta(tmp['delta'][key]['mask'],tmp['delta'][key]['idx'],tmp['delta'][key]['lat'])
+            res.delta[key] = pyobs.core.data.delta(tmp['delta'][key]['mask'],tmp['delta'][key]['idx'],lat=tmp['delta'][key]['lat'])
         res.delta[key].delta = numpy.array(tmp['delta'][key]['delta'])
                 
     for key in tmp['cdata']:

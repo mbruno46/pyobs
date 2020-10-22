@@ -26,7 +26,7 @@ __all__ = ['PyobsError','check_type','check_not_type',
         'is_verbose','set_verbose','valerr','textable',
           'slice_ndarray']
 
-verbose=[]
+verbose=['save','load']
 
 class PyobsError(Exception):
     pass

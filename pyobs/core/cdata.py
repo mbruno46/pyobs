@@ -24,11 +24,11 @@ import numpy
 
 class cdata:
     def __init__(self,grad,cov):
-        self.grad = grad
+        self.grad = numpy.array(grad, dtype=numpy.float64)
         if numpy.ndim(cov)==1:
-            self.cov = numpy.diag(cov)
+            self.cov = numpy.diag(numpy.array(cov, dtype=numpy.float64))
         else:
-            self.cov = numpy.array(cov)
+            self.cov = numpy.array(cov, dtype=numpy.float64)
         
     def axpy(self,grad,cd):
         grad.apply(self.grad, range(len(self.grad)), None, cd.grad, range(len(cd.grad)))
