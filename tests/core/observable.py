@@ -41,6 +41,6 @@ obsB.create('EnsA',data2,icnfg=range(N))
 obsB.peek()
 print('Before adding sys. err = ',obsB)
 [_,db] = obsB.error()
-se=0.0003
+se=0.003
 obsB.add_syst_err('syst.err #1',[se])
 print(f'After adding sys. err ({db[0]:g})({se:g}) = ({numpy.sqrt(db[0]**2+se**2):g}) : {obsB}')

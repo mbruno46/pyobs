@@ -73,7 +73,7 @@ class observable:
                                 
                 self.cdata = {}
                 for key in orig.cdata:
-                    self.cdata[key] = cdata(orig.cdata[key].grad,orig.cdata[key].cov)
+                    self.cdata[key] = cdata(orig.cdata[key].cov)
                 pyobs.memory.add(self)
             else:
                 raise pyobs.PyobsError('Unexpected orig argument')
@@ -247,7 +247,7 @@ class observable:
         if cov.shape!=(self.size,) and cov.shape!=(self.size,self.size):
             raise pyobs.PyobsError(f'Unexpected shape for covariance {cov.shape}')
         pyobs.check_type(cname,'cname',str)
-        self.cdata[cname] = cdata(numpy.eye(self.size),cov)
+        self.cdata[cname] = cdata(cov)
         pyobs.memory.update(self)
         
     def add_syst_err(self,name,err):
@@ -276,8 +276,7 @@ class observable:
         if numpy.shape(err)!=self.shape:
             raise pyobs.PyobsError(f'Unexpected error, dimensions do not match {self.shape}')
         cov = numpy.reshape(numpy.array(err)**2, (self.size,))
-        grad = numpy.diag(1.0*(numpy.array(err)!=0.0))
-        self.cdata[name] = cdata(grad,cov)
+        self.cdata[name] = cdata(cov)
         pyobs.memory.update(self)        
         
     def __del__(self):
@@ -322,7 +321,7 @@ class observable:
             print(f'         temporary additional memory required {m/1024.**2:.2g} MB')
         
         for cd in self.cdata:
-            print(f' - Data {cd} with gradient shape {self.cdata[cd].grad.shape} and cov. matrix {self.cdata[cd].cov.shape}')
+            print(f' - Data {cd} with cov. matrix {self.cdata[cd].cov.shape}')
         print('')
     
     def __str__(self):
