@@ -18,8 +18,8 @@ obsA.create('EnsA',data)
 [a,da] = obsA.error()
 dda = obsA.error_of_error()
 assert abs(a-val) < da
-assert abs(da - sig/numpy.sqrt(N)) < dda
-print(f'Estimated error {da[0]:g} vs expeceted {sig/numpy.sqrt(N):g}')
+assert abs(da - sig) < dda
+print(f'Estimated error {da[0]:g} vs expeceted {sig:g}')
 
 N=10000
 tau=0.0
@@ -31,8 +31,8 @@ obsA.create('EnsA',data)
 [a,da] = obsA.error()
 dda = obsA.error_of_error()
 assert abs(a-val) <da
-assert abs(da - sig/numpy.sqrt(N)) < dda
-print(f'Estimated error {da[0]:g} vs expeceted {sig/numpy.sqrt(N):g}')
+assert abs(da - sig) < dda
+print(f'Estimated error {da[0]:g} vs expeceted {sig:g}')
 
 [a, da] = obsA.error(errinfo={'EnsA': pyobs.errinfo(W=0)})
 assert abs(a-val) < da
@@ -47,8 +47,8 @@ obsA.create('EnsA',data)
 [a,da] = obsA.error()
 dda = obsA.error_of_error()
 assert abs(a-val) < da
-assert abs(da - sig*numpy.sqrt(2*tau/N)) < dda
-print(f'Estimated error {da[0]:g} vs expeceted {sig*numpy.sqrt(2*tau/N):g}')
+assert abs(da - sig) < dda
+print(f'Estimated error {da[0]:g} vs expeceted {sig:g}')
 
 _tau = obsA.tauint()
 assert abs(_tau['EnsA'][0]-tau) < 1.5*_tau['EnsA'][1]

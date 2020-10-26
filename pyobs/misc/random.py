@@ -29,18 +29,12 @@ def acrand(mu,sigma,tau,N):
 
     Parameters:
        mu (int or float): the central value
-       sigma (float): the square root of the variance of 
-          the observable in absence of autocorrelations
+       sigma (float): the target error
        tau (float): the integrated autocorrelation time
        N (int): the number of configurations/measurements
 
     Returns:
        list : the synthetic data
-
-    Note:
-       The expected error from a proper autocorrelation analysis
-       is the product of `sigma` with the square root of `tau` 
-       divided by `N`.
 
     Examples:
        >>> data = pyobs.random.acrand(0.1234,0.0001,4.0,1000)
@@ -55,12 +49,13 @@ def acrand(mu,sigma,tau,N):
         f=numpy.exp(-1./tau)
     else:
         f=0.0
+        tau=0.5
     ff=numpy.sqrt(1.-f*f)
     rn=numpy.zeros((N,))
     rn[0]=ff*r[0]
     for i in range(1,N):
         rn[i]=ff*r[i] + f*rn[i-1]
-    return list(mu + sigma*rn)
+    return list(mu + sigma*numpy.sqrt(N/(2*tau))*rn)
 
 def acrandn(mu,cov,tau,N):
     """

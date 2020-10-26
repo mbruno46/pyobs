@@ -433,7 +433,7 @@ class observable:
                 raise pyobs.PyobsError('Shape mismatch, cannot multiply')
             return pyobs.derobs([self,y],self.mean*y.mean,[g0,g1])
         else:
-            g0 = pyobs.gradient(lambda x: x*y, self.mean, gtype='diag')
+            g0 = pyobs.gradient(lambda x: x*y, self.mean, gtype='full')
             return pyobs.derobs([self],self.mean*y,[g0])
     
     def __matmul__(self,y):
