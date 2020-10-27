@@ -84,16 +84,15 @@ def eig(x):
     # d l_n = (v_n, dA v_n)
     gw=pyobs.gradient( lambda x: numpy.diag(v.T @ x @ v), x.mean)
 
-    # d v_n = sum_{m \neq n} (w_m, dA v_n) / (l_n - l_m) w_m
+    # d v_n = sum_{m \neq n} (v_m, dA v_n) / (l_n - l_m) v_m
     def gradv(y):
         tmp = v.T @ y @ v
-        gv = numpy.zeros(x.shape)
-        for n in range(x.shape[0]):
-            for m in range(x.shape[1]):
-                if n!=m:
-                    gv[:,n] += tmp[m,n]/(w[n]-w[m])*v[:,m]
-        return gv
-
+        h = []
+        for m in range(x.shape[0]):
+            h.append((w!=w[m])*1.0/(w-w[m]+1e-16))
+        h = numpy.array(h)
+        return v @ (tmp*h)
+    
     gv=pyobs.gradient(gradv, x.mean)
     return [pyobs.derobs([x],w,[gw]), pyobs.derobs([x],v,[gv])]
 

@@ -468,7 +468,10 @@ class observable:
         return self*y
     def __rtruediv__(self,y):
         return self.reciprocal() * y
-    
+    def __rmatmul__(self,y):
+        g0 = pyobs.gradient(lambda x: y @ x, self.mean)
+        return pyobs.derobs([self],y @ self.mean,[g0])
+        
     def __pow__(self,a):
         new_mean = self.mean**a
         g0 = pyobs.gradient(lambda x: a * x*self.mean**(a-1), self.mean, gtype='diag')
