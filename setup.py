@@ -7,7 +7,7 @@ from distutils.command.build_ext import build_ext
 import os
 import numpy
 
-VERSION = (1, 0, 0)
+VERSION = (1, 0, 1)
 
 
 def version():
@@ -74,6 +74,7 @@ setup(
         "numpy>=1.18",
         "sympy>=1.5",
         "scipy>=1.4",
+        "bison @ git+https://github.com/mbruno46/bison.git@main#egg=bison"
     ],
     ext_modules=[ext],
     cmdclass={
