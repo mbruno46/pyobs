@@ -31,8 +31,8 @@ class cdata:
         
     def axpy(self,grad,cd):
         n = len(self.cov)
-        g = numpy.zeros((n,n))
         m = len(cd.cov)
+        g = numpy.zeros((n,m))
         grad.apply(g, range(n), None, numpy.eye(m), range(m))
         self.cov += g @ cd.cov @ g.T
         

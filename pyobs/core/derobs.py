@@ -97,8 +97,7 @@ def derobs(inps,mean,grads,description=None):
         for i in range(len(inps)):
             if key in inps[i].cdata:
                 if not key in res.cdata:
-                    d = inps[i].cdata[key].cov.shape[0]
-                    res.cdata[key] = cdata(numpy.zeros(d))
+                    res.cdata[key] = cdata(numpy.zeros(res.size))
                 res.cdata[key].axpy(grads[i], inps[i].cdata[key])
 
     pyobs.memory.update(res)

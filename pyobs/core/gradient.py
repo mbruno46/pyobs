@@ -102,12 +102,12 @@ class gradient:
         elif self.gtype is 'slice':
             idx = numpy.nonzero(numpy.in1d(vmask,self.grad))[0]
             if uidx is None:
-                u += v[idx]
+                u += v[idx,:]
             else:
                 u[:,uidx] += v[idx,:]
         elif self.gtype is 'extend':
             idx = numpy.nonzero(numpy.in1d(umask,self.grad))[0]
             if uidx is None:
-                u[idx] += v
+                u[idx,:] += v
             else:
                 u[numpy.ix_(idx,uidx)] += v
