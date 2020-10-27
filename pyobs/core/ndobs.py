@@ -432,7 +432,10 @@ class observable:
                 raise pyobs.PyobsError('Shape mismatch, cannot multiply')
             return pyobs.derobs([self,y],self.mean*y.mean,[g0,g1])
         else:
-            g0 = pyobs.gradient(lambda x: x*y, self.mean, gtype='full')
+            # if gradient below was 'full' it would allow scalar_obs * array([4,5,6])
+            # which would create a vector obs. right now that generates an error
+            # but is faster for large gradients
+            g0 = pyobs.gradient(lambda x: x*y, self.mean, gtype='diag')
             return pyobs.derobs([self],self.mean*y,[g0])
     
     def __matmul__(self,y):
