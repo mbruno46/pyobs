@@ -31,4 +31,6 @@ for key in test.delta:
 assert (test2['metadata'] == 'the test observable')
 assert (test2['indices'] == [4,8])
 
+pyobs.memory.info()
+
 os.popen('rm ./test-io.pyobs')

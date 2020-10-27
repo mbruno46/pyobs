@@ -13,6 +13,7 @@ class observable_decoder(bison.Decoder):
         out.ename = obj['ename']
         out.delta = obj['delta']
         out.cdata = obj['cdata']
+        pyobs.memory.update(out)
         return out
 
 class delta_decoder(bison.Decoder):

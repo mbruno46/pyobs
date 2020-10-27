@@ -45,4 +45,6 @@ try:
 except pyobs.PyobsError:
     print('error caught')
 
+pyobs.memory.info()
+
 os.popen('rm ./test-io.json.gz')
