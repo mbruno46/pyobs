@@ -71,10 +71,11 @@ def concatenate(x,y,axis=0):
     for d in range(len(x.shape)): # pragma: no cover
         if (d!=axis) and (x.shape[d]!=y.shape[d]):
             raise pyobs.PyobsError(f'Incompatible dimensions between {x.shape} and {y.shape} for axis={axis}')
-    mean=numpy.concatenate((x.mean,y.mean),axis=axis)
-    grads=[numpy.concatenate((numpy.eye(x.size),numpy.zeros((y.size,x.size))))]
-    grads+=[numpy.concatenate((numpy.zeros((x.size,y.size)),numpy.eye(y.size)))]
-    return pyobs.derobs([x,y],mean,grads)
+    f = lambda xx,yy: numpy.concatenate((xx,yy), axis=axis)
+    mean = f(x.mean,y.mean)
+    gx = pyobs.gradient(lambda xx: f(xx,numpy.zeros(y.shape)), x.mean, gtype='extend')
+    gy = pyobs.gradient(lambda yy: f(numpy.zeros(x.shape),yy), y.mean, gtype='extend')
+    return pyobs.derobs([x,y], mean, [gx,gy])
 
 def transpose(x,axes=None):
     """
@@ -91,9 +92,9 @@ def transpose(x,axes=None):
     Returns:
        obs : the transposed observable
     """
-    mean=numpy.transpose(x.mean,axes)
-    grads=x.gradient(lambda x:numpy.transpose(x,axes))
-    return pyobs.derobs([x],mean,[grads])
+    f = lambda x: numpy.transpose(x, axes)
+    gx = pyobs.gradient(f, x.mean, gtype='slice')
+    return pyobs.derobs([x], f(x.mean), [gx])
 
 def sort(x,axis=-1):
     """
@@ -107,14 +108,14 @@ def sort(x,axis=-1):
     Returns:
        obs : the sorted observable
     """
-    mean=numpy.sort(x.mean,axis)
-    idx=numpy.argsort(x.mean,axis)
-    grads=x.gradient(lambda x: numpy.take_along_axis(x,idx,axis))
-    return pyobs.derobs([x],mean,[grads])
+    mean = numpy.sort(x.mean,axis)
+    idx = numpy.argsort(x.mean,axis)
+    gx = pyobs.gradient(lambda x: numpy.take_along_axis(x,idx,axis), x.mean) # non-optimized for large number of observables
+    return pyobs.derobs([x],mean,[gx])
 
 def diag(x):
     """
-    Extract the diagonal of 2-D array or construct a diagonal matrix from a 1-D array
+    Extract the diagonal of 2-D array or construct a diagonal matrix from a 1-D array.
     
     Parameters:
        x (obs): input observable
@@ -123,10 +124,13 @@ def diag(x):
        obs : the diagonally projected or extended observable
     """
     if len(x.shape)>2: # pragma: no cover
-        raise pyobs.PyobsError(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
-    mean = numpy.diag(x.mean)
-    grads = x.gradient( lambda x:numpy.diag(x))
-    return pyobs.derobs([x],mean,[grads])
+        raise pyobs.PyobsError(f'Unexpected matrix with shape {x.shape}; only 1-D and 2-D arrays are supported')
+    f = lambda x: numpy.diag(x)
+    if len(x.shape)==2:
+        gx = pyobs.gradient(f, x.mean, gtype='slice')
+    else:
+        gx = pyobs.gradient(f, x.mean) # non-optimized for large number of observables
+    return pyobs.derobs([x],f(x.mean),[gx])
 
 def repeat(x,repeats,axis=None):
     """
@@ -143,8 +147,8 @@ def repeat(x,repeats,axis=None):
     """
     f = lambda x: numpy.repeat(x, repeats=repeats, axis=axis)
     mean = f(x.mean)
-    grads = x.gradient(f)
-    return pyobs.derobs([x],mean,[grads])
+    gx = pyobs.gradient(f, x.mean, gtype='full') # non-optimized for large number of observables
+    return pyobs.derobs([x],mean,[gx])
 
 def tile(x, reps):
     """
@@ -155,8 +159,8 @@ def tile(x, reps):
        on the input arguments and function behavior.
     """
     f = lambda x: numpy.tile(x, reps)
-    grads = x.gradient(f)
-    return pyobs.derobs([x], f(x.mean), [grads])
+    gx = pyobs.gradient(f, x.mean, gtype='full') # non-optimized for large number of observables
+    return pyobs.derobs([x], f(x.mean), [gx])
 
 def stack(obs, axis=0):
     """
@@ -177,5 +181,5 @@ def stack(obs, axis=0):
     for j in range(len(obs)):
         arr0 = [numpy.zeros(obs[i].shape) for i in range(0,j)]
         arr1 = [numpy.zeros(obs[i].shape) for i in range(j+1,len(obs))]
-        grads += [obs[j].gradient(lambda x: f(arr0+[x]+arr1))]
+        grads += [pyobs.gradient(lambda x: f(arr0+[x]+arr1), obs[j].mean, gtype='extend')]
     return pyobs.derobs(obs, f(arr), grads)

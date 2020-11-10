@@ -5,6 +5,12 @@ Future milestones:
  - finite volume quantization condition for 2->2
  - exponential tail
 
+version 1.0.1, 10.11.2020:
+ - added IO with binary file format (default), based on bison
+ - performance improvements in create and derobs
+ - additional gradient class for optimization of element-wise operations
+ - minor bug fixes
+
 version 1.0.0-alpha, 11.10.2020:
  - IO with json file format supported
  - pip install supported

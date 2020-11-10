@@ -14,13 +14,13 @@ print(mfobs)
 
 print('a random operation',mfobs * 45 + mfobs**2)
 
-[v, e] = mfobs.error(errinfo={'test-mfield': pyobs.errinfo(R=12.0)})
+[v, e] = mfobs.error(errinfo={'test-mfield': pyobs.errinfo(W=12.0)})
 print(v,e)
-[v, e] = mfobs.error(errinfo={'test-mfield': pyobs.errinfo(R=12.01)})
+[v, e] = mfobs.error(errinfo={'test-mfield': pyobs.errinfo(W=12.01)})
 print(v,e)
-[v, e] = mfobs.error(errinfo={'test-mfield': pyobs.errinfo(R=[12.01])})
+[v, e] = mfobs.error(errinfo={'test-mfield': pyobs.errinfo(W=[12.01])})
 print(v,e)
-[v, e] = mfobs.error(errinfo={'test-mfield': pyobs.errinfo(R=[12.0])})
+[v, e] = mfobs.error(errinfo={'test-mfield': pyobs.errinfo(W=[12.0])})
 print(v,e)
 
 def func(x):

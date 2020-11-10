@@ -10,5 +10,7 @@ Generation of synthetic autocorrelated data
 Formatting of arrays
 --------------------
 
-.. automodule:: pyobs
-   :members: textable, slice_tensor
+.. currentmodule:: pyobs
+
+.. autofunction:: textable
+.. autofunction:: slice_ndarray

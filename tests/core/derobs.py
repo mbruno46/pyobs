@@ -4,7 +4,7 @@ import numpy
 pyobs.set_verbose('derobs')
 
 val=0.002
-sig=val*0.5
+sig=val*0.05
 
 N=1000
 tau=0.0

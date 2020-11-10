@@ -24,9 +24,9 @@ import sys
 
 __all__ = ['PyobsError','check_type','check_not_type',
         'is_verbose','set_verbose','valerr','textable',
-          'slice_tensor']
+          'slice_ndarray']
 
-verbose=[]
+verbose=['save','load']
 
 class PyobsError(Exception):
     pass
@@ -119,9 +119,9 @@ def check_not_type(obj,s,t):
     if type(obj) is t:
         raise TypeError(f'Unexpected type for {s}')
 
-def slice_tensor(t,*args):
+def slice_ndarray(t,*args):
     """
-    Selects subparts of a tensor.
+    Slices a N-D array.
     
     Parameters:
        t (array): N-D array
@@ -130,8 +130,10 @@ def slice_tensor(t,*args):
                      as taking all elements along that given axis.
     
     Returns:
-       array: the sliced tensor
-       
+       array: the sliced N-D array. 
+       Note that the number of dimensions does not change even 
+       when only a single coordinate is selected along a given axis.
+    
     Examples:
        >>> mat = numpy.arange(12).reshape(2,2,3)
        >>> pyobs.slice_tensor(mat,[],[0],[0,3])

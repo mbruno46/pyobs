@@ -28,9 +28,9 @@ import datetime
 
 import pyobs
 
-from .data import rdata, mfdata
+from .data import delta
 from .cdata import cdata
-from .error import uwerr, mferr, plot_piechart
+from .error import gamma_error, plot_piechart
 
 __all__ = ['observable']
 
@@ -55,10 +55,8 @@ class observable:
             self.shape = []
             self.size = 0
             self.mean = []
-            self.edata = []
-            self.rdata = {}
-            self.mfname = []
-            self.mfdata = {}
+            self.ename = []
+            self.delta = {}
             self.cdata = {}
         else:
             if isinstance(orig,observable):
@@ -68,19 +66,14 @@ class observable:
                 self.size = numpy.prod(self.shape)
                 self.mean = numpy.array(orig.mean) # or orig.mean.copy()
                 
-                self.edata = [e for e in orig.edata] #copy.deepcopy(orig.edata) # copy works only for primitive types, not lists
-                self.rdata = {}
-                for key in orig.rdata:
-                    self.rdata[key] = orig.rdata[key].copy()
-                    
-                self.mfname = [n for n in orig.mfname]
-                self.mfdata = {}
-                for key in orig.mfdata:
-                    self.mfdata[key] = orig.mfdata[key].copy()
-                
+                self.ename = [e for e in orig.ename]
+                self.delta = {}
+                for key in orig.delta:
+                    self.delta[key] = orig.delta[key].copy()
+                                
                 self.cdata = {}
                 for key in orig.cdata:
-                    self.cdata[key] = cdata(orig.cdata[key].grad,orig.cdata[key].cov)
+                    self.cdata[key] = cdata(orig.cdata[key].cov)
                 pyobs.memory.add(self)
             else:
                 raise pyobs.PyobsError('Unexpected orig argument')
@@ -149,12 +142,8 @@ class observable:
         self.shape = shape
         self.size=numpy.prod(shape)
         mask=range(self.size)
-        if lat is None:
-            if not ename in self.edata:
-                self.edata.append(ename)
-        else:
-            if not ename in self.mfname:
-                self.mfname.append(ename)
+        if not ename in self.ename:
+            self.ename.append(ename)
         
         if isinstance(data[0],(list,numpy.ndarray)):
             R=len(data)
@@ -178,27 +167,18 @@ class observable:
                 if len(icnfg)*self.size!=len(data):
                     raise pyobs.PyobsError(f'Incompatible icnfg and data, for shape={shape}')
             if numpy.size(self.mean)!=0:
-                N0 = sum([self.rdata[rd].n for rd in self.rdata])
+                N0 = sum([self.delta[key].n for key in self.delta])
                 mean0 = numpy.reshape(self.mean,(self.size,))
                 mean1 = numpy.mean(numpy.reshape(data,(nc,self.size)),0)
                 self.mean = (N0*mean0 + nc*mean1)/(N0+nc)
-                d = nc*(mean0-mean1)/(N0+nc)
-                if lat is None:
-                    for rd in self.rdata:
-                        for i in range(self.rdata[rd].n):
-                            self.rdata[rd].delta[:,i] += d
-                else:
-                    for mfd in self.mfdata:
-                        for i in range(self.mfdata[mfd].n):
-                            self.mfdata[mfd].delta[:,i] += d
+                shift = nc*(mean0-mean1)/(N0+nc)
+                for key in self.delta:
+                    self.delta[key].delta += shift[:,None]
             else:
                 self.mean=numpy.mean(numpy.reshape(data,(nc,self.size)),0)
                 
             key=f'{ename}:{rname}'
-            if lat is None:
-                self.rdata[key] = rdata(mask,icnfg,data,self.mean)
-            else:
-                self.mfdata[key] = mfdata(mask,icnfg,lat,data,self.mean)
+            self.delta[key] = delta(mask, icnfg, data, self.mean, lat)
         else:
             if numpy.size(self.mean)!=0:
                 raise pyobs.PyobsError('Only a single replica can be added to existing observables')
@@ -231,10 +211,7 @@ class observable:
                         raise pyobs.PyobsError(f'Incompatible icnfg[{ir}] and data[{ir}], for shape={shape}')
             for ir in range(len(data)):
                 key=f'{ename}:{rname[ir]}'
-                if lat is None:
-                    self.rdata[key] = rdata(mask,icnfg[ir],data[ir],self.mean)
-                else:
-                    self.mfdata[key] = mfdata(mask,icnfg[ir],lat,data[ir],self.mean)
+                self.delta[key] = delta(mask, icnfg[ir], data[ir], self.mean, lat)
         self.mean = numpy.reshape(self.mean, self.shape)
         pyobs.memory.update(self)
         if pyobs.is_verbose('create'):
@@ -270,7 +247,7 @@ class observable:
         if cov.shape!=(self.size,) and cov.shape!=(self.size,self.size):
             raise pyobs.PyobsError(f'Unexpected shape for covariance {cov.shape}')
         pyobs.check_type(cname,'cname',str)
-        self.cdata[cname] = cdata(numpy.eye(self.size),cov)
+        self.cdata[cname] = cdata(cov)
         pyobs.memory.update(self)
         
     def add_syst_err(self,name,err):
@@ -299,12 +276,14 @@ class observable:
         if numpy.shape(err)!=self.shape:
             raise pyobs.PyobsError(f'Unexpected error, dimensions do not match {self.shape}')
         cov = numpy.reshape(numpy.array(err)**2, (self.size,))
-        grad = numpy.diag(1.0*(numpy.array(err)!=0.0))
-        self.cdata[name] = cdata(grad,cov)
+        self.cdata[name] = cdata(cov)
         pyobs.memory.update(self)        
         
     def __del__(self):
         pyobs.memory.rm(self)
+        
+    ##################################
+    # pretty string representations
         
     def peek(self):
         """
@@ -328,39 +307,57 @@ class observable:
         print(f' - size: {pyobs.memory.get(self)}')
         print(f' - mean: {self.mean}')
         
-        def core(n0,n1):
-            for name in self.__dict__[n0]:
-                print(f' - {"Ensemble" if n0 == "edata" else "Master-field"} {name}')
-                m=0
-                for key in self.__dict__[n1]:
-                    rn=key.split(':')
-                    if rn[0]==name:
-                        print(f'    - Replica {rn[1]} with mask {self.__dict__[n1][key].mask} and {"ncnfg" if n0 == "edata" else "sites"} {self.__dict__[n1][key].n}')
-                        mm=self.rdata[key].ncnfg()*8.*2. if n0 == 'edata' else (self.mfdata[key].vol()+1)*8.
-                        m=(mm>m)*mm + (mm<=m)*m
-                print(f'         temporary additional memory required {m/1024.**2:.2g} MB')
-        core('edata','rdata')
-        core('mfname','mfdata')
+        for name in self.ename:
+            print(f' - Ensemble {name}')
+            m=0
+            for key in self.delta:
+                rn=key.split(':')
+                if rn[0]==name:
+                    outstr = f'    - {"Replica" if self.delta[key].lat is None else "Master-field"} {rn[1]}'
+                    outstr = f'{outstr} with {"ncnfg" if self.delta[key].lat is None else "sites"} {self.delta[key].n}'
+                    print(outstr)
+                    mm=self.delta[key].ncnfg()*8.*2. if self.delta[key].lat is None else (self.delta[key].vol()+1)*8.
+                    m=(mm>m)*mm + (mm<=m)*m
+            print(f'         temporary additional memory required {m/1024.**2:.2g} MB')
         
         for cd in self.cdata:
-            print(f' - Data {cd} with gradient shape {self.cdata[cd].grad.shape} and cov. matrix {self.cdata[cd].cov.shape}')
+            print(f' - Data {cd} with cov. matrix {self.cdata[cd].cov.shape}')
         print('')
     
     def __str__(self):
         [v,e] = self.error()
         D=len(self.shape)
+        out = ''
         if D==1:
-            out = '\t'.join([pyobs.valerr(v[i],e[i]) for i in range(self.shape[0])])
+            out += '\t'.join([pyobs.valerr(v[i],e[i]) for i in range(self.shape[0])])
             out += '\n'
         elif D==2:
-            out= ''
             for i in range(self.shape[0]):
                 out += '\t'.join([pyobs.valerr(v[i,j],e[i,j]) for j in range(self.shape[1])])
-                out += '\n'
+                out += '\n' 
         return out
     
     def __repr__(self): # pragma: no cover
         return self.__str__()
+    
+    ##################################
+    # overloaded indicing and slicing
+
+    def set_mean(self, mean):
+        if isinstance(mean,(int,float,numpy.float32,numpy.float64)):
+            self.mean = numpy.reshape(mean,(1,))
+        else:
+            self.mean = numpy.array(mean)
+        self.shape = numpy.shape(mean)
+        self.size = numpy.size(mean)
+        
+    def slice(self,*args):
+        na=len(args)
+        if na!=len(self.shape):
+            raise pyobs.PyobsError('Unexpected argument')
+        f = lambda x: pyobs.slice_ndarray(x, *args)
+        g0 = pyobs.gradient(f, self.mean, gtype='slice')
+        return pyobs.derobs([self], f(self.mean), [g0])
     
     def __getitem__(self,args):
         if isinstance(args,(int,numpy.int32,numpy.int64,slice,numpy.ndarray)):
@@ -368,42 +365,44 @@ class observable:
         na=len(args)
         if na!=len(self.shape):
             raise pyobs.PyobsError('Unexpected argument')
-        new_size=1
-        for i in range(na):
-            if isinstance(args[i],(slice,numpy.ndarray)):
-                new_size *= numpy.size(numpy.arange(self.shape[i])[args[i]])
-        grad=numpy.zeros((new_size,self.size))
-        hess=numpy.zeros((new_size,self.size,self.size))
-        idx = numpy.reshape(range(self.size),self.shape)[tuple(args)]
-        a=0
-        for b in idx.flatten():
-            grad[a,b]=1.0
-            a+=1
-        return pyobs.derobs([self],self.mean[tuple(args)],[grad])
+        if self.mean[tuple(args)].size==1:
+            f = lambda x: numpy.reshape(x[tuple(args)],(1,))
+        else:
+            f = lambda x: x[tuple(args)]
+        g0 = pyobs.gradient(f, self.mean, gtype='slice')
+        return pyobs.derobs([self], f(self.mean), [g0])
     
     def __setitem__(self,args,yobs):
         if isinstance(args,(int,numpy.int32,numpy.int64,slice,numpy.ndarray)):
             args=[args]
-            if yobs.shape==(1):
-                raise pyobs.PyobsError('Dimensions do not match')
-        elif self.mean[tuple(args)].shape != yobs.shape:
-            raise pyobs.PyobsError('Dimensions do not match')
+        if (self.mean[tuple(args)].size==1):
+            if yobs.size!=1:
+                raise pyobs.PyobsError('set item : dimensions do not match')
+        else:
+            if self.mean[tuple(args)].shape != yobs.shape:
+                raise pyobs.PyobsError('set item : dimensions do not match')
+        self.mean[tuple(args)] = yobs.mean
+
         idx = numpy.arange(self.size).reshape(self.shape)[tuple(args)]
         submask = idx.flatten()
-        self.mean[tuple(args)] = yobs.mean
-        for key in yobs.rdata:
-            if not key in self.rdata:
-                raise pyobs.PyobsError('Ensembles do not match; can not assign item')
-            self.rdata[key].assign(submask,yobs.rdata[key])
-        for key in yobs.mfdata:
-            if not key in self.mfdata:
-                raise pyobs.PyobsError('Ensembles do not match; can not assign item')
-            self.mfdata[key].assign(submask,yobs.mfdata[key])
         
+        for key in yobs.delta:
+            if not key in self.delta:
+                raise pyobs.PyobsError('Ensembles do not match; can not set item')
+            self.delta[key].assign(submask,yobs.delta[key])
+
+        for key in yobs.cdata:
+            if not key in self.cdata:
+                raise pyobs.PyobsError('Covariance data do not match; can not set item')
+            self.cdata[key].assign(submask,yobs.cdata[key])
+        
+    ##################################
+    # overloaded basic math operations
+
     def __addsub__(self,y,sign):
-        g0=numpy.eye(self.size)
+        g0 = pyobs.gradient(lambda x: x, self.mean, gtype='diag')
         if isinstance(y,observable):
-            g1=sign*numpy.eye(y.size)
+            g1 = pyobs.gradient(lambda x: sign*x, y.mean, gtype='diag')
             return pyobs.derobs([self,y],self.mean+sign*y.mean,[g0,g1])
         else:
             return pyobs.derobs([self],self.mean+sign*y,[g0])
@@ -415,36 +414,49 @@ class observable:
         return self.__addsub__(y,-1)
     
     def __neg__(self):
-        return pyobs.derobs([self],-self.mean,[-numpy.eye(self.size)])
+        g0 = pyobs.gradient(lambda x: -x, self.mean, gtype='diag')
+        return pyobs.derobs([self],-self.mean,[g0])
     
     def __mul__(self,y):
         if isinstance(y,observable):
-            g0=self.gradient(lambda x:x*y.mean)
-            g1=self.gradient(lambda x:self.mean*x)
+            if self.shape==y.shape:
+                g0 = pyobs.gradient(lambda x: x*y.mean, self.mean, gtype='diag')
+                g1 = pyobs.gradient(lambda x: self.mean*x, y.mean, gtype='diag')
+            elif self.shape==(1,):
+                g0 = pyobs.gradient(lambda x: x*y.mean, self.mean, gtype='full')
+                g1 = pyobs.gradient(lambda x: self.mean*x, y.mean, gtype='diag')
+            elif y.shape==(1,):
+                g0 = pyobs.gradient(lambda x: x*y.mean, self.mean, gtype='diag')
+                g1 = pyobs.gradient(lambda x: self.mean*x, y.mean, gtype='full')
+            else:
+                raise pyobs.PyobsError('Shape mismatch, cannot multiply')
             return pyobs.derobs([self,y],self.mean*y.mean,[g0,g1])
         else:
-            g0=self.gradient(lambda x:x*y)
+            # if gradient below was 'full' it would allow scalar_obs * array([4,5,6])
+            # which would create a vector obs. right now that generates an error
+            # but is faster for large gradients
+            g0 = pyobs.gradient(lambda x: x*y, self.mean, gtype='diag')
             return pyobs.derobs([self],self.mean*y,[g0])
     
     def __matmul__(self,y):
         if isinstance(y,observable):
-            g0=self.gradient(lambda x: x @ y.mean)
-            g1=self.gradient(lambda x:self.mean @ x)
+            g0 = pyobs.gradient(lambda x: x @ y.mean, self.mean)
+            g1 = pyobs.gradient(lambda x: self.mean @ x, y.mean)
             return pyobs.derobs([self,y],self.mean @ y.mean,[g0,g1])
         else:
-            g0=self.gradient(lambda x: x @ y)
+            g0 = pyobs.gradient(lambda x: x @ y, self.mean)
             return pyobs.derobs([self],self.mean @ y,[g0])
 
     def reciprocal(self):
         new_mean = numpy.reciprocal(self.mean)
-        g0=self.gradient( lambda x:-x*(new_mean**2))
+        g0 = pyobs.gradient(lambda x: -x*(new_mean**2), self.mean, gtype='diag')
         return pyobs.derobs([self], new_mean,[g0])
     
     def __truediv__(self,y):
         if isinstance(y,observable):
             return self * y.reciprocal()
         else:
-            return self * numpy.reciprocal(y)
+            return self * (1 / y)
    
     #__array_priority__=1000
     __array_ufunc__ = None
@@ -456,10 +468,13 @@ class observable:
         return self*y
     def __rtruediv__(self,y):
         return self.reciprocal() * y
-    
+    def __rmatmul__(self,y):
+        g0 = pyobs.gradient(lambda x: y @ x, self.mean)
+        return pyobs.derobs([self],y @ self.mean,[g0])
+        
     def __pow__(self,a):
         new_mean = self.mean**a
-        g0=self.gradient( lambda x: a * x*self.mean**(a-1))
+        g0 = pyobs.gradient(lambda x: a * x*self.mean**(a-1), self.mean, gtype='diag')
         return pyobs.derobs([self], new_mean, [g0])
     
     # in-place operations
@@ -490,29 +505,24 @@ class observable:
         self = pyobs.observable(tmp)
         del tmp
         return self
+
+
+    ##################################
+    # Error functions
     
     def error_core(self,errinfo,plot,pfile):
         sigma_tot = numpy.zeros(self.shape)
         dsigma_tot = numpy.zeros(self.shape)
         sigma = {}
-        for ed in self.edata:
-            if ed in errinfo:
-                res = uwerr(self,ed,plot,pfile,errinfo[ed].Stau,errinfo[ed].W)
+        for e in self.ename:
+            if e in errinfo:
+                res = gamma_error(self,e,plot,pfile,errinfo[e])
             else:
-                res = uwerr(self,ed,plot,pfile)
-            sigma[ed] = numpy.reshape(res[0],self.shape)
-            sigma_tot += sigma[ed]
+                res = gamma_error(self,e,plot,pfile)
+            sigma[e] = numpy.reshape(res[0],self.shape)
+            sigma_tot += sigma[e]
             dsigma_tot += numpy.reshape(res[1],self.shape)
-            
-        for mf in self.mfname:
-            if mf in errinfo:
-                res = mferr(self,mf,plot,pfile,errinfo[mf].k,errinfo[mf].Stau,errinfo[mf].R)
-            else:
-                res = mferr(self,mf,plot,pfile)
-            sigma[mf] = numpy.reshape(res[0],self.shape)
-            sigma_tot += sigma[mf]
-            dsigma_tot += numpy.reshape(res[1],self.shape)
-        
+                    
         for cd in self.cdata:
             sigma[cd] = numpy.reshape(self.cdata[cd].sigmasq(),self.shape)
             sigma_tot += sigma[cd]
@@ -574,7 +584,7 @@ class observable:
         [sigma, sigma_tot, _] = self.error_core(errinfo,plot,pfile)
         
         if plot: # pragma: no cover
-            h=[len(self.edata),len(self.mfname),len(self.cdata)]
+            h=[len(self.ename),len(self.cdata)]
             if sum(h)>1:
                 plot_piechart(self.description, sigma, sigma_tot)
             
@@ -608,23 +618,9 @@ class observable:
         """
         # to be improved - add errinfo
         tau = {}
-        for ed in self.edata:
-            res = uwerr(self,ed,False,None)
-            tau[ed] = [numpy.reshape(res[2][:,0],self.shape), numpy.reshape(res[2][:,1],self.shape)]
-
-        for mf in self.mfname:
-            res = mferr(self,mf,False,None)
-            tau[mf] = [numpy.reshape(res[2][:,0],self.shape), numpy.reshape(res[2][:,1],self.shape)]
+        for e in self.ename:
+            res = gamma_error(self,e)
+            tau[e] = [numpy.reshape(res[2][:,0],self.shape), numpy.reshape(res[2][:,1],self.shape)]
         
         return tau
-        
-    def gradient(self,g):
-        s=numpy.size(g(self.mean))
-        grad = numpy.zeros((s,self.size))
-        dx = numpy.zeros(self.size)
-        for i in range(self.size):
-            dx[i] = 1.0
-            grad[:,i] = numpy.reshape(g(numpy.reshape(dx,self.shape)),s)
-            dx[i] = 0.0
-        return grad
     

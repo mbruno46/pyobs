@@ -49,7 +49,7 @@ def inv(x):
         raise pyobs.PyobsError(f'Unexpected matrix for inverse with shape={x.shape}')
     mean=numpy.linalg.inv(x.mean)
     # V Vinv = 1,   dV Vinv + V dVinv = 0 ,  dVinv = - Vinv dV Vinv
-    g=x.gradient( lambda x: - mean @ x @ mean)
+    g=pyobs.gradient( lambda x: - mean @ x @ mean, x.mean)
     return pyobs.derobs([x],mean,[g])
 
 def eig(x):
@@ -76,25 +76,24 @@ def eig(x):
     """
     if len(x.shape)>2: # pragma: no cover
         raise pyobs.PyobsError(f'Unexpected matrix with shape {x.shape}; only 2-D arrays are supported')
-    if numpy.any(numpy.fabs(x.mean/x.mean.T-1.0)>1e-10): # pragma: no cover
+    if numpy.any(numpy.fabs(x.mean - x.mean.T)>1e-10): # pragma: no cover
         raise pyobs.PyobsError(f'Unexpected non-symmetric matrix: user eigLR')
     
     [w,v] = numpy.linalg.eig(x.mean)
     
     # d l_n = (v_n, dA v_n)
-    gw=x.gradient( lambda x: numpy.diag(v.T @ x @ v))
+    gw=pyobs.gradient( lambda x: numpy.diag(v.T @ x @ v), x.mean)
 
-    # d v_n = sum_{m \neq n} (w_m, dA v_n) / (l_n - l_m) w_m
+    # d v_n = sum_{m \neq n} (v_m, dA v_n) / (l_n - l_m) v_m
     def gradv(y):
         tmp = v.T @ y @ v
-        gv = numpy.zeros(x.shape)
-        for n in range(x.shape[0]):
-            for m in range(x.shape[1]):
-                if n!=m:
-                    gv[:,n] += tmp[m,n]/(w[n]-w[m])*v[:,m]
-        return gv
-
-    gv=x.gradient( gradv)
+        h = []
+        for m in range(x.shape[0]):
+            h.append((w!=w[m])*1.0/(w-w[m]+1e-16))
+        h = numpy.array(h)
+        return v @ (tmp*h)
+    
+    gv=pyobs.gradient(gradv, x.mean)
     return [pyobs.derobs([x],w,[gw]), pyobs.derobs([x],v,[gv])]
 
 def eigLR(x):
@@ -130,7 +129,7 @@ def eigLR(x):
     [l,w] = numpy.linalg.eig(x.mean.T)
     
     # d l_n = (w_n, dA v_n) / (w_n, v_n)
-    gl=x.gradient( lambda x: numpy.diag(w.T @ x @ v)/numpy.diag(w.T @ v))
+    gl=pyobs.gradient( lambda x: numpy.diag(w.T @ x @ v)/numpy.diag(w.T @ v), x.mean)
 
     # d v_n = sum_{m \neq n} (w_m, dA v_n) / (l_n - l_m) w_m
     def gradv(y):
@@ -141,7 +140,7 @@ def eigLR(x):
                 if n!=m:
                     gv[:,n] += tmp[m,n]/(l[n]-l[m])*w[:,m]
         return gv
-    gv=x.gradient( gradv)
+    gv=pyobs.gradient( gradv, x.mean)
     
     # d w_n = sum_{m \neq n} (v_m, dA^T w_n) / (l_n - l_m) v_m
     def gradw(y):
@@ -153,7 +152,7 @@ def eigLR(x):
                     gw[:,n] += tmp[m,n]/(l[n]-l[m])*v[:,m]
         return gw
     
-    gw=x.gradient( gradw)
+    gw=pyobs.gradient( gradw, x.mean)
     return [pyobs.derobs([x],l,[gl]), pyobs.derobs([x],v,[gv]), pyobs.derobs([x],w,[gw])]
 
 def matrix_power(x,a):

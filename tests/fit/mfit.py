@@ -16,6 +16,8 @@ dy = (y*0.1)**2
 N = 1000
 tau = 1.0
 
+numpy.random.seed(46)
+
 data = pyobs.random.acrandn(y,dy,tau,N)
 corr = pyobs.observable()
 corr.create('test',data.flatten(),shape=(T,))
@@ -30,13 +32,13 @@ fit.parameters()
 print(pars)
 
 [v, e] = pars[0].error()
-assert abs(a-v) < 2.*e
+assert abs(a-v) < e
 
 [v, e] = pars[1].error()
-assert abs(m-v) < 2.*e
+assert abs(m-v) < e
 
 # extrapolate value at zero
 [yobs] = fit.eval(0.0,pars)
 
 [v, e] = yobs.error()
-assert abs(a-v) < 2.*e
+assert abs(a-v) < e

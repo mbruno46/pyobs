@@ -23,25 +23,29 @@
 import numpy
 
 class cdata:
-    def __init__(self,grad,cov):
-        self.grad = grad
+    def __init__(self, cov):
         if numpy.ndim(cov)==1:
-            self.cov = numpy.diag(cov)
+            self.cov = numpy.diag(numpy.array(cov, dtype=numpy.float64))
         else:
-            self.cov = numpy.array(cov)
-    
+            self.cov = numpy.array(cov, dtype=numpy.float64)
+        
     def axpy(self,grad,cd):
-        self.grad += grad @ cd.grad
+        n = len(self.cov)
+        m = len(cd.cov)
+        g = numpy.zeros((n,m))
+        grad.apply(g, range(n), None, numpy.eye(m), range(m))
+        self.cov += g @ cd.cov @ g.T
         
     def sigmasq(self):
         return numpy.diag(self.cov)
-        #(na,nb) = self.grad.shape
-        #sigma = numpy.zeros((na,))
-        #for ia in range(na):
-        #    sigma[ia] = self.grad[ia,:] @ self.cov[:,:] @ self.grad.T[:,ia]
-        #return sigma
     
-    def reduce(self):
-        self.cov = self.grad @ self.cov @ self.grad.T
-        self.grad = numpy.eye(self.cov.shape[0])
-        
+    #def reduce(self):
+    #    self.cov = self.grad @ self.cov @ self.grad.T
+    #    self.grad = numpy.eye(self.cov.shape[0])
+    
+    def copy(self,cd):
+        #self.grad = numpy.array(cd.grad)
+        self.cov = numpy.array(cd.cov)
+
+    def assign(self,mask,cd):
+        self.cov[numpy.ix_[mask,mask]] = cd.cov

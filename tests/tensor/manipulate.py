@@ -20,7 +20,7 @@ print(corr)
 [c,dc] = corr.error()
 
 [c0, dc0] = pyobs.reshape(corr, (len(xax)//2,2)).error()
-assert numpy.any(abs(dc0 - numpy.reshape(dc, (len(xax)//2,2)))) < 1e-12
+assert numpy.all(abs(dc0 - numpy.reshape(dc, (len(xax)//2,2))) < 1e-12)
 
 corr1 = corr[0:4]
 corr2 = corr[4:]
@@ -37,18 +37,18 @@ del tmp
 corr3 = pyobs.concatenate(corr1,corr2)
 print(corr3)
 [c0, dc0] = corr3.error()
-assert numpy.any(abs(c0 - numpy.transpose(c))) < 1e-12
-assert numpy.any(abs(dc0 - numpy.transpose(dc))) < 1e-12
+assert numpy.all(abs(c0 - numpy.transpose(c)) < 1e-12)
+assert numpy.all(abs(dc0 - numpy.transpose(dc)) < 1e-12)
 
 [c0, dc0] = pyobs.transpose(corr).error()
-assert numpy.any(abs(dc0 - numpy.transpose(dc))) < 1e-12
+assert numpy.all(abs(dc0 - numpy.transpose(dc)) < 1e-12)
 
 [c0, dc0] = pyobs.sort(corr).error()
 idx = numpy.argsort(c)
-assert numpy.any(abs(dc0 - dc[idx])) < 1e-12
+assert numpy.all(abs(dc0 - dc[idx]) < 1e-12)
 
-[c0, dc0] = pyobs.diag(corr).error()
-assert numpy.any(abs(dc0 - numpy.diag(dc))) < 1e-12
+[c0, dc0] = pyobs.diag(pyobs.reshape(corr[0:4],(2,2))).error()
+assert numpy.all(abs(dc0 - numpy.array([dc[0],dc[3]])) < 1e-12)
 
 print('orig')
 vec = corr[0:4]

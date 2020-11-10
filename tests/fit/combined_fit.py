@@ -9,6 +9,8 @@ p = 0.0
 corr_ex = [pyobs.qft.free_scalar.Cphiphi(t,m,p,T,L) for t in range(T//2)]
 cov_ex = pyobs.qft.free_scalar.cov_Cphiphi(m,p,T,L)[0:T//2,0:T//2]
 
+numpy.random.seed(46)
+
 tau = 1.0
 N = 2000
 data = pyobs.random.acrandn(corr_ex, cov_ex, tau, N)

@@ -20,14 +20,12 @@
 #################################################################################
 
 import numpy
-import sympy
-import copy
 from time import time
 
 import pyobs
-#from scipy.optimize import minimize
 from .minimize import lm
 
+__all__ = ['mfit']
 
 class chisquare:
     def __init__(self,x,W,f,df,v):
@@ -282,7 +280,7 @@ class mfit:
         g=[]
         for i in range(len(yobs)):
             tmp=self.csq[i].gvec(self.pdict, res.x)
-            g.append(Hinv @ tmp)
+            g.append(pyobs.gradient(Hinv @ tmp))
             
         if pyobs.is_verbose('mfit.run') or pyobs.is_verbose('mfit'):
             print(f'chisquare = {res.fun}')
@@ -302,11 +300,11 @@ class mfit:
               the function must be evaluated. For combined fits, a list of 
               arrays must be passed, one for each fit.
            pars (obs) : the observable returned by calling this class
-
+        
         Returns:
            list of obs : observables corresponding to the functions evaluated 
-                         at the coordinates `xax`.
-                              
+           at the coordinates `xax`.
+        
         Examples:
            >>> fit1 = mfit(xax,W,f,df)
            >>> pars = fit1(yobs1)
@@ -325,5 +323,5 @@ class mfit:
         out = []
         for ic in self.csq:
             [m, g] = self.csq[ic].eval(xax[ic], self.pdict, pars.mean)
-            out.append( pyobs.derobs([pars], m, [g]) )
+            out.append( pyobs.derobs([pars], m, [pyobs.gradient(g)]) )
         return out
