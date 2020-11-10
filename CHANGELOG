@@ -5,7 +5,7 @@ Future milestones:
  - finite volume quantization condition for 2->2
  - exponential tail
 
-version 1.0.1, XX.XX.2020:
+version 1.0.1, 10.11.2020:
  - added IO with binary file format (default), based on bison
  - performance improvements in create and derobs
  - additional gradient class for optimization of element-wise operations
