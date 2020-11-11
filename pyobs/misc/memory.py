@@ -74,7 +74,7 @@ def available():
     platform = sys.platform
     if platform == "linux" or platform == "linux2":
         out = os.popen('cat /proc/meminfo').readlines()
-        mem = out[2].split('MemFree:')[1].split('kB')[0].strip()
+        mem = out[1].split('MemFree:')[1].split('kB')[0].strip()
         bb = int(mem)*1024.
     elif platform == "darwin": # pragma no cover
         out = os.popen('vm_stat').readlines()
