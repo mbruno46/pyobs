@@ -73,6 +73,36 @@ also after pulling the latest commits, in the developer mode.
 ..    intro/index
 ..    pyobs/index
 
+
+Python Environments
++++++++++++++++++++
+
+Virtual environments can be used to create a copy of the python
+distribution in the home directory where the user can freely 
+install additional packages, including `pyobs`.
+
+.. code-block:: bash
+
+   $ cd $HOME
+   $ python3.6 -m venv mypy
+
+The environment can be activated, meaning that `pip` and `python`
+commands will be automatically identified with those in the environment
+
+.. code-block:: bash
+
+   $ source mypy/bin/activate
+   $ pip install numpy jupyter notebook
+
+Alternatively, just use the full path
+
+.. code-block:: bash
+
+   $ cd mypy/bin
+   $ ./pip install numpy
+   $ ./pip install git+https://github.com/mbruno46/pyobs.git@master#egg=pyobs
+
+
 Features
 --------
 
