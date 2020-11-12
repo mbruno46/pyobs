@@ -76,7 +76,7 @@ def derobs(inps,mean,grads,description=None):
                         if numpy.any(lat != data.lat): # pragma: no cover
                             raise pyobs.PyobsError(f'Unexpected lattice size for master fields with same tag')
         if len(new_mask)>0:
-            res.delta[key] = delta(list(set(new_mask)), new_idx, lat)
+            res.delta[key] = delta(list(set(new_mask)), new_idx, lat=lat)
             for i in range(len(inps)):
                 if key in inps[i].delta:
                     res.delta[key].axpy(grads[i],inps[i].delta[key])
