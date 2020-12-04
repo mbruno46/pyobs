@@ -71,7 +71,8 @@ def diff(f,x,dx):
     pyobs.check_type(dx,'dx',str)
     
     sym = {}
-    for y in dx.rsplit(','):
+    for _y in dx.rsplit(','):
+        y = _y.strip()
         sym[y] = sympy.Symbol(y)
         
     expr = parse_expr(f, local_dict=sym)    

@@ -1,9 +1,9 @@
 import pyobs
 import bison
 
-class observable_decoder(bison.Decoder):
+class observable_decoder:
     def __init__(self):
-        super().__init__('pyobs.core.ndobs.observable')
+        self.type = 'pyobs.core.ndobs.observable'
     
     def decode(self, obj):
         out = pyobs.observable(description=obj['description'])
@@ -16,18 +16,18 @@ class observable_decoder(bison.Decoder):
         pyobs.memory.update(out)
         return out
 
-class delta_decoder(bison.Decoder):
+class delta_decoder:
     def __init__(self):
-        super().__init__('pyobs.core.data.delta')
+        self.type = 'pyobs.core.data.delta'
     
     def decode(self, obj):
         out = pyobs.core.data.delta(obj['mask'],obj['idx'],lat=obj['lat'])
         out.delta[:,:] = obj['delta'][:,:]
         return out
 
-class cdata_decoder(bison.Decoder):
+class cdata_decoder:
     def __init__(self):
-        super().__init__('pyobs.core.cdata.cdata')
+        self.type = 'pyobs.core.cdata.cdata'
     
     def decode(self, obj):
         out = pyobs.core.cdata.cdata(obj['cov'])

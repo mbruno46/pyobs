@@ -207,7 +207,7 @@ class mfit:
                 raise pyobs.PyobsError(f'Rectangular W matrix, must be square')
         else:
             raise pyobs.PyobsError(f'Unexpected size of W matrix')
-        tmp = v.rsplit(',')
+        tmp = [s.strip() for s in v.rsplit(',')]
         self.csq = {0: chisquare(x,W,f,df,tmp)}
         self.pdict = {}
         for i in range(len(self.csq[0].pars)):
@@ -324,4 +324,6 @@ class mfit:
         for ic in self.csq:
             [m, g] = self.csq[ic].eval(xax[ic], self.pdict, pars.mean)
             out.append( pyobs.derobs([pars], m, [pyobs.gradient(g)]) )
+        if len(out)==1:
+            return out[0]
         return out

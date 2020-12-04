@@ -73,8 +73,8 @@ def concatenate(x,y,axis=0):
             raise pyobs.PyobsError(f'Incompatible dimensions between {x.shape} and {y.shape} for axis={axis}')
     f = lambda xx,yy: numpy.concatenate((xx,yy), axis=axis)
     mean = f(x.mean,y.mean)
-    gx = pyobs.gradient(lambda xx: f(xx,numpy.zeros(y.shape)), x.mean, gtype='extend')
-    gy = pyobs.gradient(lambda yy: f(numpy.zeros(x.shape),yy), y.mean, gtype='extend')
+    gx = pyobs.gradient(lambda xx: f(xx,numpy.zeros(y.shape)), x.mean, gtype='full')
+    gy = pyobs.gradient(lambda yy: f(numpy.zeros(x.shape),yy), y.mean, gtype='full')
     return pyobs.derobs([x,y], mean, [gx,gy])
 
 def transpose(x,axes=None):
@@ -181,5 +181,5 @@ def stack(obs, axis=0):
     for j in range(len(obs)):
         arr0 = [numpy.zeros(obs[i].shape) for i in range(0,j)]
         arr1 = [numpy.zeros(obs[i].shape) for i in range(j+1,len(obs))]
-        grads += [pyobs.gradient(lambda x: f(arr0+[x]+arr1), obs[j].mean, gtype='extend')]
+        grads += [pyobs.gradient(lambda x: f(arr0+[x]+arr1), obs[j].mean, gtype='full')]
     return pyobs.derobs(obs, f(arr), grads)

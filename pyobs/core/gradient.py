@@ -80,8 +80,13 @@ class gradient:
             else:
                 return None
         elif self.gtype is 'extend':
+            print(self.grad)
             return list(self.grad)
-        
+    
+    # TODO: the extend method works only for pairs of 
+    # observables defined on the same ensembles. For multiple
+    # ensembles it fails. To be fixed
+    
     # note: slice mode assumes that destination delta
     # has appropriate size matching gradient and mask,
     # which is guaranteed by get_mask above.
@@ -107,6 +112,7 @@ class gradient:
                 u[:,uidx] += v[idx,:]
         elif self.gtype is 'extend':
             idx = numpy.nonzero(numpy.in1d(umask,self.grad))[0]
+            print('herer ',idx,umask,self.grad)
             if uidx is None:
                 u[idx,:] += v
             else:
