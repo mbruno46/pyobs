@@ -80,7 +80,7 @@ def derobs(inps,mean,grads,description=None):
             for i in range(len(inps)):
                 if key in inps[i].delta:
                     res.delta[key].axpy(grads[i],inps[i].delta[key])
-           
+
     res.ename = []
     for key in res.delta:
         name = key.split(':')[0]

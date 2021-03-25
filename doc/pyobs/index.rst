@@ -8,7 +8,7 @@ Python documentation
    tensor
    unary
    linalg
-   fit
+   optimize 
    misc
    io
 

@@ -33,8 +33,8 @@ __all__.extend(tensor.__all__)
 from .misc import *
 __all__.extend(misc.__all__)
 
-from .fit import *
-__all__.extend(fit.__all__)
+from .optimize import *
+__all__.extend(optimize.__all__)
 
 from .version import __version__, __version_full__
 __all__.extend(['__version__'])
