@@ -57,8 +57,13 @@ class interpolate:
         Returns:
            observable: the evaluated function at `x`.
         """
-        N = len(x)
-        x = numpy.array(x)
+        if type(x) is pyobs.observable:
+            if len(x.shape)>1:
+                raise pyobs.PyobsError(f'Unexpected observable with shape ${x.shape}; only vectors supported')
+            N = x.shape[0]
+        else:
+            N = len(x)
+            x = numpy.array(x)
         res = pyobs.repeat(self.coeff[0],N)
         for i in range(1,self.k):
             res += pyobs.repeat(self.coeff[i],N) * (x**i)
