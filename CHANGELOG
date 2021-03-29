@@ -7,6 +7,7 @@ Future milestones:
 
 version 1.0.2, 23.03.2021:
  - added support for root finder, basic interpolation
+ - fixed documentation bugs
 
 version 1.0.1, 10.11.2020:
  - added IO with binary file format (default), based on bison

@@ -1,4 +1,4 @@
-pyobs.arccosh
+﻿pyobs.arccosh
 =============
 
 .. currentmodule:: pyobs

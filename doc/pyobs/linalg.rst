@@ -17,7 +17,6 @@ Matrix eigenvalues
 .. currentmodule:: pyobs.linalg
 
 .. autosummary::
-   :toctree: generated
 
    eig
    eigLR
@@ -25,8 +24,9 @@ Matrix eigenvalues
 Matrix inverse and powers
 -------------------------
 
+.. currentmodule:: pyobs.linalg
+
 .. autosummary::
-   :toctree: generated
 
    inv
    matrix_power

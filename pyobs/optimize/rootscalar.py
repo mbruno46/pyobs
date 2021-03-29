@@ -47,10 +47,15 @@ def root_scalar(a,f,dfx,dfa,x0=None,method=None,bracket=None):
        x0 (float, optional): initial guess
        method (str, optional): the type of solver. For more details check the
            documentation of `scipy.optimize.root_scalar`.
-           
+       bracket (list of 2 floats, optional): an interval bracketing a root.
+       
     Returns:
        obs: observable with the root `x0`.
-       
+    
+    Note: 
+       while `x0`, `method` and `bracket` are individually optional at least
+       one of them must be supplied to tell the minimizer which method to use.
+    
     Examples:
        >>> a = pyobs.observable()
        >>> a.create('A',data,shape=(1,2))
@@ -66,7 +71,6 @@ def root_scalar(a,f,dfx,dfa,x0=None,method=None,bracket=None):
 
     mean = numpy.reshape(res.root,(1,))
     _g = numpy.array(dfa(res.root,a.mean)) / dfx(res.root, a.mean)
-    print(_g, a.mean)
 
     g = pyobs.gradient( lambda x: _g @ x, a.mean)
     return pyobs.derobs([a],mean,[g])

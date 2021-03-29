@@ -56,6 +56,10 @@ def get(obj):
         return f'{size/1024.:.0f} KB'
     
 def info():
+    """
+    Prints the size of all allocated observables and the total
+    amount memory used by `pyobs`
+    """
     tot_size=0
     print('pyobs allocated memory:')
     n=1

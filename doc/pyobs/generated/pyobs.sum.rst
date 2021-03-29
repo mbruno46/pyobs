@@ -1,4 +1,4 @@
-pyobs.sum
+﻿pyobs.sum
 =========
 
 .. currentmodule:: pyobs

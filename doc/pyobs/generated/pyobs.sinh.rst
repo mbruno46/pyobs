@@ -1,4 +1,4 @@
-pyobs.sinh
+﻿pyobs.sinh
 ==========
 
 .. currentmodule:: pyobs

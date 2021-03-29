@@ -7,7 +7,7 @@ from distutils.command.build_ext import build_ext
 import os
 import numpy
 
-VERSION = (1, 0, 1)
+VERSION = (1, 0, 2)
 
 
 def version():

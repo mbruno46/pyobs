@@ -1,4 +1,4 @@
-pyobs.optimize.root\_scalar
+﻿pyobs.optimize.root\_scalar
 ===========================
 
 .. currentmodule:: pyobs.optimize

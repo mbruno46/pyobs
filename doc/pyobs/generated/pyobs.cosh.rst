@@ -1,4 +1,4 @@
-pyobs.cosh
+﻿pyobs.cosh
 ==========
 
 .. currentmodule:: pyobs

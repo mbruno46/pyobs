@@ -1,4 +1,4 @@
-pyobs.stack
+﻿pyobs.stack
 ===========
 
 .. currentmodule:: pyobs

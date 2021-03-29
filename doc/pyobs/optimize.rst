@@ -7,8 +7,18 @@ Curve fitting
 .. currentmodule:: pyobs
 
 .. autoclass:: mfit
-    :members: diff
+   :members:
     
+Interpolation
+-------------
+
+.. currentmodule:: pyobs.optimize
+
+.. autosummary::
+   :toctree: generated
+
+   interpolate
+
 Root Finding
 ------------
 
@@ -21,6 +31,8 @@ Root Finding
 
 Additional functionalities
 --------------------------
+
+.. currentmodule:: pyobs.optimize
    
 .. automodule:: pyobs.symbolic
     :members: diff

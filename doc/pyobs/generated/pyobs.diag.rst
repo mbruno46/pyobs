@@ -1,4 +1,4 @@
-pyobs.diag
+﻿pyobs.diag
 ==========
 
 .. currentmodule:: pyobs
