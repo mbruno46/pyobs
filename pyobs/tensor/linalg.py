@@ -126,7 +126,13 @@ def eigLR(x):
    
     # left and right eigenvectors
     [l,v] = numpy.linalg.eig(x.mean)
+    idx = numpy.argsort(l)
+    v = v[:,idx]
+
     [l,w] = numpy.linalg.eig(x.mean.T)
+    idx = numpy.argsort(l)
+    l = l[idx]
+    w = w[:,idx]
     
     # d l_n = (w_n, dA v_n) / (w_n, v_n)
     gl=pyobs.gradient( lambda x: numpy.diag(w.T @ x @ v)/numpy.diag(w.T @ v), x.mean)
