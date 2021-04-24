@@ -23,7 +23,7 @@ import numpy
 import scipy
 import pyobs
 
-__all__ = ['sum','trace','log','exp',
+__all__ = ['sum','cumsum','trace','log','exp',
            'cosh','sinh','arccosh','besselk']
 
 def sum(x,axis=None):
