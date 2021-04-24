@@ -28,13 +28,13 @@ __all__ = ['sum','trace','log','exp',
 
 def sum(x,axis=None):
     """
-    Sum of array elements over a given axis.
+    Sum of observable elements over a given axis.
     
     Parameters:
-       x (obs): array with elements to sum
+       x (obs): observable with elements to sum
        axis (None or int or tuple of ints, optional): Axis or 
            axes along which a sum is performed. The default, axis=None, 
-           will sum all elements of the input array.
+           will sum all elements of the input observable.
     
     Returns:
        obs: sum along the axis
@@ -52,6 +52,31 @@ def sum(x,axis=None):
         t=f'sum over axis {axis} of {x.description}'
     g=pyobs.gradient(f, x.mean)
     return pyobs.derobs([x],f(x.mean),[g],description=t)
+
+
+def cumsum(x, axis=None):
+    """
+    Cumulative sum of the elements of an observable along a given axis.
+
+    Parameters:
+       x (obs): observable with elements to sum
+       axis (int, optional): axis along which the cumulative 
+           sum is performed. The default, axis=None, 
+           will compute the cumulative sum over the flattened
+           array.
+    
+    Returns:
+       obs: cumulative sum along the axis
+    
+    Examples:
+       >>> import pyobs
+       >>> pyobs.sum(a)
+       >>> pyobs.sum(a,axis=0)
+    """
+    f=lambda a: numpy.cumsum(a,axis=axis)
+    g=pyobs.gradient(f, x.mean)
+    return pyobs.derobs([x],f(x.mean),[g])
+
 
 def trace(x, offset=0, axis1=0, axis2=1):
     """
