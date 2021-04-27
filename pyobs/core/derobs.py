@@ -103,6 +103,7 @@ def derobs(inps,mean,grads,description=None):
     pyobs.memory.update(res)
     if pyobs.is_verbose('derobs'):
         print(f'derobs executed in {time()-t0:g} secs')
+        
     return res
 
 

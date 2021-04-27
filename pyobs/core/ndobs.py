@@ -348,8 +348,8 @@ class observable:
             self.mean = numpy.reshape(mean,(1,))
         else:
             self.mean = numpy.array(mean)
-        self.shape = numpy.shape(mean)
-        self.size = numpy.size(mean)
+        self.shape = numpy.shape(self.mean)
+        self.size = numpy.size(self.mean)
         
     def slice(self,*args):
         na=len(args)

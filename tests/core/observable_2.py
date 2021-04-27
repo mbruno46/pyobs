@@ -17,7 +17,7 @@ print(obsA[0] - obsA[1])
 
 print(-obsA)
 
-print(obsA @ numpy.array([2.,3.]))
+print('matmul', obsA @ numpy.array([2.,3.]))
 
 print(1.0 + obsA)
 print(3.4 - obsA)
