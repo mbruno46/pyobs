@@ -11,8 +11,8 @@ def save(fname, *args):
 
     Parameters:
        name (str): string with the destination (path+filename). To select
-       the file format the user must provide one file extension among 
-       `.pyobs` (default) and `.json.gz`.
+             the file format the user must provide one file extension among 
+             `.pyobs` (default) and `.json.gz`.
        args : data to save (see below)
 
     Notes:

@@ -22,6 +22,14 @@
 import pyobs
 import numpy
 
+def get_mask_from_mask(m0,m1,m2):
+    m2 = list(m2)
+    mask = []
+    for m in m0:
+        if m in m1:
+            mask += [m2.index(m)]
+    return numpy.array(mask)
+    
 # grad is Na x Ni matrix
 class gradient:
     def __init__(self,g,x0=None,gtype='full'):
@@ -74,7 +82,8 @@ class gradient:
         elif self.gtype is 'diag':
             return mask
         elif self.gtype is 'slice':
-            idx = numpy.nonzero(numpy.in1d(self.grad,mask))[0]
+            #idx = numpy.nonzero(numpy.in1d(self.grad,mask))[0]
+            idx = get_mask_from_mask(self.grad, mask, self.grad)
             if idx.size>0:
                 return list(numpy.arange(self.Na)[idx])
             else:
@@ -105,7 +114,8 @@ class gradient:
             else:
                 u[:,uidx] += self.grad[vmask,None] * v
         elif self.gtype is 'slice':
-            idx = numpy.nonzero(numpy.in1d(vmask,self.grad))[0]
+            #idx = numpy.nonzero(numpy.in1d(vmask,self.grad))[0]
+            idx = get_mask_from_mask(self.grad, vmask, vmask)
             if uidx is None:
                 u += v[idx,:]
             else:
