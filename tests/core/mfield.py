@@ -29,3 +29,8 @@ def func(x):
 assert pyobs.error_bias4(mfobs, func) < func(mfobs).error_of_error()
 
 print(mfobs.tauint())
+
+mfobs2 = pyobs.concatenate(mfobs, pyobs.log(mfobs))
+[cm,dcm] = mfobs2.covariance_matrix(errinfo={'test-mfield': pyobs.errinfo(W=10)})
+print('diag cov mat = ', mfobs2.error()[1]**2)
+print('cov mat \n',pyobs.valerr(cm,dcm))

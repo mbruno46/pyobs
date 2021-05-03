@@ -328,7 +328,7 @@ def gamma_error(x,name,plot=False,pfile=None,einfo=None):
     else:
         tau = v.tauint()
         
-    if plot:
+    if plot: # pragma: no cover
         v.plot('|R|/a' if v.ismf else 'icnfg',x.description,name,pfile)
     return v.sigma() + [tau] + v.cum_var()
 

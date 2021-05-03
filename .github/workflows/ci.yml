@@ -48,7 +48,7 @@ jobs:
         coverage xml  # Export coverage report as XML file, for codecov.i
 
     - name: Upload coverage to Codecov
-      if: ${{ matrix.python-version }} == 3.6
+      if: matrix.python-version == 3.6
       env:
         PYTHON_VERSION: python${{ matrix.python-version }}
         CODECOV_TOKEN: "6f56ccbf-ceab-4666-81a7-fc2431ba9bb8"
