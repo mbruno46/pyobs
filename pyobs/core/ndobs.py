@@ -30,7 +30,7 @@ import pyobs
 
 from .data import delta
 from .cdata import cdata
-from .error import gamma_error, plot_piechart
+from .error import gamma_error, covariance, plot_piechart
 
 __all__ = ['observable']
 
@@ -624,3 +624,46 @@ class observable:
         
         return tau
     
+    def variance(self):
+        """
+        Estimates the integrated autocorrelation function and its error for every
+        ensemble.
+        
+        Returns:
+            dict: one key for each ensemble.
+            
+        Notes: 
+            for every ensemble a list of 3 arrays is returned, corresponding to the 
+            x-axis (MC time), the integrated autocorrelation function and its error.
+        """
+        cgam = {}
+        for e in self.ename:
+            res = gamma_error(self,e)
+            cgam[e] = res[3:6]
+        return cgam
+    
+    def covariance_matrix(self, errinfo):
+        """
+        Estimates the covariance matrix using a fixed window `W` for all observables.
+        
+        Parameters:
+           errinfo (dict): see the documentation of the `error` method. For each ensemblee
+              the parameter `W` is used to define the summation window.
+               
+        Returns:
+           list of two arrays: the covariance matrix and its error.
+           
+        Examples:
+            >>> obsA = pyobs.observable()
+            >>> obsA.create('EnsA', data, shape=((8,)))
+            >>> [cm, dcm] = obsA.covariance_matrix(errinfo = {'EnsA', pyobs.errinfo(W=10)})
+            >>> print(pyobs.valerr(cm,dcm))
+        """
+        covmat = numpy.zeros((self.size,self.size))
+        dcovmat = numpy.zeros((self.size,self.size))
+        for e in self.ename:
+            if e in errinfo:
+                res = covariance(self,e,errinfo[e].W)
+                covmat += res[0]
+                dcovmat += res[1]
+        return [covmat, dcovmat]

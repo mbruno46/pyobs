@@ -23,7 +23,7 @@ If you use this library in your publications please consider citing:
 
 ### Authors
 
-Copyright (C) 2020, Mattia Bruno
+Copyright (C) 2020-2021, Mattia Bruno
 
 ## Installation
 

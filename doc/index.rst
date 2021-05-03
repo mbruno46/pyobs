@@ -119,7 +119,7 @@ Features
 Authors
 -------
 
-Copyright (C) 2020, Mattia Bruno
+Copyright (C) 2020-2021, Mattia Bruno
 
 Changelog
 ---------

@@ -10,6 +10,7 @@ Linear functions
    :toctree: generated 
   
    sum
+   cumsum
    trace
 
 Exponential functions

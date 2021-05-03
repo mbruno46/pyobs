@@ -69,6 +69,9 @@ class chisquare:
             self.e[i] = self.f(*self.x[i,:], *self.p) - y[i]
         return self.e @ self.W @ self.e
 
+    def csq(self):
+        return self.e @ self.W @ self.e
+    
     def grad(self,y,pdict):
         res=numpy.zeros((len(pdict),))
         for i in range(self.n):
@@ -289,6 +292,12 @@ class mfit:
             print(f'mfit.run executed in {time()-t0:g} secs')
         return pyobs.derobs(yobs, res.x, g)
 
+    def chisquared(self,pars):
+        res=0.0
+        for i in range(len(self.csq)):
+            self.csq[i].set_pars(self.pdict, pars.mean)
+            res+=self.csq[i].csq()
+        return res
 
     def eval(self,xax,pars):
         """
