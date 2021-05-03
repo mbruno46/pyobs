@@ -60,7 +60,7 @@ def valerr(v,e):
         return ' '.join([core(v[i],e[i]) for i in range(len(v))])
     elif numpy.ndim(v)==2:
         return '\n'.join([valerr(v[i,:],e[i,:]) for i in range(numpy.shape(v)[0])])
-    else:
+    else: # pragma: no cover
         raise PyobsError('valerr supports up to 2D arrays')
 
 def textable(mat, fmt=None):
@@ -85,7 +85,7 @@ def textable(mat, fmt=None):
        >>> pyobs.textable(mat, fmt=['d',0,0])
     """
     
-    if numpy.ndim(mat)!=2:
+    if numpy.ndim(mat)!=2: # pragma: no cover
         raise PyobsError('textable supports only 2D arrays')
     
     (n,m) = numpy.shape(mat)
@@ -142,7 +142,7 @@ def slice_ndarray(t,*args):
     """
     n=len(args)
     s=numpy.shape(t)
-    if len(args)!=len(s):
+    if len(args)!=len(s): # pragma: no cover
         raise TypeError(f'Dimensions of tensor do not match indices')
     
     aa=[]
@@ -154,12 +154,3 @@ def slice_ndarray(t,*args):
             aa.append(a)
 
     return t[numpy.ix_(*aa)]
-
-
-#def sort_data(idx,data):
-#    out = numpy.zeros(numpy.shape(data))
-#    new_idx = list(numpy.sort(idx))
-#    for i in range(len(new_idx)):
-#        j=idx.index(new_idx[i])
-#        out[i,:] = data[j,:]
-#    return [new_idx, out]

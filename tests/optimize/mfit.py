@@ -30,6 +30,7 @@ fit = pyobs.mfit(numpy.arange(T),W,f,df)
 pars = fit(corr)
 fit.parameters()
 print(pars)
+print('chisquared = ',fit.chisquared(pars))
 
 [v, e] = pars[0].error()
 assert abs(a-v) < e

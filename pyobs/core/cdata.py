@@ -39,13 +39,5 @@ class cdata:
     def sigmasq(self):
         return numpy.diag(self.cov)
     
-    #def reduce(self):
-    #    self.cov = self.grad @ self.cov @ self.grad.T
-    #    self.grad = numpy.eye(self.cov.shape[0])
-    
-    def copy(self,cd):
-        #self.grad = numpy.array(cd.grad)
-        self.cov = numpy.array(cd.cov)
-
     def assign(self,mask,cd):
         self.cov[numpy.ix_[mask,mask]] = cd.cov

@@ -66,7 +66,7 @@ class variance:
         self.N = n[:,0]
         self.xopt = [self.x[-1]]*self.size
         self.var = numpy.zeros((self.size,2))
-
+                
     def g(self,i,a):
         cov=self.cvar[a,i]/self.cvar[a,0]
         j=self.D-self.k
@@ -77,22 +77,22 @@ class variance:
         return h + numpy.sqrt(self.D*self.OmegaD*0.5/self.N[a] * xi**(self.D-2))
     
     def find_opt(self):
-        for a in range(self.size):  
-            for i in range(1,len(self.x)):
-                if self.g(i,a)>0:
-                    self.xopt[a] = self.x[i]
-                    self.var[a,0] = self.cvar[a,i]
-                    self.var[a,1] = self.cvar[a,i] * self.stat_relerr(self.x[i],a)
-                    break
-            if (self.var[a,0]<0): # pragma: no cover
-                self.xopt[a] = self.x[0]
-                self.var[a,0] = self.cvar[a,0]
-                self.var[a,1] = self.cvar[a,0] * self.stat_relerr(self.x[0],a)
-                print(f'Warning: automatic window failed for obs {a}, using {self.xopt[a]}')
+        for a in range(self.size):
+            if (self.cvar[a,0]==0.0):
+                i = 0
+            else:
+                for i in range(1,len(self.x)):
+                    if self.g(i,a)>0:
+                        break
+            if (self.cvar[a,i]<0):
+                i = 0
+                print(f'Warning: automatic window failed for obs {a}, using {i}')
+
+            self.xopt[a] = self.x[i]
+            self.var[a,0] = self.cvar[a,i]
+            self.var[a,1] = self.cvar[a,i] * self.stat_relerr(self.x[i],a)
                 
             if self.xopt[a]==self.x[-1]: # pragma: no cover
-                self.var[a,0] = self.cvar[a,-1]
-                self.var[a,1] = self.cvar[a,-1] * self.stat_relerr(self.x[-1],a)
                 print(f'Warning: automatic window failed for obs {a}, using {self.xopt[a]}')
 
     def set_opt(self,xopt):
@@ -125,8 +125,9 @@ class variance:
         tau = numpy.zeros((self.full_size,2))
         for a in self.mask:
             i=self.mask.index(a)
-            tau[a,0] = self.var[i,0]/self.cvar[i,0]
-            tau[a,1] = self.var[i,1]/self.cvar[i,0]
+            if (self.cvar[i,0]>0.0):
+                tau[a,0] = self.var[i,0]/self.cvar[i,0]
+                tau[a,1] = self.var[i,1]/self.cvar[i,0]
         return tau    
     
     def sigma(self):
@@ -134,8 +135,8 @@ class variance:
         out1 = numpy.zeros((self.full_size,))
         for a in self.mask:
             i=self.mask.index(a)
-            out0[a] = self.var[i,0] / self.N[a]
-            out1[a] = self.var[i,1] / self.N[a]
+            out0[a] = self.var[i,0] / self.N[i]
+            out1[a] = self.var[i,1] / self.N[i]
         return [out0, out1]
     
     def plot(self,xlab,desc,ed,pfile): # pragma: no cover
@@ -296,7 +297,6 @@ class covar(variance):
         c = 0
         for a in self.mask:
             for b in self.mask[self.mask.index(a):]:
-                print(a,b,c,self.var,self.N)
                 out0[a,b] = self.var[c,0] / self.N[c]
                 out1[a,b] = self.var[c,1] / self.N[c]
 

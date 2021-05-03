@@ -36,5 +36,6 @@ print(f'phi_copy = {phi}')
 masses = pyobs.observable(description='pion, kaon')
 masses.create_from_cov('pion/kaon',[134.9766,497.648],[0.0006**2,0.022**2])
 print('masses = ',masses)
+masses[0] = masses[0]**2
 
 phi.peek()
