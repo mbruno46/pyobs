@@ -1,7 +1,7 @@
 #################################################################################
 #
 # data.py: definition and properties of the class with the fluctuations
-# Copyright (C) 2020 Mattia Bruno
+# Copyright (C) 2020-2021 Mattia Bruno
 # 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -74,80 +74,6 @@ def conv_ND(data,idx,lat,xmax,a=0,b=None):
     
     g=numpy.array(aux[1][0:xmax])
     return numpy.around(g,decimals=15)
-
-    
-# note that data, idx, N must be lists with 1 or 2 elements
-# if 2 elements then it's like off diagonal element of cov matrix
-# def conv_1D(data,idx,N,wmax,a=0,b=None):
-#     aux = []
-        
-#     if (M==1):
-#         aux[0]*=aux[0].conj()
-#         aux += [numpy.fft.irfft(aux[0])]
-#     else:
-#         aux[0]*=aux[1].conj()
-#         aux[1]=numpy.fft.irfft(aux[0].real)
-        
-#     g=numpy.array(aux[1][0:wmax])
-#     return g
-
-# def conv_1D_offdiag(data,idx,wmax):
-#     if type(idx1) is range:
-#         aux1=numpy.array(data1,dtype=numpy.float64)
-#         aux2=numpy.array(data2,dtype=numpy.float64)
-#     else:
-#         aux1=numpy.zeros((N+1,),dtype=numpy.float64)
-#         aux2=numpy.zeros((N+1,),dtype=numpy.float64)
-#         for i in range(len(idx)):
-#             aux1[idx[i]-idx[0]] = data1[i]
-#             aux2[idx[i]-idx[0]] = data2[i]
-
-#     # in-place, even if it adds one element at the end
-#     aux1=numpy.fft.rfft(aux1,n=2*N)
-#     aux2=numpy.fft.rfft(aux2,n=2*N)
-#     aux1*=aux2.conj()
-#     aux2=numpy.fft.irfft(aux1.real)
-   
-#     g=numpy.array(aux2[0:wmax])
-#     return g
-    
-# def conv_ND(data,idx,lat,rrmax):
-#     D=len(lat)
-#     fft_ax=tuple(range(D))
-#     shape=tuple(lat)
-#     v=numpy.prod(lat)
-    
-#     if (len(data)!=len(idx)):
-#         raise pyobs.PyobsError('conv_ND: err0')
-#     if (len(data)>2):
-#         raise pyobs.PyobsError('conv_ND: err1')
-        
-#     M = len(data)
-#     aux = []
-    
-#     for i in range(M):
-#         tmp = None
-#         if type(idx[i]) is range:
-#             tmp = numpy.array(data[i],dtype=numpy.float64)
-#         else:
-#             tmp = numpy.zeros((v,),dtype=numpy.float64)
-#             for j in range(len(idx[i])):
-#                 tmp[idx[i][j]] = data[i][j]
-#         tmp = numpy.reshape(tmp,shape)
-        
-#         # in-place, even if it adds one element at the end
-#         aux += [numpy.fft.rfftn(tmp,s=shape,axes=fft_ax)]
-#         del tmp
-        
-#     if (M==1):
-#         aux[0]*=aux[0].conj()
-#         aux += [numpy.fft.irfftn(aux[0],s=shape,axes=fft_ax)]
-#     else:
-#         aux[0]*=aux[1].conj()
-#         aux[1]=numpy.fft.irfftn(aux[0].real,s=shape,axes=fft_ax)      
-    
-#     aux[1]=numpy.reshape(aux[1],(v,))
-#     return pyobs.core.mftools.intrsq(aux[1],lat,rrmax)
 
 
 class delta:
@@ -229,46 +155,6 @@ class delta:
             raise pyobs.PyobsError('Dimensions do not match in assignment')
         a = numpy.nonzero(numpy.in1d(self.mask,submask))[0]
         self.delta[a,:] = rd.delta
-
-#     def gamma(self,xmax):
-#         g=numpy.zeros((self.size,xmax))
-#         ones = numpy.reshape(numpy.ones(self.n),(1,self.n))
-#         isMC = self.lat is None
-
-#         if isMC:
-#             m = conv_ND(ones,self.idx,self.ncnfg(),xmax)
-#         else:
-#             rrmax = xmax
-#             v=self.vol()
-#             if v==len(self.idx):
-#                 m = [v]*rrmax
-#             else:
-#                 m = conv_ND(ones,self.idx,self.lat,rrmax)
-#                 Sr = pyobs.core.mftools.intrsq(numpy.ones(v),self.lat,rrmax)
-#                 Sr = Sr + 1*(Sr==0.0)
-#                 m /= Sr
-        
-#         for a in range(self.size):
-#             g[a,:] = conv_ND(self.delta,self.idx,self.ncnfg() if isMC else self.lat,xmax,a)
-#         return [m,g]
-#         if self.lat is None:
-#             wmax = xmax
-#             m = conv_1D([numpy.ones(self.n)],[self.idx],[self.ncnfg()],wmax)
-#             for a in range(self.size):
-#                 g[a,:] = conv_1D([self.delta[a,:]],[self.idx],[self.ncnfg()],wmax)
-#         else:
-#             rrmax = xmax
-#             v=self.vol()
-#             if v==len(self.idx):
-#                 m = [v]*rrmax
-#             else:
-#                 m = conv_ND([numpy.ones(self.n)],[self.idx],self.lat,rrmax)
-#                 Sr = pyobs.core.mftools.intrsq(numpy.ones(v),self.lat,rrmax)
-#                 Sr = Sr + 1*(Sr==0.0)
-#                 m /= Sr
-#             for a in range(self.size):
-#                 g[a,:] = conv_ND([self.delta[a,:]],[self.idx],self.lat,rrmax)
-#         return [m, g]
     
 
     def gamma(self,xmax,a,b=None):

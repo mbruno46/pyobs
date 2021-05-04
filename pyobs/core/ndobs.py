@@ -1,7 +1,7 @@
 ################################################################################
 #
 # ndobs.py: definition and properties of the core class of the library
-# Copyright (C) 2020 Mattia Bruno
+# Copyright (C) 2020-2021 Mattia Bruno
 # 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

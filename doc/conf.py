@@ -22,7 +22,7 @@ import pyobs
 # -- Project information -----------------------------------------------------
 
 project = 'pyobs'
-copyright = '2020, Mattia Bruno'
+copyright = '2020-2021, Mattia Bruno'
 author = 'Mattia Bruno'
 
 # The full version, including alpha/beta/rc tags
