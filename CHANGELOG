@@ -5,7 +5,7 @@ Future milestones:
  - finite volume quantization condition for 2->2
  - exponential tail
 
-version 1.0.2, 04.05.2021:
+version 1.1.0, 08.05.2021:
  - added support for root finder, basic interpolation, cumsum
  - fixed documentation bugs
  - minor improvements to mfit
