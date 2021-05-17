@@ -667,3 +667,53 @@ class observable:
                 covmat += res[0]
                 dcovmat += res[1]
         return [covmat, dcovmat]
+
+    def blocked(self, blocks):
+        """
+        Returns an observable with blocked/binned fluctuations.
+        
+        Parameters:
+           blocks (dict): dictionary where the key specifies the ensemble and
+                the value the blocking strategy. If the ensemble was generated 
+                from a Monte Carlo chain, then an integer number is expected. If
+                the ensemble is a master-field then a list of integers is expected.
+        
+        Note:
+           After the blocking procedure the knowledge of configuration indices is
+           lost and replaced by an index running over the blocks/bins from 0 to the 
+           maximal value. To keep the analysis consistent, the same blocking procedure
+           must be applied to all observables involved.
+           
+        Examples:
+            >>> obsA = pyobs.observable()
+            >>> len(data)
+            1000
+            >>> obsA.create('EnsA', data)
+            >>> obsAbin = obsA.blocked({'EnsA': 20})
+            >>> obsAbin.peek() # the 1000 configs are compressed to 50 bins of length 20
+            Observable with shape = (1,)
+             - description: unknown
+             - size: ... KB
+             - mean: [...]
+             - Ensemble EnsA
+                - Replica 0 with ncnfg 50
+                     temporary additional memory required ... MB
+        """
+        res = pyobs.observable(description=self.description)
+        res.set_mean(self.mean)
+        res.ename = [e for e in self.ename]
+        
+        for key in self.delta:
+            e = key.split(':')[0]
+            if e in blocks:
+                res.delta[f"{e}:{key.split(':')[1]}-blocking{blocks[e]}"] = self.delta[key].blocked(blocks[e])
+            else:
+                res.delta[key] = self.delta[key].copy()
+        
+        for key in self.cdata:
+            self.cdata[key] = cdata(self.cdata[key].cov)
+        
+        pyobs.memory.update(res)
+        return res
+                    
+        

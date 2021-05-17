@@ -33,6 +33,92 @@
 #include <string>
 
 
+static void index2coor(int s,int D,int *lat,int *x)
+{
+   int mu;
+   for (mu=D-1;mu>=0;mu--)
+   {
+      x[mu] = s % lat[mu];
+      s     = s / lat[mu];
+   }
+}
+
+static int coor2block(int D,int *x,int *bs)
+{
+   int mu, ib, b;
+   ib = 0;
+   b = 1;
+   for (mu=D-1;mu>=0;mu--)
+   {
+      ib += b*(x[mu]/bs[mu]);
+      b *= bs[mu];
+   }
+   return ib;
+}
+
+static PyObject* blockdata(PyObject *self, PyObject *args)
+{
+   int s, sp, v, vp, mu, D, B, *bs, *x, *lat;
+   double *data, *newdata, n;
+   PyArrayObject *_newdata, *_data, *_lat, *_bs;
+
+   if (!PyArg_ParseTuple(args, "O!O!O!", &PyArray_Type, &_data, &PyArray_Type, &_lat, &PyArray_Type, &_bs)) {
+      return NULL;
+   }
+   if ((PyArray_DESCR(_lat)->type_num!=NPY_INT32) || (PyArray_NDIM(_lat)!=1))
+   {
+      PyErr_SetString(PyExc_ValueError, "Unexpected lat");
+      return NULL;
+   }
+   if ((PyArray_DESCR(_bs)->type_num!=NPY_INT32) || (PyArray_NDIM(_bs)!=1))
+   {
+      PyErr_SetString(PyExc_ValueError, "Unexpected bs");
+      return NULL;
+   }
+   if ((PyArray_DESCR(_data)->type_num!=NPY_FLOAT64) || (PyArray_NDIM(_data)!=1))
+   {
+      PyErr_SetString(PyExc_ValueError, "Unexpected data");
+      return NULL;
+   }
+   data = (double*)PyArray_DATA(_data);
+   lat = (int*)PyArray_DATA(_lat);
+   bs = (int*)PyArray_DATA(_bs);
+
+   D=(int)(PyArray_DIMS(_lat)[0]);
+   v=1;
+   vp=1;
+   B=1;
+   for (mu=0; mu<D; mu++)
+   {
+      v *= lat[mu];
+      vp *= (lat[mu]/bs[mu]);
+      B *= bs[mu];
+   }
+   
+   x = new int[D];
+   for (mu=0;mu<D;mu++)
+      x[mu]=0;
+
+   npy_intp nn = vp;
+   _newdata = (PyArrayObject*)PyArray_SimpleNew(1, &nn, NPY_FLOAT64);
+   newdata = (double*)PyArray_DATA(_newdata);
+   memset(newdata,0,sizeof(double)*vp);
+
+   for (s=0;s<v;s++) 
+   {
+      index2coor(s,D,lat,x);
+      sp = coor2block(D,x,bs);
+      newdata[sp] += data[s];
+   }
+
+   n = 1.0/(double)(B);
+   for (sp=0;sp<vp;sp++)
+      newdata[sp] *= n;
+  
+   delete x;
+   return (PyObject*)_newdata;
+}
+
 static PyObject* intrsq(PyObject *self, PyObject *args)
 {
    int mu,ir,d,s,D,v,rrmax,*x,*lat;
@@ -164,6 +250,7 @@ static PyObject* idx2rsq(PyObject *self, PyObject *args)
 static PyMethodDef methods[] = {
    {"idx2rsq",  idx2rsq, METH_VARARGS, "idx2rsq"},
    {"intrsq",  intrsq, METH_VARARGS, "intrsq"},
+   {"blockdata",  blockdata, METH_VARARGS, "blockdata"},
    {NULL, NULL, 0, NULL}
 };
 

@@ -24,7 +24,7 @@ import pyobs
 
 __all__ = ['delta']
 
-def create_fft_data(data,idx,shape,fft_ax):
+def expand_data(data,idx,shape):
     v=numpy.prod(shape)
     tmp = None
     if type(idx) is range:
@@ -33,9 +33,12 @@ def create_fft_data(data,idx,shape,fft_ax):
         tmp = numpy.zeros((v,),dtype=numpy.float64)
         for j in range(len(idx)):
             tmp[idx[j]-idx[0]] = data[j]
-            
+    return tmp
+
+def create_fft_data(data,idx,shape,fft_ax):
+    tmp = expand_data(data,idx,shape)        
     if len(fft_ax)>1:
-        tmp = numpy.reshape(tmp,shape)
+        tmp = numpy.reshape(tmp,shape)    
     # in-place, even if it adds one element at the end
     return numpy.fft.rfftn(tmp,s=shape,axes=fft_ax)
 
@@ -75,7 +78,18 @@ def conv_ND(data,idx,lat,xmax,a=0,b=None):
     g=numpy.array(aux[1][0:xmax])
     return numpy.around(g,decimals=15)
 
-
+# TODO: remove blocks that are zeros
+def block_data(data,idx,lat,bs):
+    if isinstance(lat,(int,numpy.int)):
+        lat=numpy.array([lat],dtype=numpy.int32)
+        bs=numpy.array([bs],dtype=numpy.int32)
+        
+    shape = tuple(lat)
+    v = numpy.prod(lat)    
+    dat = expand_data(data,idx,shape)
+    return pyobs.core.mftools.blockdata(dat, lat, bs)
+    
+    
 class delta:
     def __init__(self,mask,idx,data=None,mean=None,lat=None):
         # idx is expected to be a list or range
@@ -178,6 +192,29 @@ class delta:
         return [m, g]
     
     
+    def blocked(self, bs):
+        isMC = self.lat is None
+            
+        if isMC:
+            if isinstance(bs,(int,numpy.int)):
+                v = (self.ncnfg()+bs-1) - ((self.ncnfg()+bs-1)%bs)
+                v //= bs
+                lat = None
+            else:
+                raise pyobs.PyobsError('Unexpected block size')
+        else:
+            if numpy.sum(self.lat%numpy.array(bs))!=0:
+                raise pyobs.PyobsError('Block size does not divide lattice')
+            if (len(bs)!=len(self.lat)):
+                raise pyobs.PyobsError('Block size does match lattice')
+            lat = self.lat / numpy.array(bs)
+            v = numpy.prod(lat)
+                
+        res = delta(self.mask,range(v),lat=lat)
+        for a in range(self.size):
+            res.delta[a,:] = block_data(self.delta[a,:], self.idx, self.ncnfg() if isMC else self.lat, bs)
+        return res
+    
     # replica ensemble utility functions
     def wmax(self):
         return self.ncnfg()//2
@@ -187,3 +224,5 @@ class delta:
 
     def vol(self):
         return numpy.prod(self.lat)
+
+    
