@@ -197,7 +197,7 @@ class delta:
             
         if isMC:
             if isinstance(bs,(int,numpy.int)):
-                v = (self.ncnfg()+bs-1) - ((self.ncnfg()+bs-1)%bs)
+                v = self.ncnfg() #(self.ncnfg()+bs-1) - ((self.ncnfg()+bs-1)%bs)
                 v //= bs
                 lat = None
             else:
