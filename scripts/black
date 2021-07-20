@@ -1,0 +1,15 @@
+#!/bin/bash
+BASEDIR=$(dirname "$0")/../pyobs
+cd $BASEDIR
+FILES=$(git ls-files | grep ".py$")
+PY3=$1
+
+for f in ${FILES}
+do
+    $PY3 -m black -t py36 ${f}
+    $PY3 -m flake8 ${f}
+    if [[ "$?" != "0" ]];
+    then
+        echo "Need to fix $f"
+    fi
+done
