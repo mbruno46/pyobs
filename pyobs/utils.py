@@ -175,8 +175,8 @@ def slice_ndarray(t, *args):
     assertion(len(args) == len(s), "Dimensions of tensor do not match indices")
 
     aa = []
-    for a in args:
-        ia = args.index(a)
+    for ia in range(len(args)):
+        a = args[ia]
         if a is None:
             aa.append(range(s[ia]))
         elif isinstance(a, slice):
