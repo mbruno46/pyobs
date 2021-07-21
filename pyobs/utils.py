@@ -141,15 +141,20 @@ def check_not_type(obj, s, t):
         raise TypeError(f"Unexpected type for {s}")
 
 
+def slice_to_range(sl,n):
+    def ifnone(a,b): 
+        return b if a is None else a
+    return range(ifnone(sl.start,0),ifnone(sl.stop,n),ifnone(sl.step,1))
+
 def slice_ndarray(t, *args):
     """
     Slices a N-D array.
 
     Parameters:
        t (array): N-D array
-       *args (list): a series of lists or arrays with the indices
-                     used for the extraction. `[]` is interpreted
-                     as taking all elements along that given axis.
+       *args (list): a series of lists, arrays, slices or integers with the indices
+                     used for the extraction. `[]` is interpreted as taking 
+                     all elements along that given axis, like slice(None).
 
     Returns:
        array: the sliced N-D array.
@@ -163,15 +168,25 @@ def slice_ndarray(t, *args):
               [[6, 8]]])
     """
     s = numpy.shape(t)
-    if len(args) != len(s):  # pragma: no cover
-        raise TypeError("Dimensions of tensor do not match indices")
-
+    assertion(len(args) == len(s), "Dimensions of tensor do not match indices")
+    
     aa = []
     for a in args:
         ia = args.index(a)
-        if (a is None) or (not a):
+        if (a is None):
             aa.append(range(s[ia]))
-        elif isinstance(a, (numpy.ndarray, list)):
+        elif isinstance(a, slice):
+            aa.append(slice_to_range(a, s[ia]))
+        elif isinstance(a, numpy.ndarray):
             aa.append(a)
+        elif isinstance(a, list):
+            if not a:
+                aa.append(range(s[ia]))
+            else:
+                aa.append(a)
+        elif isinstance(a, (int, numpy.int)):
+            aa.append([a])
+        else:
+            raise PyobsError("slicing not understood")
 
     return t[numpy.ix_(*aa)]

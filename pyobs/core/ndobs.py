@@ -31,6 +31,7 @@ import pyobs
 from .data import delta
 from .cdata import cdata
 from .error import gamma_error, covariance, plot_piechart
+from .slice import slice_observable
 
 __all__ = ["observable"]
 
@@ -64,7 +65,7 @@ class observable:
             self.delta = {}
             self.cdata = {}
         else:
-            if isinstance(orig, observable):
+            if isinstance(orig, pyobs.observable):
                 self.description = orig.description
                 self.www = orig.www
                 self.shape = orig.shape
@@ -81,6 +82,7 @@ class observable:
                     self.cdata[key] = cdata(orig.cdata[key].cov)
                 pyobs.memory.add(self)
             else:
+                print(type(orig), isinstance(orig, observable))
                 raise pyobs.PyobsError("Unexpected orig argument")
         pyobs.memory.add(self)
 
@@ -141,7 +143,7 @@ class observable:
         """
         t0 = time()
         pyobs.check_type(ename, "ename", str)
-        pyobs.assertion(":" in ename, f"Column symbol not allowed in ename {ename}")
+        pyobs.assertion(":" not in ename, f"Column symbol not allowed in ename {ename}")
         pyobs.check_type(shape, "shape", tuple)
         self.shape = shape
         self.size = numpy.prod(shape)
@@ -362,25 +364,36 @@ class observable:
         self.size = numpy.size(self.mean)
 
     def slice(self, *args):
+        """
+        Slices an N-D observable.
+
+        Parameters:
+           *args: accepted arguments are lists, arrays, slices or integers 
+                  with the indices used for the extraction. `[]` is interpreted 
+                  as taking all elements along that given axis, like slice(None).
+                  The number of input arguments must match the dimension of the
+                  observable.
+                  
+        Returns:
+           observable: the sliced N-D observable.
+           Note that the number of dimensions does not change even
+           when only a single coordinate is selected along a given axis.
+
+        Examples:
+           >>> obs = pyobs.observable()
+           >>> obs.create('EnsA', data, shape=(4,3,6))
+           >>> obs.slice([0],[],[0,2,4]) # returns an observable with shape = (1,3,3)
+        """
         na = len(args)
-        if na != len(self.shape):
-            raise pyobs.PyobsError("Unexpected argument")
-        def f(x): return pyobs.slice_ndarray(x, *args)
-        g0 = pyobs.gradient(f, self.mean, gtype="slice")
-        return pyobs.derobs([self], f(self.mean), [g0])
+        pyobs.assertion(na == len(self.shape), "Unexpected argument")
+        return slice_observable(self, *args)
 
     def __getitem__(self, args):
         if isinstance(args, (int, numpy.int32, numpy.int64, slice, numpy.ndarray)):
             args = [args]
         na = len(args)
-        if na != len(self.shape):
-            raise pyobs.PyobsError("Unexpected argument")
-        if self.mean[tuple(args)].size == 1:
-            def f(x): return numpy.reshape(x[tuple(args)], (1,))
-        else:
-            def f(x): return x[tuple(args)]
-        g0 = pyobs.gradient(f, self.mean, gtype="slice")
-        return pyobs.derobs([self], f(self.mean), [g0])
+        pyobs.assertion(na == len(self.shape), "Unexpected argument")
+        return slice_observable(self, *args)
 
     def __setitem__(self, args, yobs):
         if isinstance(args, (int, numpy.int32, numpy.int64, slice, numpy.ndarray)):
