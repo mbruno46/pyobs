@@ -40,11 +40,6 @@ class cdata:
             ia = self.mask.index(a)
             self.grad[ia, a] = 1.0
 
-    def _apply_grad(self):
-        if self.grad is None:
-            return self.cov
-        return self.grad @ self.cov @ self.grad.T
-
     def copy(self):
         res = cdata(self.cov, self.mask)
         res.grad = numpy.array(self.grad)
@@ -56,7 +51,7 @@ class cdata:
 
     def sigmasq(self, outer_shape):
         size = numpy.prod(outer_shape)
-        tmp = numpy.diag(self._apply_grad())
+        tmp = numpy.diag(self.grad @ self.cov @ self.grad.T)
         out = numpy.zeros((size,))
         for a in self.mask:
             ia = self.mask.index(a)

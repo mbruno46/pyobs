@@ -50,8 +50,7 @@ def reshape(x, new_shape):
       value.
     """
     res = pyobs.observable(x)
-    res.shape = new_shape
-    res.mean = numpy.reshape(x.mean, new_shape)
+    res.set_mean(numpy.reshape(x.mean, new_shape))
     return res
 
 

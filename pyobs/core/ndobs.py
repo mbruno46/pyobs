@@ -81,8 +81,7 @@ class observable:
                 for key in orig.cdata:
                     self.cdata[key] = orig.cdata[key].copy()
                 pyobs.memory.add(self)
-            else:
-                print(type(orig), isinstance(orig, observable))
+            else:  # pragma: no cover
                 raise pyobs.PyobsError("Unexpected orig argument")
         pyobs.memory.add(self)
 
@@ -155,7 +154,7 @@ class observable:
             R = len(data)
         elif isinstance(data[0], (int, float, numpy.float64, numpy.float32)):
             R = 1
-        else:
+        else:  # pragma: no cover
             raise pyobs.PyobsError("Unexpected data type")
 
         if R == 1:
@@ -283,8 +282,7 @@ class observable:
 
         """
         pyobs.check_type(name, "name", str)
-        if name in self.cdata:
-            raise pyobs.PyobsError(f"Label {name} already used")
+        pyobs.assertion(name not in self.cdata, f"Label {name} already used")
         pyobs.assertion(
             numpy.shape(err) == self.shape,
             f"Unexpected error, dimensions do not match {self.shape}",
@@ -422,19 +420,21 @@ class observable:
         if isinstance(args, (int, numpy.int32, numpy.int64, slice, numpy.ndarray)):
             args = [args]
         if self.mean[tuple(args)].size == 1:
-            if yobs.size != 1:
-                raise pyobs.PyobsError("set item : dimensions do not match")
+            pyobs.assertion(yobs.size == 1, "set item : dimensions do not match")
         else:
-            if self.mean[tuple(args)].shape != yobs.shape:
-                raise pyobs.PyobsError("set item : dimensions do not match")
+            pyobs.assertion(
+                self.mean[tuple(args)].shape == yobs.shape,
+                "set item : dimensions do not match",
+            )
         self.mean[tuple(args)] = yobs.mean
 
         idx = numpy.arange(self.size).reshape(self.shape)[tuple(args)]
         submask = idx.flatten()
 
         for key in yobs.delta:
-            if key not in self.delta:
-                raise pyobs.PyobsError("Ensembles do not match; can not set item")
+            pyobs.assertion(
+                key in self.delta, "Ensembles do not match; can not set item"
+            )
             self.delta[key].assign(submask, yobs.delta[key])
 
         for key in yobs.cdata:
@@ -768,7 +768,7 @@ class observable:
                 res.delta[key] = self.delta[key].copy()
 
         for key in self.cdata:
-            self.cdata[key] = cdata(self.cdata[key].cov)
+            res.cdata[key] = self.cdata[key].copy()
 
         pyobs.memory.update(res)
         return res

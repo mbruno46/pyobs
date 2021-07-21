@@ -52,3 +52,5 @@ print(f'Estimated error {da[0]:g} vs expeceted {sig:g}')
 
 _tau = obsA.tauint()
 assert abs(_tau['EnsA'][0]-tau) < 1.5*_tau['EnsA'][1]
+
+obsA.variance()

@@ -22,16 +22,6 @@
 import pyobs
 import numpy
 
-
-def get_mask_from_mask(m0, m1, m2):
-    m2 = list(m2)
-    mask = []
-    for m in m0:
-        if m in m1:
-            mask += [m2.index(m)]
-    return numpy.array(mask)
-
-
 # grad is Na x Ni matrix
 class gradient:
     def __init__(self, g, x0=None, gtype="full"):
@@ -50,7 +40,7 @@ class gradient:
         elif gtype == "diag":
             gsh = self.Na
             pyobs.assertion(self.Na == self.Ni, "diagonal gradient error")
-        else:
+        else:  # pragma: no cover
             raise pyobs.PyobsError("gradient error")
 
         self.grad = numpy.zeros(gsh, dtype=numpy.float64)
@@ -74,10 +64,6 @@ class gradient:
                 return None
         elif self.gtype == "diag":
             return mask
-
-    # TODO: the extend method works only for pairs of
-    # observables defined on the same ensembles. For multiple
-    # ensembles it fails. To be fixed
 
     # u = grad @ v
     def apply(self, u, umask, uidx, v, vmask):
