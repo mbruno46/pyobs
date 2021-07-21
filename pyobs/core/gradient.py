@@ -49,8 +49,7 @@ class gradient:
             gsh = (self.Na, self.Ni)
         elif gtype is "diag":
             gsh = self.Na
-            if self.Na != self.Ni:
-                raise pyobs.PyobsError("diagonal gradient error")
+            pyobs.assertion(self.Na == self.Ni, "diagonal gradient error")
         elif gtype is "slice":
             gsh = self.Na
         elif gtype is "extend":

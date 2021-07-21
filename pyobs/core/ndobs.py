@@ -229,7 +229,7 @@ class observable:
 
         Examples:
            >>> mpi = pyobs.observable(description='pion masses, charged and neutral')
-           >>> mpi.create_cd('mpi-pdg18',[139.57061,134.9770],[0.00023**2,0.0005**2])
+           >>> mpi.create_from_cov('mpi-pdg18',[139.57061,134.9770],[0.00023**2,0.0005**2])
            >>> print(mpi)
            139.57061(23)    134.97700(50)
         """
@@ -240,12 +240,12 @@ class observable:
             self.mean = numpy.array(value)
             cov = numpy.array(covariance)
         self.shape = numpy.shape(self.mean)
-        pyobs.assertion(numpy.ndim(self.shape) != 1, "Unexpected value, only 1-D arrays are supported")
+        pyobs.assertion(numpy.ndim(self.shape) == 1, "Unexpected value, only 1-D arrays are supported")
         self.size = numpy.prod(self.shape)
         if cov.shape != (self.size,) and cov.shape != (self.size, self.size):
             raise pyobs.PyobsError(f"Unexpected shape for covariance {cov.shape}")
         pyobs.check_type(cname, "cname", str)
-        self.cdata[cname] = cdata(cov)
+        self.cdata[cname] = cdata(cov, list(range(self.size)))
         pyobs.memory.update(self)
 
     def add_syst_err(self, name, err):

@@ -1,7 +1,7 @@
 #################################################################################
 #
 # derobs.py: implementation of the core function for derived observables
-# Copyright (C) 2020 Mattia Bruno
+# Copyright (C) 2020-2021 Mattia Bruno
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -37,6 +37,14 @@ def merge_idx(idx1, idx2):
         u = set(idx1)
         return list(sorted(u.union(idx2)))
 
+def get_keys(inps, name):
+    allkeys = []
+    for i in inps:
+        for dn in i.__dict__[name]:
+            if dn not in allkeys:
+                allkeys.append(dn)
+    return allkeys
+
 
 def derobs(inps, mean, grads, description=None):
     t0 = time()
@@ -51,34 +59,25 @@ def derobs(inps, mean, grads, description=None):
         description = ", ".join(set([i.description for i in inps]))
     res = pyobs.observable(description=description)
     res.set_mean(mean)
-
-    allkeys = []
-    for i in inps:
-        for dn in i.delta:
-            if dn not in allkeys:
-                allkeys.append(dn)
-
-    for key in allkeys:
+    
+    for key in get_keys(inps, 'delta'):
         new_idx = []
         new_mask = []
         lat = None
         for i in range(len(inps)):
             if key in inps[i].delta:
-                data = inps[i].delta[key]
-                h = grads[i].get_mask(data.mask)
+                d = inps[i].delta[key]
+                h = grads[i].get_mask(d.mask)
                 if h is not None:
                     new_mask += h
                     if not new_idx:
-                        new_idx = data.idx
+                        new_idx = d.idx
                     else:
-                        new_idx = merge_idx(new_idx, data.idx)
+                        new_idx = merge_idx(new_idx, d.idx)
                     if lat is None:
-                        lat = data.lat
+                        lat = d.lat
                     else:
-                        if numpy.any(lat != data.lat):  # pragma: no cover
-                            raise pyobs.PyobsError(
-                                "Unexpected lattice size for master fields with same tag"
-                            )
+                        pyobs.assertion(numpy.any(lat != d.lat), "Unexpected lattice size for master fields with same tag")
         if len(new_mask) > 0:
             res.delta[key] = delta(list(set(new_mask)), new_idx, lat=lat)
             for i in range(len(inps)):
@@ -86,19 +85,23 @@ def derobs(inps, mean, grads, description=None):
                     res.delta[key].axpy(grads[i], inps[i].delta[key])
 
     res.ename_from_delta()
-
-    res.cdata = {}
-    allkeys = []
-    for i in inps:
-        for cd in i.cdata:
-            if cd not in allkeys:
-                allkeys.append(cd)
-    for key in allkeys:
+    
+    for key in get_keys(inps, 'cdata'):
+        new_mask = []
+        cov = None
         for i in range(len(inps)):
             if key in inps[i].cdata:
-                if key not in res.cdata:
-                    res.cdata[key] = cdata(numpy.zeros(res.size))
-                res.cdata[key].axpy(grads[i], inps[i].cdata[key])
+                cd = inps[i].cdata[key]
+                h = grads[i].get_mask(cd.mask)
+                if h is not None:
+                    new_mask += h
+                    if cov is None:
+                        cov = cd.cov
+        if len(new_mask)>0:
+            res.cdata[key] = cdata(cov, list(set(new_mask)))
+            for i in range(len(inps)):
+                if key in inps[i].cdata:
+                    res.cdata[key].axpy(grads[i], inps[i].cdata[key])
 
     pyobs.memory.update(res)
     if pyobs.is_verbose("derobs"):

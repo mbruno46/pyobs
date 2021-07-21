@@ -1,7 +1,7 @@
 #################################################################################
 #
 # cdata.py: definition and properties of the inner class cdata
-# Copyright (C) 2020 Mattia Bruno
+# Copyright (C) 2020-2021 Mattia Bruno
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,31 +19,30 @@
 #
 #################################################################################
 
-
+import pyobs
 import numpy
 
 
 class cdata:
-    def __init__(self, mask, cov):
-        self.mask = mask
-        self.size = len(mask)
+    def __init__(self, cov, mask):
         if numpy.ndim(cov) == 1:
             self.cov = numpy.diag(numpy.array(cov, dtype=numpy.float64))
         else:
             self.cov = numpy.array(cov, dtype=numpy.float64)
-        pyobs.assertion(self.size == numpy.shape(self.cov)[0],"Mismatch between mask and cov")
-        self.grad = None
-        
+        self.mask = mask
+        self.size = len(mask)
+        self.grad = numpy.zeros((self.size, numpy.shape(cov)[0]), dtype=numpy.float64)
+        for a in mask:
+            ia = mask.index(a)
+            self.grad[ia,a] = 1.0
+
     def _apply_grad(self):
         if self.grad is None:
             return self.cov
-        return self.grag @ self.cov @ self.grad.T
+        return self.grad @ self.cov @ self.grad.T
     
     def axpy(self, grad, cd):
-        n = len(self.cov)
-        m = len(cd.cov)
-        self.grad = numpy.zeros((n, m))
-        grad.apply(self.grad, range(n), None, cd.grad, range(m))
+        grad.apply(self.grad, self.mask, None, cd.grad, cd.mask)
 #         self.cov += g @ cd.cov @ g.T
 
     def sigmasq(self):
