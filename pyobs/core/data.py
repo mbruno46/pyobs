@@ -208,13 +208,14 @@ class delta:
                 v = self.ncnfg()  # (self.ncnfg()+bs-1) - ((self.ncnfg()+bs-1)%bs)
                 v //= bs
                 lat = None
-            else:
+            else:  # pragma: no cover
                 raise pyobs.PyobsError("Unexpected block size")
         else:
-            if numpy.sum(self.lat % numpy.array(bs)) != 0:
-                raise pyobs.PyobsError("Block size does not divide lattice")
-            if len(bs) != len(self.lat):
-                raise pyobs.PyobsError("Block size does match lattice")
+            pyobs.assertion(
+                numpy.sum(self.lat % numpy.array(bs)) == 0,
+                "Block size does not divide lattice",
+            )
+            pyobs.assertion(len(bs) == len(self.lat), "Block size does match lattice")
             lat = self.lat / numpy.array(bs)
             v = int(numpy.prod(lat))
             bs = numpy.array(bs, dtype=numpy.int32)

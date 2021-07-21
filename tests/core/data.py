@@ -29,3 +29,11 @@ g = numpy.array([-b/(2.0*a*a), 1/(2.0*a)])
 err = numpy.sqrt((g.T @ cov @ g)/N)
 
 assert abs(err-dc) < ddc
+
+print("Test assign")
+[v0, e0] = (obsC**2).error()
+obsC[0] = obsC[0]**2
+[v1, e1] = obsC.error()
+
+assert abs(v0-v1) < 1e-12
+assert abs(e1-e0) < 1e-12
