@@ -43,13 +43,17 @@ class cdata:
     
     def axpy(self, grad, cd):
         grad.apply(self.grad, self.mask, None, cd.grad, cd.mask)
-#         self.cov += g @ cd.cov @ g.T
 
-    def sigmasq(self):
-        return numpy.diag(self._apply_grad())
-
-    def assign(self, mask, cd):
-        n = numpy.shape(cov)[0]
-        self.grad[numpy.ix_[mask, range(n)]] = cd.grad
-        self.cov = numpy.array(cd.cov)
-#         self.cov[numpy.ix_[mask, mask]] = cd.cov
+    def sigmasq(self, outer_shape):
+        size = numpy.prod(outer_shape)
+        tmp = numpy.diag(self._apply_grad())
+        out = numpy.zeros((size,))
+        for a in self.mask:
+            ia = self.mask.index(a)
+            out[a] = tmp[ia]
+        return numpy.reshape(out, outer_shape)
+    
+    def assign(self, submask, cd):
+        pyobs.assertion(len(submask)==cd.size,"Dimensions do not match in assignment")
+        a = numpy.nonzero(numpy.in1d(self.mask, submask))[0]
+        self.grad[a, :] = cd.grad
