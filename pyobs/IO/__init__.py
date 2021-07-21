@@ -58,14 +58,15 @@ def save(fname, *args):
        >>> obsA.create('A',data)
        >>> pyobs.save('~/analysis/obsA.json.gz', obsA)
     """
-    if os.path.isfile(fname) is True:  # pragma: no cover
-        raise pyobs.PyobsError(f"File {fname} already exists")
+    pyobs.assertion(os.path.isfile(fname) is False, f"File {fname} already exists")
 
     if ".pyobs" in fname:
         fmt = default
     elif ".json.gz" in fname:
         fmt = json
-        if len(args) > 1 or not isinstance(args[0], pyobs.observable):
+        if len(args) > 1 or not isinstance(
+            args[0], pyobs.observable
+        ):  # pragma: no cover
             raise pyobs.PyobsError("json file format supports only single observable")
     else:  # pragma: no cover
         raise pyobs.PyobsError("Format not supported")
@@ -86,9 +87,7 @@ def load(fname):
     Examples:
        >>> obsA = pyobs.load('~/analysis/obsA.json.gz')
     """
-
-    if not os.path.isfile(fname):  # pragma: no cover
-        raise pyobs.PyobsError(f"File {fname} does not exists")
+    pyobs.assertion(os.path.isfile(fname) is False, f"File {fname} already exists")
 
     if ".pyobs" in fname:
         fmt = default

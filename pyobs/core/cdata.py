@@ -24,16 +24,20 @@ import numpy
 
 
 class cdata:
-    def __init__(self, cov, mask):
+    def __init__(self, cov, mask=None):
         if numpy.ndim(cov) == 1:
             self.cov = numpy.diag(numpy.array(cov, dtype=numpy.float64))
         else:
             self.cov = numpy.array(cov, dtype=numpy.float64)
-        self.mask = mask
-        self.size = len(mask)
-        self.grad = numpy.zeros((self.size, numpy.shape(cov)[0]), dtype=numpy.float64)
-        for a in mask:
-            ia = mask.index(a)
+        n = numpy.shape(cov)[0]
+        if mask is None:
+            self.mask = list(range(n))
+        else:
+            self.mask = mask
+        self.size = len(self.mask)
+        self.grad = numpy.zeros((self.size, n), dtype=numpy.float64)
+        for a in self.mask:
+            ia = self.mask.index(a)
             self.grad[ia, a] = 1.0
 
     def _apply_grad(self):
@@ -41,7 +45,13 @@ class cdata:
             return self.cov
         return self.grad @ self.cov @ self.grad.T
 
+    def copy(self):
+        res = cdata(self.cov, self.mask)
+        res.grad = numpy.array(self.grad)
+        return res
+
     def axpy(self, grad, cd):
+        self.grad[:, :] = 0.0
         grad.apply(self.grad, self.mask, None, cd.grad, cd.mask)
 
     def sigmasq(self, outer_shape):

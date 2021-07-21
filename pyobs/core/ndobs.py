@@ -79,7 +79,7 @@ class observable:
 
                 self.cdata = {}
                 for key in orig.cdata:
-                    self.cdata[key] = cdata(orig.cdata[key].cov)
+                    self.cdata[key] = orig.cdata[key].copy()
                 pyobs.memory.add(self)
             else:
                 print(type(orig), isinstance(orig, observable))
@@ -465,7 +465,7 @@ class observable:
         return pyobs.derobs([self], -self.mean, [g0])
 
     def __mul__(self, y):
-        if isinstance(y, observable):
+        if isinstance(y, pyobs.observable):
             if self.shape == y.shape:
                 g0 = pyobs.gradient(lambda x: x * y.mean, self.mean, gtype="diag")
                 g1 = pyobs.gradient(lambda x: self.mean * x, y.mean, gtype="diag")

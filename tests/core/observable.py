@@ -15,6 +15,11 @@ try:
     obsA.create(12,data)
 except TypeError:
     print('catched error')
+try:
+    obsA.create('Ens:::A',data)
+except pyobs.PyobsError:
+    print('catched error')
+    
 obsA.create('EnsA',data,rname='r001')
 obsA.peek()
 print(obsA)

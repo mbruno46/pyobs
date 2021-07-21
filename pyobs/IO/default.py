@@ -22,6 +22,7 @@
 
 import pyobs
 import bison
+import warnings
 
 
 class observable_decoder:
@@ -55,9 +56,15 @@ class cdata_decoder:
         self.type = "pyobs.core.cdata.cdata"
 
     def decode(self, obj):
-        out = pyobs.core.cdata.cdata(obj["cov"], obj["mask"])
-        out.grad[:, :] = obj["grad"][:, :]
-        return out
+        # this guarantees backwards compatibility
+        if "grad" in obj:
+            out = pyobs.core.cdata.cdata(obj["cov"], obj["mask"])
+            out.grad[:, :] = obj["grad"][:, :]
+            return out
+        else:  # pragma: no cover
+            warnings.warn("Loading from older file format; cdata may be wrongly used!")
+            out = pyobs.core.cdata.cdata(obj["cov"])
+            return out
 
 
 def save(fname, *args):
