@@ -106,15 +106,14 @@ class delta:
 
         if type(idx) is list:
             dc = numpy.unique(numpy.diff(idx))
-            if numpy.any(dc < 0):
-                raise pyobs.PyobsError("Unsorted idx")
+            pyobs.assertion(numpy.any(dc > 0), "Unsorted idx")
             if len(dc) == 1:
                 self.idx = range(idx[0], idx[-1] + dc[0], dc[0])
             else:
                 self.idx = list(idx)
         elif type(idx) is range:
             self.idx = idx
-        else:
+        else:  # pragma: no cover
             raise pyobs.PyobsError("Unexpected idx")
         self.n = len(self.idx)
 

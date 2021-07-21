@@ -36,16 +36,17 @@ class chisquare:
         elif numpy.ndim(x) == 1:
             self.n = len(x)
             self.nx = 1
-        else:
+        else:  # pragma: no cover
             raise pyobs.PyobsError("Unexpected x")
-        if len(self.v) != self.nx:
-            raise pyobs.PyobsError("Unexpected x")
+        pyobs.assertion(len(self.v) == self.nx, "Unexpected x")
         self.x = numpy.reshape(x, (self.n, self.nx))
         self.W = numpy.array(W)
         self.f = f
         self.df = df
-        if f.__code__.co_varnames != df.__code__.co_varnames:
-            raise pyobs.PyobsError("Unexpected f and df: varnames do not match")
+        pyobs.assertion(
+            f.__code__.co_varnames == df.__code__.co_varnames,
+            "Unexpected f and df: varnames do not match",
+        )
         self.pars = []
         for vn in f.__code__.co_varnames:
             if vn not in self.v:
@@ -62,14 +63,14 @@ class chisquare:
             n += 1
 
     def __call__(self, y):
-        if len(y) != self.n:
-            raise pyobs.PyobsError(
-                f"Unexpected length of observable {len(y)} w.r.t. x-axis {self.n}"
-            )
-        if numpy.shape(self.W)[0] != self.n:
-            raise pyobs.PyobsError(
-                f"Unexpected size of W matrix {numpy.shape(self.W)} w.r.t. x-axis {self.n}"
-            )
+        pyobs.assertion(
+            len(y) == self.n,
+            f"Unexpected length of observable {len(y)} w.r.t. x-axis {self.n}",
+        )
+        pyobs.assertion(
+            numpy.shape(self.W)[0] == self.n,
+            f"Unexpected size of W matrix {numpy.shape(self.W)} w.r.t. x-axis {self.n}",
+        )
         for i in range(self.n):
             self.e[i] = self.f(*self.x[i, :], *self.p) - y[i]
         return self.e @ self.W @ self.e
@@ -143,7 +144,7 @@ class chisquare:
         elif numpy.ndim(x) == 0:
             n = 1
             nx = 1
-        else:
+        else:  # pragma: no cover
             raise pyobs.PyobsError("Unexpected x")
         x = numpy.reshape(x, (n, nx))
         res = numpy.zeros((n, len(pdict)))
@@ -217,9 +218,8 @@ class mfit:
             W = numpy.diag(W)
         elif numpy.ndim(W) == 2:
             [r, c] = numpy.shape(W)
-            if r != c:
-                raise pyobs.PyobsError("Rectangular W matrix, must be square")
-        else:
+            pyobs.assertion(r == c, "Rectangular W matrix, must be square")
+        else:  # pragma: no cover
             raise pyobs.PyobsError("Unexpected size of W matrix")
         tmp = [s.strip() for s in v.rsplit(",")]
         self.csq = {0: chisquare(x, W, f, df, tmp)}
@@ -265,10 +265,10 @@ class mfit:
         else:
             if isinstance(yobs, pyobs.observable):
                 yobs = [yobs]
-        if len(yobs) != len(self.csq):
-            raise pyobs.PyobsError(
-                f"Unexpected number of observables for {len(self.csq)} fits"
-            )
+        pyobs.assertion(
+            len(yobs) == len(self.csq),
+            f"Unexpected number of observables for {len(self.csq)} fits",
+        )
         if p0 is None:
             p0 = [1.0] * len(self.pdict)
         if min_search is None:
@@ -347,10 +347,10 @@ class mfit:
             xax = [xax]
         pyobs.check_type(pars, "pars", pyobs.observable)
         N = len(xax)
-        if N != len(self.csq):
-            raise pyobs.PyobsError(
-                "Coordinates and Paramters do not match number of internal functions"
-            )
+        pyobs.assertion(
+            N == len(self.csq),
+            "Coordinates and Paramters do not match number of internal functions",
+        )
         out = []
         for ic in self.csq:
             [m, g] = self.csq[ic].eval(xax[ic], self.pdict, pars.mean)
