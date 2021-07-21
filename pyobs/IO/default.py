@@ -55,7 +55,8 @@ class cdata_decoder:
         self.type = "pyobs.core.cdata.cdata"
 
     def decode(self, obj):
-        out = pyobs.core.cdata.cdata(obj["cov"])
+        out = pyobs.core.cdata.cdata(obj["cov"], obj["mask"])
+        out.grad[:, :] = obj["grad"][:, :]
         return out
 
 

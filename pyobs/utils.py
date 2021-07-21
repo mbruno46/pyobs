@@ -41,11 +41,13 @@ verbose = ["save", "load"]
 class PyobsError(Exception):
     pass
 
+
 def assertion(condition, message):
     if not condition:
         stk = inspect.stack()[1]
         mod = inspect.getmodule(stk[0])
         raise PyobsError(f"{mod}.{stk[3]}\n{message: >16}")
+
 
 def is_verbose(func):
     if func in verbose:
@@ -141,10 +143,12 @@ def check_not_type(obj, s, t):
         raise TypeError(f"Unexpected type for {s}")
 
 
-def slice_to_range(sl,n):
-    def ifnone(a,b): 
+def slice_to_range(sl, n):
+    def ifnone(a, b):
         return b if a is None else a
-    return range(ifnone(sl.start,0),ifnone(sl.stop,n),ifnone(sl.step,1))
+
+    return range(ifnone(sl.start, 0), ifnone(sl.stop, n), ifnone(sl.step, 1))
+
 
 def slice_ndarray(t, *args):
     """
@@ -153,7 +157,7 @@ def slice_ndarray(t, *args):
     Parameters:
        t (array): N-D array
        *args (list): a series of lists, arrays, slices or integers with the indices
-                     used for the extraction. `[]` is interpreted as taking 
+                     used for the extraction. `[]` is interpreted as taking
                      all elements along that given axis, like slice(None).
 
     Returns:
@@ -169,11 +173,11 @@ def slice_ndarray(t, *args):
     """
     s = numpy.shape(t)
     assertion(len(args) == len(s), "Dimensions of tensor do not match indices")
-    
+
     aa = []
     for a in args:
         ia = args.index(a)
-        if (a is None):
+        if a is None:
             aa.append(range(s[ia]))
         elif isinstance(a, slice):
             aa.append(slice_to_range(a, s[ia]))

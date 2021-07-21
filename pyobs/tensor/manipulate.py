@@ -115,8 +115,7 @@ def transpose(x, axes=None):
     def f(x):
         return numpy.transpose(x, axes)
 
-    gx = pyobs.gradient(f, x.mean, gtype="slice")
-    return pyobs.derobs([x], f(x.mean), [gx])
+    return pyobs.core.transform(x, f)
 
 
 def sort(x, axis=-1):
@@ -131,12 +130,8 @@ def sort(x, axis=-1):
     Returns:
        obs : the sorted observable
     """
-    mean = numpy.sort(x.mean, axis)
     idx = numpy.argsort(x.mean, axis)
-    gx = pyobs.gradient(
-        lambda x: numpy.take_along_axis(x, idx, axis), x.mean
-    )  # non-optimized for large number of observables
-    return pyobs.derobs([x], mean, [gx])
+    return pyobs.core.transform(x, lambda x: numpy.take_along_axis(x, idx, axis))
 
 
 def diag(x):
@@ -149,19 +144,15 @@ def diag(x):
     Returns:
        obs : the diagonally projected or extended observable
     """
-    if len(x.shape) > 2:  # pragma: no cover
-        raise pyobs.PyobsError(
-            f"Unexpected matrix with shape {x.shape}; only 1-D and 2-D arrays are supported"
-        )
+    pyobs.assertion(
+        len(x.shape) <= 2,
+        f"Unexpected matrix with shape {x.shape}; only 1-D and 2-D arrays are supported",
+    )
 
     def f(x):
         return numpy.diag(x)
 
-    if len(x.shape) == 2:
-        gx = pyobs.gradient(f, x.mean, gtype="slice")
-    else:
-        gx = pyobs.gradient(f, x.mean)  # non-optimized for large number of observables
-    return pyobs.derobs([x], f(x.mean), [gx])
+    return pyobs.core.transform(x, f)
 
 
 def repeat(x, repeats, axis=None):
@@ -181,11 +172,7 @@ def repeat(x, repeats, axis=None):
     def f(x):
         return numpy.repeat(x, repeats=repeats, axis=axis)
 
-    mean = f(x.mean)
-    gx = pyobs.gradient(
-        f, x.mean, gtype="full"
-    )  # non-optimized for large number of observables
-    return pyobs.derobs([x], mean, [gx])
+    return pyobs.core.transform(x, f)
 
 
 def tile(x, reps):
@@ -200,10 +187,7 @@ def tile(x, reps):
     def f(x):
         return numpy.tile(x, reps)
 
-    gx = pyobs.gradient(
-        f, x.mean, gtype="full"
-    )  # non-optimized for large number of observables
-    return pyobs.derobs([x], f(x.mean), [gx])
+    return pyobs.core.transform(x, f)
 
 
 def stack(obs, axis=0):

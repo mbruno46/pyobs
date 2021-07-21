@@ -34,13 +34,13 @@ class cdata:
         self.grad = numpy.zeros((self.size, numpy.shape(cov)[0]), dtype=numpy.float64)
         for a in mask:
             ia = mask.index(a)
-            self.grad[ia,a] = 1.0
+            self.grad[ia, a] = 1.0
 
     def _apply_grad(self):
         if self.grad is None:
             return self.cov
         return self.grad @ self.cov @ self.grad.T
-    
+
     def axpy(self, grad, cd):
         grad.apply(self.grad, self.mask, None, cd.grad, cd.mask)
 
@@ -52,8 +52,10 @@ class cdata:
             ia = self.mask.index(a)
             out[a] = tmp[ia]
         return numpy.reshape(out, outer_shape)
-    
+
     def assign(self, submask, cd):
-        pyobs.assertion(len(submask)==cd.size,"Dimensions do not match in assignment")
+        pyobs.assertion(
+            len(submask) == cd.size, "Dimensions do not match in assignment"
+        )
         a = numpy.nonzero(numpy.in1d(self.mask, submask))[0]
         self.grad[a, :] = cd.grad

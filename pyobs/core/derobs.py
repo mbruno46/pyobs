@@ -37,6 +37,7 @@ def merge_idx(idx1, idx2):
         u = set(idx1)
         return list(sorted(u.union(idx2)))
 
+
 def get_keys(inps, name):
     allkeys = []
     for i in inps:
@@ -59,8 +60,8 @@ def derobs(inps, mean, grads, description=None):
         description = ", ".join(set([i.description for i in inps]))
     res = pyobs.observable(description=description)
     res.set_mean(mean)
-    
-    for key in get_keys(inps, 'delta'):
+
+    for key in get_keys(inps, "delta"):
         new_idx = []
         new_mask = []
         lat = None
@@ -77,7 +78,10 @@ def derobs(inps, mean, grads, description=None):
                     if lat is None:
                         lat = d.lat
                     else:
-                        pyobs.assertion(numpy.any(lat != d.lat), "Unexpected lattice size for master fields with same tag")
+                        pyobs.assertion(
+                            numpy.any(lat == d.lat),
+                            "Unexpected lattice size for master fields with same tag",
+                        )
         if len(new_mask) > 0:
             res.delta[key] = delta(list(set(new_mask)), new_idx, lat=lat)
             for i in range(len(inps)):
@@ -85,8 +89,8 @@ def derobs(inps, mean, grads, description=None):
                     res.delta[key].axpy(grads[i], inps[i].delta[key])
 
     res.ename_from_delta()
-    
-    for key in get_keys(inps, 'cdata'):
+
+    for key in get_keys(inps, "cdata"):
         new_mask = []
         cov = None
         for i in range(len(inps)):
@@ -97,7 +101,7 @@ def derobs(inps, mean, grads, description=None):
                     new_mask += h
                     if cov is None:
                         cov = cd.cov
-        if len(new_mask)>0:
+        if len(new_mask) > 0:
             res.cdata[key] = cdata(cov, list(set(new_mask)))
             for i in range(len(inps)):
                 if key in inps[i].cdata:

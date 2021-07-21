@@ -31,7 +31,7 @@ import pyobs
 from .data import delta
 from .cdata import cdata
 from .error import gamma_error, covariance, plot_piechart
-from .slice import slice_observable
+from .transform import transform
 
 __all__ = ["observable"]
 
@@ -170,7 +170,10 @@ class observable:
             else:
                 pyobs.check_type(icnfg, "icnfg", list, range)
                 pyobs.check_type(icnfg[0], "icnfg[:]", int, numpy.int32, numpy.int64)
-                pyobs.assertion(len(icnfg) * self.size != len(data), f"Incompatible icnfg and data, for shape={shape}")
+                pyobs.assertion(
+                    len(icnfg) * self.size == len(data),
+                    f"Incompatible icnfg and data, for shape={shape}",
+                )
             if numpy.size(self.mean) != 0:
                 N0 = sum([self.delta[key].n for key in self.delta])
                 mean0 = numpy.reshape(self.mean, (self.size,))
@@ -185,7 +188,10 @@ class observable:
             key = f"{ename}:{rname}"
             self.delta[key] = delta(mask, icnfg, data, self.mean, lat)
         else:
-            pyobs.assertion(numpy.size(self.mean) != 0, "Only a single replica can be added to existing observables")
+            pyobs.assertion(
+                numpy.size(self.mean) == 0,
+                "Only a single replica can be added to existing observables",
+            )
             for ir in range(R):
                 pyobs.check_type(data[ir], f"data[{ir}]", list, numpy.ndarray)
             self.mean = numpy.zeros((self.size,))
@@ -199,7 +205,7 @@ class observable:
                 rname = range(R)
             else:
                 pyobs.check_type(rname, "rname", list)
-                pyobs.assertion(len(rname)!=R,"Incompatible rname and data")
+                pyobs.assertion(len(rname) == R, "Incompatible rname and data")
             if icnfg is not None:
                 pyobs.check_type(icnfg, "icnfg", list)
 
@@ -210,7 +216,10 @@ class observable:
                     icnfg.append(range(nc))
             else:
                 for ir in range(len(data)):
-                    pyobs.assertion(len(icnfg[ir]) * self.size != len(data[ir]), f"Incompatible icnfg[{ir}] and data[{ir}], for shape={shape}")
+                    pyobs.assertion(
+                        len(icnfg[ir]) * self.size == len(data[ir]),
+                        f"Incompatible icnfg[{ir}] and data[{ir}], for shape={shape}",
+                    )
             for ir in range(len(data)):
                 key = f"{ename}:{rname[ir]}"
                 self.delta[key] = delta(mask, icnfg[ir], data[ir], self.mean, lat)
@@ -242,7 +251,10 @@ class observable:
             self.mean = numpy.array(value)
             cov = numpy.array(covariance)
         self.shape = numpy.shape(self.mean)
-        pyobs.assertion(numpy.ndim(self.shape) == 1, "Unexpected value, only 1-D arrays are supported")
+        pyobs.assertion(
+            numpy.ndim(self.shape) == 1,
+            "Unexpected value, only 1-D arrays are supported",
+        )
         self.size = numpy.prod(self.shape)
         if cov.shape != (self.size,) and cov.shape != (self.size, self.size):
             raise pyobs.PyobsError(f"Unexpected shape for covariance {cov.shape}")
@@ -273,9 +285,12 @@ class observable:
         pyobs.check_type(name, "name", str)
         if name in self.cdata:
             raise pyobs.PyobsError(f"Label {name} already used")
-        pyobs.assertion(numpy.shape(err) != self.shape, f"Unexpected error, dimensions do not match {self.shape}")
+        pyobs.assertion(
+            numpy.shape(err) == self.shape,
+            f"Unexpected error, dimensions do not match {self.shape}",
+        )
         cov = numpy.reshape(numpy.array(err) ** 2, (self.size,))
-        self.cdata[name] = cdata(cov)
+        self.cdata[name] = cdata(cov, list(range(self.size)))
         pyobs.memory.update(self)
 
     def __del__(self):
@@ -368,12 +383,12 @@ class observable:
         Slices an N-D observable.
 
         Parameters:
-           *args: accepted arguments are lists, arrays, slices or integers 
-                  with the indices used for the extraction. `[]` is interpreted 
+           *args: accepted arguments are lists, arrays, slices or integers
+                  with the indices used for the extraction. `[]` is interpreted
                   as taking all elements along that given axis, like slice(None).
                   The number of input arguments must match the dimension of the
                   observable.
-                  
+
         Returns:
            observable: the sliced N-D observable.
            Note that the number of dimensions does not change even
@@ -386,14 +401,22 @@ class observable:
         """
         na = len(args)
         pyobs.assertion(na == len(self.shape), "Unexpected argument")
-        return slice_observable(self, *args)
+
+        def f(x):
+            return pyobs.slice_ndarray(x, *args)
+
+        return transform(self, f)
 
     def __getitem__(self, args):
         if isinstance(args, (int, numpy.int32, numpy.int64, slice, numpy.ndarray)):
             args = [args]
         na = len(args)
         pyobs.assertion(na == len(self.shape), "Unexpected argument")
-        return slice_observable(self, *args)
+
+        def f(x):
+            return pyobs.slice_ndarray(x, *args)
+
+        return transform(self, f)
 
     def __setitem__(self, args, yobs):
         if isinstance(args, (int, numpy.int32, numpy.int64, slice, numpy.ndarray)):
@@ -410,12 +433,14 @@ class observable:
         submask = idx.flatten()
 
         for key in yobs.delta:
-            if not key in self.delta:
+            if key not in self.delta:
                 raise pyobs.PyobsError("Ensembles do not match; can not set item")
             self.delta[key].assign(submask, yobs.delta[key])
 
         for key in yobs.cdata:
-            pyobs.assertion(key in self.cdata, "Covariance data do not match; can not set item")
+            pyobs.assertion(
+                key in self.cdata, "Covariance data do not match; can not set item"
+            )
             self.cdata[key].assign(submask, yobs.cdata[key])
 
     ##################################

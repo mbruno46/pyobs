@@ -50,8 +50,8 @@ class gradient:
         elif gtype is "diag":
             gsh = self.Na
             pyobs.assertion(self.Na == self.Ni, "diagonal gradient error")
-        elif gtype is "slice":
-            gsh = self.Na
+        #         elif gtype is "slice":
+        #             gsh = self.Na
         elif gtype is "extend":
             gsh = self.Ni
         else:
@@ -67,10 +67,10 @@ class gradient:
                 dx[i] = 0.0
         elif gtype is "diag":
             self.grad = g(numpy.ones(x0.shape)).flatten()
-        elif gtype is "slice":
-            self.grad = numpy.reshape(
-                g(numpy.arange(self.Ni).reshape(x0.shape)), self.Na
-            )
+        #         elif gtype is "slice":
+        #             self.grad = numpy.reshape(
+        #                 g(numpy.arange(self.Ni).reshape(x0.shape)), self.Na
+        #             )
         elif gtype is "extend":
             self.grad = numpy.nonzero(g(numpy.ones(x0.shape)).flatten())[0]
 
@@ -84,13 +84,13 @@ class gradient:
                 return None
         elif self.gtype is "diag":
             return mask
-        elif self.gtype is "slice":
-            # idx = numpy.nonzero(numpy.in1d(self.grad,mask))[0]
-            idx = get_mask_from_mask(self.grad, mask, self.grad)
-            if idx.size > 0:
-                return list(numpy.arange(self.Na)[idx])
-            else:
-                return None
+        #         elif self.gtype is "slice":
+        #             # idx = numpy.nonzero(numpy.in1d(self.grad,mask))[0]
+        #             idx = get_mask_from_mask(self.grad, mask, self.grad)
+        #             if idx.size > 0:
+        #                 return list(numpy.arange(self.Na)[idx])
+        #             else:
+        #                 return None
         elif self.gtype is "extend":
             print(self.grad)
             return list(self.grad)

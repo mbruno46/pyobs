@@ -20,18 +20,13 @@
 #################################################################################
 
 import numpy
-from time import time
 import pyobs
 
 from .data import delta
 from .cdata import cdata
     
-def slice_observable(obs, *args):
-    t0 = time()
-    na = len(args)
-    pyobs.assertion(na == len(obs.shape), "Unexpected argument")
-    def f(x): return pyobs.slice_ndarray(x, *args)
 
+def transform(obs, f):
     new_mean = f(obs.mean)
     res = pyobs.observable(description = obs.description)
     res.set_mean(new_mean)
@@ -42,34 +37,31 @@ def slice_observable(obs, *args):
         d = obs.delta[key]
         d_mask = []
         _mask = []
-        for a in d.mask:
-            if a in subset_mask:
+        for ia in range(len(subset_mask)):
+            a = subset_mask[ia]
+            if a in d.mask:
                 d_mask += [d.get_mask(a)]
-                _mask += [subset_mask.index(a)]
+                _mask += [ia]
         if d_mask:
             res.delta[key] = delta(_mask, d.idx, lat=d.lat)
             res.delta[key].delta = d.delta[numpy.array(d_mask),:]
-    
+
     for key in obs.cdata:
         cd = obs.cdata[key]
         cd_mask = []
         _mask = []
-        for a in cd.mask:
-            if a in subset_mask:
+        for ia in range(len(subset_mask)):
+            a = subset_mask[ia]
+            if a in cd.mask:
                 cd_mask += [cd.mask.index(a)]
-                _mask += [subset_mask.index(a)]
+                _mask += [ia]
         if cd_mask:
             res.cdata[key] = cdata(cd.cov, _mask)
             res.cdata[key].grad = cd.grad[numpy.array(cd_mask),:]
         
     res.ename_from_delta()
     pyobs.memory.update(res)
-    if pyobs.is_verbose("slice"):
-        print(f"slicing executed in {time()-t0:g} secs")
-
     return res
-
-    
     
     
     
