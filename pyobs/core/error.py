@@ -28,7 +28,7 @@ try:  # pragma: no cover
     import matplotlib.pyplot as plt
 
     MATPLOTLIB = True
-except:
+except ImportError:
     MATPLOTLIB = False
 
 

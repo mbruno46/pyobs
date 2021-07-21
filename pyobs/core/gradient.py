@@ -45,88 +45,50 @@ class gradient:
         self.Ni = numpy.size(x0)
         self.gtype = gtype
 
-        if gtype is "full":
+        if gtype == "full":
             gsh = (self.Na, self.Ni)
-        elif gtype is "diag":
+        elif gtype == "diag":
             gsh = self.Na
             pyobs.assertion(self.Na == self.Ni, "diagonal gradient error")
-        #         elif gtype is "slice":
-        #             gsh = self.Na
-        elif gtype is "extend":
-            gsh = self.Ni
         else:
             raise pyobs.PyobsError("gradient error")
 
         self.grad = numpy.zeros(gsh, dtype=numpy.float64)
 
-        if gtype is "full":
+        if gtype == "full":
             dx = numpy.zeros(self.Ni)
             for i in range(self.Ni):
                 dx[i] = 1.0
                 self.grad[:, i] = numpy.reshape(g(numpy.reshape(dx, x0.shape)), self.Na)
                 dx[i] = 0.0
-        elif gtype is "diag":
+        elif gtype == "diag":
             self.grad = g(numpy.ones(x0.shape)).flatten()
-        #         elif gtype is "slice":
-        #             self.grad = numpy.reshape(
-        #                 g(numpy.arange(self.Ni).reshape(x0.shape)), self.Na
-        #             )
-        elif gtype is "extend":
-            self.grad = numpy.nonzero(g(numpy.ones(x0.shape)).flatten())[0]
 
     def get_mask(self, mask):
         idx = numpy.array(mask, dtype=numpy.int32)
-        if self.gtype is "full":
+        if self.gtype == "full":
             h = numpy.sum(self.grad[:, idx] != 0.0, axis=1)
             if numpy.sum(h) > 0:
                 return list(numpy.arange(self.Na)[h > 0])
             else:
                 return None
-        elif self.gtype is "diag":
+        elif self.gtype == "diag":
             return mask
-        #         elif self.gtype is "slice":
-        #             # idx = numpy.nonzero(numpy.in1d(self.grad,mask))[0]
-        #             idx = get_mask_from_mask(self.grad, mask, self.grad)
-        #             if idx.size > 0:
-        #                 return list(numpy.arange(self.Na)[idx])
-        #             else:
-        #                 return None
-        elif self.gtype is "extend":
-            print(self.grad)
-            return list(self.grad)
 
     # TODO: the extend method works only for pairs of
     # observables defined on the same ensembles. For multiple
     # ensembles it fails. To be fixed
 
-    # note: slice mode assumes that destination delta
-    # has appropriate size matching gradient and mask,
-    # which is guaranteed by get_mask above.
-
     # u = grad @ v
     def apply(self, u, umask, uidx, v, vmask):
-        if self.gtype is "full":
+        if self.gtype == "full":
             gvec = pyobs.slice_ndarray(self.grad, umask, vmask)
             if uidx is None:
                 u += gvec @ v
             else:
                 u[:, uidx] += gvec @ v
-        elif self.gtype is "diag":
+        elif self.gtype == "diag":
             if uidx is None:
                 u += self.grad[vmask, None] * v
             else:
                 u[:, uidx] += self.grad[vmask, None] * v
-        elif self.gtype is "slice":
-            # idx = numpy.nonzero(numpy.in1d(vmask,self.grad))[0]
-            idx = get_mask_from_mask(self.grad, vmask, vmask)
-            if uidx is None:
-                u += v[idx, :]
-            else:
-                u[:, uidx] += v[idx, :]
-        elif self.gtype is "extend":
-            idx = numpy.nonzero(numpy.in1d(umask, self.grad))[0]
-            print("herer ", idx, umask, self.grad)
-            if uidx is None:
-                u[idx, :] += v
-            else:
-                u[numpy.ix_(idx, uidx)] += v
