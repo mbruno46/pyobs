@@ -141,13 +141,12 @@ class observable:
         """
         t0 = time()
         pyobs.check_type(ename, "ename", str)
-        if ":" in ename:
-            raise pyobs.PyobsError(f"Column symbol not allowed in ename {ename}")
+        pyobs.assertion(":" in ename, f"Column symbol not allowed in ename {ename}")
         pyobs.check_type(shape, "shape", tuple)
         self.shape = shape
         self.size = numpy.prod(shape)
         mask = range(self.size)
-        if not ename in self.ename:
+        if ename not in self.ename:
             self.ename.append(ename)
 
         if isinstance(data[0], (list, numpy.ndarray)):
@@ -155,10 +154,10 @@ class observable:
         elif isinstance(data[0], (int, float, numpy.float64, numpy.float32)):
             R = 1
         else:
-            raise pyobs.PyobsError(f"Unexpected data type")
+            raise pyobs.PyobsError("Unexpected data type")
 
         if R == 1:
-            pyobs.check_type(data, f"data", list, numpy.ndarray)
+            pyobs.check_type(data, "data", list, numpy.ndarray)
             nc = int(len(data) / self.size)
             if rname is None:
                 rname = 0
@@ -169,10 +168,7 @@ class observable:
             else:
                 pyobs.check_type(icnfg, "icnfg", list, range)
                 pyobs.check_type(icnfg[0], "icnfg[:]", int, numpy.int32, numpy.int64)
-                if len(icnfg) * self.size != len(data):
-                    raise pyobs.PyobsError(
-                        f"Incompatible icnfg and data, for shape={shape}"
-                    )
+                pyobs.assertion(len(icnfg) * self.size != len(data), f"Incompatible icnfg and data, for shape={shape}")
             if numpy.size(self.mean) != 0:
                 N0 = sum([self.delta[key].n for key in self.delta])
                 mean0 = numpy.reshape(self.mean, (self.size,))
@@ -187,10 +183,7 @@ class observable:
             key = f"{ename}:{rname}"
             self.delta[key] = delta(mask, icnfg, data, self.mean, lat)
         else:
-            if numpy.size(self.mean) != 0:
-                raise pyobs.PyobsError(
-                    "Only a single replica can be added to existing observables"
-                )
+            pyobs.assertion(numpy.size(self.mean) != 0, "Only a single replica can be added to existing observables")
             for ir in range(R):
                 pyobs.check_type(data[ir], f"data[{ir}]", list, numpy.ndarray)
             self.mean = numpy.zeros((self.size,))
@@ -204,9 +197,8 @@ class observable:
                 rname = range(R)
             else:
                 pyobs.check_type(rname, "rname", list)
-                if len(rname) != R:
-                    raise pyobs.PyobsError("Incompatible rname and data")
-            if not icnfg is None:
+                pyobs.assertion(len(rname)!=R,"Incompatible rname and data")
+            if icnfg is not None:
                 pyobs.check_type(icnfg, "icnfg", list)
 
             if icnfg is None:
@@ -216,10 +208,7 @@ class observable:
                     icnfg.append(range(nc))
             else:
                 for ir in range(len(data)):
-                    if len(icnfg[ir]) * self.size != len(data[ir]):
-                        raise pyobs.PyobsError(
-                            f"Incompatible icnfg[{ir}] and data[{ir}], for shape={shape}"
-                        )
+                    pyobs.assertion(len(icnfg[ir]) * self.size != len(data[ir]), f"Incompatible icnfg[{ir}] and data[{ir}], for shape={shape}")
             for ir in range(len(data)):
                 key = f"{ename}:{rname[ir]}"
                 self.delta[key] = delta(mask, icnfg[ir], data[ir], self.mean, lat)
@@ -251,8 +240,7 @@ class observable:
             self.mean = numpy.array(value)
             cov = numpy.array(covariance)
         self.shape = numpy.shape(self.mean)
-        if numpy.ndim(self.shape) != 1:
-            raise pyobs.PyobsError(f"Unexpected value, only 1-D arrays are supported")
+        pyobs.assertion(numpy.ndim(self.shape) != 1, "Unexpected value, only 1-D arrays are supported")
         self.size = numpy.prod(self.shape)
         if cov.shape != (self.size,) and cov.shape != (self.size, self.size):
             raise pyobs.PyobsError(f"Unexpected shape for covariance {cov.shape}")
@@ -283,16 +271,20 @@ class observable:
         pyobs.check_type(name, "name", str)
         if name in self.cdata:
             raise pyobs.PyobsError(f"Label {name} already used")
-        if numpy.shape(err) != self.shape:
-            raise pyobs.PyobsError(
-                f"Unexpected error, dimensions do not match {self.shape}"
-            )
+        pyobs.assertion(numpy.shape(err) != self.shape, f"Unexpected error, dimensions do not match {self.shape}")
         cov = numpy.reshape(numpy.array(err) ** 2, (self.size,))
         self.cdata[name] = cdata(cov)
         pyobs.memory.update(self)
 
     def __del__(self):
         pyobs.memory.rm(self)
+
+    def ename_from_delta(self):
+        self.ename = []
+        for key in self.delta:
+            name = key.split(":")[0]
+            if name not in self.ename:
+                self.ename.append(name)
 
     ##################################
     # pretty string representations
@@ -373,7 +365,7 @@ class observable:
         na = len(args)
         if na != len(self.shape):
             raise pyobs.PyobsError("Unexpected argument")
-        f = lambda x: pyobs.slice_ndarray(x, *args)
+        def f(x): return pyobs.slice_ndarray(x, *args)
         g0 = pyobs.gradient(f, self.mean, gtype="slice")
         return pyobs.derobs([self], f(self.mean), [g0])
 
@@ -384,9 +376,9 @@ class observable:
         if na != len(self.shape):
             raise pyobs.PyobsError("Unexpected argument")
         if self.mean[tuple(args)].size == 1:
-            f = lambda x: numpy.reshape(x[tuple(args)], (1,))
+            def f(x): return numpy.reshape(x[tuple(args)], (1,))
         else:
-            f = lambda x: x[tuple(args)]
+            def f(x): return x[tuple(args)]
         g0 = pyobs.gradient(f, self.mean, gtype="slice")
         return pyobs.derobs([self], f(self.mean), [g0])
 

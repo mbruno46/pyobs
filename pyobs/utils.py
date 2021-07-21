@@ -21,9 +21,11 @@
 
 import numpy
 import sys
+import inspect
 
 __all__ = [
     "PyobsError",
+    "assertion",
     "check_type",
     "check_not_type",
     "is_verbose",
@@ -39,6 +41,11 @@ verbose = ["save", "load"]
 class PyobsError(Exception):
     pass
 
+def assertion(condition, message):
+    if not condition:
+        stk = inspect.stack()[1]
+        mod = inspect.getmodule(stk[0])
+        raise PyobsError(f"{mod}.{stk[3]}\n{message: >16}")
 
 def is_verbose(func):
     if func in verbose:
