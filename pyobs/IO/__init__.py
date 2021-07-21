@@ -87,7 +87,7 @@ def load(fname):
     Examples:
        >>> obsA = pyobs.load('~/analysis/obsA.json.gz')
     """
-    pyobs.assertion(os.path.isfile(fname) is False, f"File {fname} already exists")
+    pyobs.assertion(os.path.isfile(fname) is True, f"File {fname} does not exists")
 
     if ".pyobs" in fname:
         fmt = default
