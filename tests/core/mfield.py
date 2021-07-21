@@ -34,3 +34,8 @@ mfobs2 = pyobs.concatenate(mfobs, pyobs.log(mfobs))
 [cm,dcm] = mfobs2.covariance_matrix(errinfo={'test-mfield': pyobs.errinfo(W=10)})
 print('diag cov mat = ', mfobs2.error()[1]**2)
 print('cov mat \n',pyobs.valerr(cm,dcm))
+
+[v0, e0] = mfobs.error()
+[v1, e1] = mfobs.blocked({"test-mfield": [2,2,2]}).error()
+assert numpy.all(abs(v0-v1) < 1e-12)
+assert abs(e0/e1-1) < 0.2

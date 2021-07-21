@@ -32,3 +32,11 @@ print(obs)
 [v1, e1] = obs.slice([0],[]).error()
 assert numpy.all(abs(v0-v1) < 1e-12)
 assert numpy.all(abs(e0-e1) < 1e-12)
+
+[v1, e1] = obs.slice([0],None).error()
+assert numpy.all(abs(v0-v1) < 1e-12)
+assert numpy.all(abs(e0-e1) < 1e-12)
+
+[v1, e1] = obs.slice([0],numpy.array([0,1])).error()
+assert numpy.all(abs(v0-v1) < 1e-12)
+assert numpy.all(abs(e0-e1) < 1e-12)

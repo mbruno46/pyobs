@@ -172,8 +172,9 @@ class delta:
         grad.apply(self.delta, self.mask, jlist, d.delta, d.mask)
 
     def assign(self, submask, rd):
-        if len(submask) != len(rd.mask):
-            raise pyobs.PyobsError("Dimensions do not match in assignment")
+        pyobs.assertion(
+            len(submask) == len(rd.mask), "Dimensions do not match in assignment"
+        )
         a = numpy.nonzero(numpy.in1d(self.mask, submask))[0]
         self.delta[a, :] = rd.delta
 
@@ -215,7 +216,8 @@ class delta:
             if len(bs) != len(self.lat):
                 raise pyobs.PyobsError("Block size does match lattice")
             lat = self.lat / numpy.array(bs)
-            v = numpy.prod(lat)
+            v = int(numpy.prod(lat))
+            bs = numpy.array(bs, dtype=numpy.int32)
 
         res = delta(self.mask, range(v), lat=lat)
         for a in range(self.size):

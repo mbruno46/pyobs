@@ -106,8 +106,7 @@ def textable(mat, fmt=None):
        >>> pyobs.textable(mat, fmt=['d',0,0])
     """
 
-    if numpy.ndim(mat) != 2:  # pragma: no cover
-        raise PyobsError("textable supports only 2D arrays")
+    pyobs.assertion(numpy.ndim(mat) == 2, "textable supports only 2D arrays")
 
     (n, m) = numpy.shape(mat)
     if fmt is None:
