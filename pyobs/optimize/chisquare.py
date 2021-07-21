@@ -37,18 +37,18 @@ class chisquare:
             self.n = len(x)
             self.nx = 1
         else:
-            raise pyobs.PyobsError(f"Unexpected x")
+            raise pyobs.PyobsError("Unexpected x")
         if len(self.v) != self.nx:
-            raise pyobs.PyobsError(f"Unexpected x")
+            raise pyobs.PyobsError("Unexpected x")
         self.x = numpy.reshape(x, (self.n, self.nx))
         self.W = numpy.array(W)
         self.f = f
         self.df = df
         if f.__code__.co_varnames != df.__code__.co_varnames:
-            raise pyobs.PyobsError(f"Unexpected f and df: varnames do not match")
+            raise pyobs.PyobsError("Unexpected f and df: varnames do not match")
         self.pars = []
         for vn in f.__code__.co_varnames:
-            if not vn in self.v:
+            if vn not in self.v:
                 self.pars.append(vn)
         self.np = len(self.pars)
         self.e = numpy.zeros((self.n,), dtype=numpy.float64)
@@ -144,7 +144,7 @@ class chisquare:
             n = 1
             nx = 1
         else:
-            raise pyobs.PyobsError(f"Unexpected x")
+            raise pyobs.PyobsError("Unexpected x")
         x = numpy.reshape(x, (n, nx))
         res = numpy.zeros((n, len(pdict)))
 
@@ -159,7 +159,7 @@ class chisquare:
 
 
 class mfit:
-    """
+    r"""
     Class to perform fits to multiple observables, via the minimization
     of the :math:`\chi^2` function
 
@@ -218,9 +218,9 @@ class mfit:
         elif numpy.ndim(W) == 2:
             [r, c] = numpy.shape(W)
             if r != c:
-                raise pyobs.PyobsError(f"Rectangular W matrix, must be square")
+                raise pyobs.PyobsError("Rectangular W matrix, must be square")
         else:
-            raise pyobs.PyobsError(f"Unexpected size of W matrix")
+            raise pyobs.PyobsError("Unexpected size of W matrix")
         tmp = [s.strip() for s in v.rsplit(",")]
         self.csq = {0: chisquare(x, W, f, df, tmp)}
         self.pdict = {}
@@ -254,7 +254,7 @@ class mfit:
             n += 1
         n = len(res.pdict)
         for key in mf.pdict:
-            if not key in res.pdict:
+            if key not in res.pdict:
                 res.pdict[key] = n
                 n += 1
         return res
@@ -281,12 +281,15 @@ class mfit:
                 res += self.csq[i](yobs[i].mean)
             return res
 
-        dcsq = lambda x: sum(
-            [self.csq[i].grad(yobs[i].mean, self.pdict) for i in range(len(yobs))]
-        )
-        ddcsq = lambda x: sum(
-            [self.csq[i].hess(yobs[i].mean, self.pdict) for i in range(len(yobs))]
-        )
+        def dcsq(x):
+            return sum(
+                [self.csq[i].grad(yobs[i].mean, self.pdict) for i in range(len(yobs))]
+            )
+
+        def ddcsq(x):
+            return sum(
+                [self.csq[i].hess(yobs[i].mean, self.pdict) for i in range(len(yobs))]
+            )
 
         t0 = time()
         res = min_search(csq, p0, jac=dcsq, hess=ddcsq)
@@ -319,10 +322,10 @@ class mfit:
     def eval(self, xax, pars):
         """
         Evaluates the function on a list of coordinates using the parameters
-        obtained from a :math:`\chi^2` minimization.
+        obtained from a :math:`\\chi^2` minimization.
 
         Parameters:
-           xax (array,list of arrays) : the coordinates :math:`x_i^\mu` where
+           xax (array,list of arrays) : the coordinates :math:`x_i^\\mu` where
               the function must be evaluated. For combined fits, a list of
               arrays must be passed, one for each fit.
            pars (obs) : the observable returned by calling this class
@@ -346,7 +349,7 @@ class mfit:
         N = len(xax)
         if N != len(self.csq):
             raise pyobs.PyobsError(
-                f"Coordinates and Paramters do not match number of internal functions"
+                "Coordinates and Paramters do not match number of internal functions"
             )
         out = []
         for ic in self.csq:

@@ -86,7 +86,10 @@ def concatenate(x, y, axis=0):
             raise pyobs.PyobsError(
                 f"Incompatible dimensions between {x.shape} and {y.shape} for axis={axis}"
             )
-    f = lambda xx, yy: numpy.concatenate((xx, yy), axis=axis)
+
+    def f(xx, yy):
+        return numpy.concatenate((xx, yy), axis=axis)
+
     mean = f(x.mean, y.mean)
     gx = pyobs.gradient(lambda xx: f(xx, numpy.zeros(y.shape)), x.mean, gtype="full")
     gy = pyobs.gradient(lambda yy: f(numpy.zeros(x.shape), yy), y.mean, gtype="full")
@@ -108,7 +111,10 @@ def transpose(x, axes=None):
     Returns:
        obs : the transposed observable
     """
-    f = lambda x: numpy.transpose(x, axes)
+
+    def f(x):
+        return numpy.transpose(x, axes)
+
     gx = pyobs.gradient(f, x.mean, gtype="slice")
     return pyobs.derobs([x], f(x.mean), [gx])
 
@@ -147,7 +153,10 @@ def diag(x):
         raise pyobs.PyobsError(
             f"Unexpected matrix with shape {x.shape}; only 1-D and 2-D arrays are supported"
         )
-    f = lambda x: numpy.diag(x)
+
+    def f(x):
+        return numpy.diag(x)
+
     if len(x.shape) == 2:
         gx = pyobs.gradient(f, x.mean, gtype="slice")
     else:
@@ -168,7 +177,10 @@ def repeat(x, repeats, axis=None):
        observable: output with same shape as `x` except along the axis
                    with repeated elements.
     """
-    f = lambda x: numpy.repeat(x, repeats=repeats, axis=axis)
+
+    def f(x):
+        return numpy.repeat(x, repeats=repeats, axis=axis)
+
     mean = f(x.mean)
     gx = pyobs.gradient(
         f, x.mean, gtype="full"
@@ -184,7 +196,10 @@ def tile(x, reps):
        Check the documentation of `numpy.tile` for more details
        on the input arguments and function behavior.
     """
-    f = lambda x: numpy.tile(x, reps)
+
+    def f(x):
+        return numpy.tile(x, reps)
+
     gx = pyobs.gradient(
         f, x.mean, gtype="full"
     )  # non-optimized for large number of observables
@@ -205,7 +220,10 @@ def stack(obs, axis=0):
     pyobs.check_type(obs, "obs", list)
     pyobs.check_type(obs[0], "obs", pyobs.observable)
     arr = [o.mean for o in obs]
-    f = lambda x: numpy.stack(x, axis=axis)
+
+    def f(x):
+        return numpy.stack(x, axis=axis)
+
     grads = []
     for j in range(len(obs)):
         arr0 = [numpy.zeros(obs[i].shape) for i in range(0, j)]

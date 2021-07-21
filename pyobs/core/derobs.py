@@ -55,7 +55,7 @@ def derobs(inps, mean, grads, description=None):
     allkeys = []
     for i in inps:
         for dn in i.delta:
-            if not dn in allkeys:
+            if dn not in allkeys:
                 allkeys.append(dn)
 
     for key in allkeys:
@@ -66,7 +66,7 @@ def derobs(inps, mean, grads, description=None):
             if key in inps[i].delta:
                 data = inps[i].delta[key]
                 h = grads[i].get_mask(data.mask)
-                if not h is None:
+                if h is not None:
                     new_mask += h
                     if not new_idx:
                         new_idx = data.idx
@@ -77,7 +77,7 @@ def derobs(inps, mean, grads, description=None):
                     else:
                         if numpy.any(lat != data.lat):  # pragma: no cover
                             raise pyobs.PyobsError(
-                                f"Unexpected lattice size for master fields with same tag"
+                                "Unexpected lattice size for master fields with same tag"
                             )
         if len(new_mask) > 0:
             res.delta[key] = delta(list(set(new_mask)), new_idx, lat=lat)
@@ -85,22 +85,18 @@ def derobs(inps, mean, grads, description=None):
                 if key in inps[i].delta:
                     res.delta[key].axpy(grads[i], inps[i].delta[key])
 
-    res.ename = []
-    for key in res.delta:
-        name = key.split(":")[0]
-        if not name in res.ename:
-            res.ename.append(name)
+    res.ename_from_delta()
 
     res.cdata = {}
     allkeys = []
     for i in inps:
         for cd in i.cdata:
-            if not cd in allkeys:
+            if cd not in allkeys:
                 allkeys.append(cd)
     for key in allkeys:
         for i in range(len(inps)):
             if key in inps[i].cdata:
-                if not key in res.cdata:
+                if key not in res.cdata:
                     res.cdata[key] = cdata(numpy.zeros(res.size))
                 res.cdata[key].axpy(grads[i], inps[i].cdata[key])
 

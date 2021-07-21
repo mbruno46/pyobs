@@ -27,7 +27,7 @@ sympy.init_printing()
 
 try:
     from IPython.display import display
-except:
+except ImportError:
 
     def display(x):
         sympy.pprint(x)
