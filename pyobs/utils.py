@@ -34,7 +34,7 @@ __all__ = [
     "valerr",
     "tex_table",
     "slice_ndarray",
-    "import_string"
+    "import_string",
 ]
 
 verbose = ["save", "load"]
@@ -200,20 +200,21 @@ def slice_ndarray(t, *args):
 def import_string(data):
     """
     Imports strings in the format value(error) into arrays
-    
+
     Examples:
        >>> arr = pyobs.import_string(['1234(4)','0.02345(456)'])
        >>> print(arr)
        array([[1.234e+03, 4.000e+00],
               [2.345e-02, 4.560e-03]])
     """
+
     def core(string):
-        m = re.search('(^\d+).?(\d+)\((\d+)\)',string)
+        m = re.search(r"(^\d+).?(\d+)\((\d+)\)", string)
         d0 = m.group(1)
         d1 = m.group(2)
         e = m.group(3)
-        return [numpy.float64(f"{d0}.{d1}"), numpy.float64(e) * 10**-len(d1)]
-    
+        return [numpy.float64(f"{d0}.{d1}"), numpy.float64(e) * 10 ** -len(d1)]
+
     if isinstance(data, list):
         out = [core(s) for s in data]
         return numpy.array(out)
