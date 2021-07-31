@@ -22,6 +22,7 @@
 import numpy
 import sys
 import inspect
+import re
 
 __all__ = [
     "PyobsError",
@@ -31,8 +32,9 @@ __all__ = [
     "is_verbose",
     "set_verbose",
     "valerr",
-    "textable",
+    "tex_table",
     "slice_ndarray",
+    "import_string"
 ]
 
 verbose = ["save", "load"]
@@ -84,7 +86,7 @@ def valerr(v, e):
         raise PyobsError("valerr supports up to 2D arrays")
 
 
-def textable(mat, fmt=None):
+def tex_table(mat, fmt=None):
     """
     Formats a matrix to a tex table.
 
@@ -103,7 +105,7 @@ def textable(mat, fmt=None):
        >>> tsl = [0,1,2,3,4] # time-slice
        >>> [c, dc] = correlator.error()
        >>> mat = numpy.c_[tsl, c, dc] # pack data
-       >>> pyobs.textable(mat, fmt=['d',0,0])
+       >>> pyobs.tex_table(mat, fmt=['d',0,0])
     """
 
     assertion(numpy.ndim(mat) == 2, "textable supports only 2D arrays")
@@ -193,3 +195,26 @@ def slice_ndarray(t, *args):
             raise PyobsError("slicing not understood")
 
     return t[numpy.ix_(*aa)]
+
+
+def import_string(data):
+    """
+    Imports strings in the format value(error) into arrays
+    
+    Examples:
+       >>> arr = pyobs.import_string(['1234(4)','0.02345(456)'])
+       >>> print(arr)
+       array([[1.234e+03, 4.000e+00],
+              [2.345e-02, 4.560e-03]])
+    """
+    def core(string):
+        m = re.search('(^\d+).?(\d+)\((\d+)\)',string)
+        d0 = m.group(1)
+        d1 = m.group(2)
+        e = m.group(3)
+        return [numpy.float64(f"{d0}.{d1}"), numpy.float64(e) * 10**-len(d1)]
+    
+    if isinstance(data, list):
+        out = [core(s) for s in data]
+        return numpy.array(out)
+    return core(data)

@@ -39,11 +39,6 @@ print(obsB)
 print(obsB * obsA)
 print(obsA * obsB)
 
-[c,dc] = obsA.error()
-mat = numpy.c_[[0,1],c,dc]
-print(pyobs.textable(mat,fmt=['d',0,0]))
-print(pyobs.textable(mat))
-
 obsC = pyobs.concatenate(obsA[0],obsA[1]**2)
 obsA[1] = obsA[1]**2
 [v1, e1] = obsC.error()
