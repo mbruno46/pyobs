@@ -14,7 +14,8 @@ from (Monte Carlo) Markov chains.
 
 .. The current stable version is |release|
 
-The software is hosted on `GitHub <https://github.com/mbruno46/pyobs>`__.
+The software is hosted on `GitHub <https://github.com/mbruno46/pyobs>`__ and is distributed 
+under the `GNU GPLv2 <https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html>`__ license.
 
 Installation
 ------------
