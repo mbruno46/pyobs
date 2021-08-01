@@ -18,5 +18,7 @@ Formatting of arrays
 
 .. currentmodule:: pyobs
 
-.. autofunction:: textable
+.. autofunction:: valerr
+.. autofunction:: import_string
+.. autofunction:: tex_table
 .. autofunction:: slice_ndarray

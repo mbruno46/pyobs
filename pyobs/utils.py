@@ -62,26 +62,45 @@ def set_verbose(func):
         verbose.append(func)
 
 
-def valerr(v, e):
-    def core(v, e):
-        if e > 0:
-            dec = -int(numpy.floor(numpy.log10(e)))
-        else:
-            dec = 1
-        if dec > 0:
-            outstr = f"{v:.{dec+1}f}({e*10**(dec+1):02.0f})"
-        elif dec == 0:
-            outstr = f"{v:.{dec+1}f}({e:02.{dec+1}f})"
-        else:
-            outstr = f"{v:.0f}({e:.0f})"
-        return outstr
+def valerr(value, error, significant_digits=2):
+    """
+    Converts arrays in formatted string in the form value(error).
 
-    if numpy.ndim(v) == 0:
-        return core(v, e)
-    elif numpy.ndim(v) == 1:
-        return " ".join([core(v[i], e[i]) for i in range(len(v))])
-    elif numpy.ndim(v) == 2:
-        return "\n".join([valerr(v[i, :], e[i, :]) for i in range(numpy.shape(v)[0])])
+    Parameters:
+       value (array): a float, 1-D or 2-D array
+       error (array): a float, 1-D or 2-D array
+
+    Returns:
+       string: the formatted string
+
+    Examples:
+       >>> [v, e] = obs.error()
+       >>> print(pyobs.valerr(v,e))
+       1234(4)
+    """
+
+    d = significant_digits - 1
+
+    def core(v, e):
+        exp = int(numpy.floor(numpy.log10(e)) - d)
+        if exp < 0:
+            out = f"%.{-exp}f" % v
+            if (exp + d) >= 0:
+                out += f"(%.{-exp}f)" % (e * 10 ** -(exp + d))
+            else:
+                out += f"({e * 10 ** -(exp):.0f})"
+        else:
+            out = f"{v:.0f}({e:.0f})"
+        return out
+
+    if numpy.ndim(value) == 0:
+        return core(value, error)
+    elif numpy.ndim(value) == 1:
+        return " ".join([core(_v, _e) for _v, _e in zip(value, error)])
+    elif numpy.ndim(value) == 2:
+        return "\n".join(
+            [valerr(value[i, :], error[i, :]) for i in range(numpy.shape(value)[0])]
+        )
     else:  # pragma: no cover
         raise PyobsError("valerr supports up to 2D arrays")
 
@@ -111,8 +130,7 @@ def tex_table(mat, fmt=None):
     assertion(numpy.ndim(mat) == 2, "textable supports only 2D arrays")
 
     (n, m) = numpy.shape(mat)
-    if fmt is None:
-        fmt = [".2f"] * m
+    fmt = [".2f"] * m if fmt is None else fmt
 
     outstr = []
     for a in range(n):
@@ -191,7 +209,7 @@ def slice_ndarray(t, *args):
                 aa.append(a)
         elif isinstance(a, (int, numpy.int)):
             aa.append([a])
-        else:
+        else:  # pragma: no cover
             raise PyobsError("slicing not understood")
 
     return t[numpy.ix_(*aa)]
@@ -209,7 +227,7 @@ def import_string(data):
     """
 
     def core(string):
-        m = re.search(r"(^\d+).?(\d+)\((\d+)\)", string)
+        m = re.search(r"(^\d+).?(\d*)\((\d+)\)", string)
         d0 = m.group(1)
         d1 = m.group(2)
         e = m.group(3)
