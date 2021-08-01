@@ -33,18 +33,27 @@ class interpolate:
     Parameters:
        x (array): x coordinates of the points
        y (observable): y coordinates of the points
+
+    When called on an array or float or observable, it evaluates
+    the polynomial at the locations specified by the input parameters.
+
+    Examples:
+       >>> int0 = pyobs.interpolate(xax[0:5], yobs[0:5]) # interpolations with different degrees
+       >>> int1 = pyobs.interpolate(xax[0:4], yobs[0:4])
+       >>> int0([0.2, 0.3]) # evalutes the polynomial at those values
     """
 
     def __init__(self, x, y):
+        """ """
         N = len(x)
-        if len(y.shape) > 1:
-            raise pyobs.PyobsError(
-                f"Unexpected observable with shape ${x.shape}; only vectors are supported"
-            )
-        if y.size != N:
-            raise pyobs.PyobsError(
-                f"Unexpected observable with shape ${x.shape} not matching size of x"
-            )
+        pyobs.assertion(
+            len(y.shape) == 1,
+            f"Unexpected observable with shape ${x.shape}; only vectors are supported",
+        )
+        pyobs.assertion(
+            y.size == N,
+            f"Unexpected observable with shape ${x.shape} not matching size of x",
+        )
         Minv = numpy.linalg.inv(
             numpy.array([[x[i] ** k for k in range(N)] for i in range(N)]).astype("f8")
         )
@@ -65,10 +74,10 @@ class interpolate:
            observable: the evaluated function at `x`.
         """
         if type(x) is pyobs.observable:
-            if len(x.shape) > 1:
-                raise pyobs.PyobsError(
-                    f"Unexpected observable with shape ${x.shape}; only vectors supported"
-                )
+            pyobs.assertion(
+                len(x.shape) == 1,
+                f"Unexpected observable with shape ${x.shape}; only vectors supported",
+            )
             N = x.shape[0]
         else:
             N = len(x)
