@@ -20,7 +20,6 @@
 #################################################################################
 
 import numpy
-from time import time
 import pyobs
 
 from .data import delta
@@ -46,9 +45,8 @@ def get_keys(inps, name):
                 allkeys.append(dn)
     return allkeys
 
-
+@pyobs.log_timer("derobs")
 def derobs(inps, mean, grads, description=None):
-    t0 = time()
     pyobs.check_type(inps, "inps", list)
     pyobs.check_type(
         mean, "mean", numpy.ndarray, int, float, numpy.float32, numpy.float64
@@ -108,9 +106,6 @@ def derobs(inps, mean, grads, description=None):
                     res.cdata[key].axpy(grads[i], inps[i].cdata[key])
 
     pyobs.memory.update(res)
-    if pyobs.is_verbose("derobs"):
-        print(f"derobs executed in {time()-t0:g} secs")
-
     return res
 
 

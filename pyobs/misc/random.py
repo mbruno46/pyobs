@@ -96,6 +96,4 @@ def acrandn(mu, cov, tau, N):
     else:
         [w, v] = numpy.linalg.eig(cov)
         Q = numpy.diag(numpy.sqrt(w)) @ v.T
-    # for i in range(N):
-    #    rn[i,:] = rn[i,:] @ Q + numpy.array(mu)
     return rn @ Q + numpy.array(mu)

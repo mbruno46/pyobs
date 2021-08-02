@@ -23,7 +23,6 @@ import numpy
 import copy
 import gzip, json
 import os, pwd, re
-from time import time
 import datetime
 
 import pyobs
@@ -85,6 +84,7 @@ class observable:
                 raise pyobs.PyobsError("Unexpected orig argument")
         pyobs.memory.add(self)
 
+    @pyobs.log_timer("create")
     def create(self, ename, data, icnfg=None, rname=None, shape=(1,), lat=None):
         """
         Create an observable
@@ -140,7 +140,6 @@ class observable:
            >>> a = pyobs.observable(description='test-mf')
            >>> a.create('EnsembleA',data,lat=lat,icnfg=idx)
         """
-        t0 = time()
         pyobs.check_type(ename, "ename", str)
         pyobs.assertion(":" not in ename, f"Column symbol not allowed in ename {ename}")
         pyobs.check_type(shape, "shape", tuple)
@@ -224,8 +223,6 @@ class observable:
                 self.delta[key] = delta(mask, icnfg[ir], data[ir], self.mean, lat)
         self.mean = numpy.reshape(self.mean, self.shape)
         pyobs.memory.update(self)
-        if pyobs.is_verbose("create"):
-            print(f"create executed in {time()-t0:g} secs")
 
     def create_from_cov(self, cname, value, covariance):
         """
@@ -376,6 +373,7 @@ class observable:
         self.shape = numpy.shape(self.mean)
         self.size = numpy.size(self.mean)
 
+    @pyobs.log_timer("slice")
     def slice(self, *args):
         """
         Slices an N-D observable.
@@ -581,6 +579,7 @@ class observable:
             sigma_tot += sigma[cd]
         return [sigma, sigma_tot, dsigma_tot]
 
+    @pyobs.log_timer("error")
     def error(self, errinfo={}, plot=False, pfile=None):
         """
         Estimate the error of the observable, by summing in quadrature
@@ -633,7 +632,6 @@ class observable:
            >>> einfo = {'A': errinfo(Stau=3.0), 'B': errinfo(W=30)}
            >>> [v,e] = obsC.error(errinfo=einfo,plot=True)
         """
-        t0 = time()
         [sigma, sigma_tot, _] = self.error_core(errinfo, plot, pfile)
 
         if plot:  # pragma: no cover
@@ -641,8 +639,6 @@ class observable:
             if sum(h) > 1:
                 plot_piechart(self.description, sigma, sigma_tot)
 
-        if pyobs.is_verbose("error"):
-            print(f"error executed in {time()-t0:g} secs")
         return [self.mean, numpy.sqrt(sigma_tot)]
 
     def error_of_error(self, errinfo={}):

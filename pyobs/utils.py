@@ -23,6 +23,8 @@ import numpy
 import sys
 import inspect
 import re
+import time
+import functools
 
 __all__ = [
     "PyobsError",
@@ -31,6 +33,7 @@ __all__ = [
     "check_not_type",
     "is_verbose",
     "set_verbose",
+    "log_timer",
     "valerr",
     "tex_table",
     "slice_ndarray",
@@ -65,7 +68,20 @@ def set_verbose(func, yesno=True):
         if func in verbose:
             verbose.remove(func)
 
-        
+
+def log_timer(tag):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            t0=time.time()
+            result = func(*args, **kwargs)
+            t1=time.time()
+            if is_verbose(tag):
+                print(f"{tag} executed in {t1-t0:g} secs")
+            return result
+        return wrapper
+    return decorator
+
 
 def valerr(value, error, significant_digits=2):
     """
