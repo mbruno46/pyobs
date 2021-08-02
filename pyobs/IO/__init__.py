@@ -64,10 +64,10 @@ def save(fname, *args):
         fmt = default
     elif ".json.gz" in fname:
         fmt = json
-        if len(args) > 1 or not isinstance(
-            args[0], pyobs.observable
-        ):  # pragma: no cover
-            raise pyobs.PyobsError("json file format supports only single observable")
+        pyobs.assertion(
+            (len(args) == 1) and isinstance(args[0], pyobs.observable),
+            "json file format supports only single observable",
+        )
     else:  # pragma: no cover
         raise pyobs.PyobsError("Format not supported")
 

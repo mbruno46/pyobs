@@ -1,6 +1,8 @@
 import pyobs
 import numpy
 
+pyobs.set_verbose('slice', True)
+
 T=16
 L=16
 mass=0.25
@@ -40,3 +42,5 @@ assert numpy.all(abs(e0-e1) < 1e-12)
 [v1, e1] = obs.slice([0],numpy.array([0,1])).error()
 assert numpy.all(abs(v0-v1) < 1e-12)
 assert numpy.all(abs(e0-e1) < 1e-12)
+
+pyobs.set_verbose('slice', False)

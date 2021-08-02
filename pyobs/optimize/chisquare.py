@@ -20,7 +20,6 @@
 #################################################################################
 
 import numpy
-from time import time
 
 import pyobs
 from .minimize import lm
@@ -259,6 +258,7 @@ class mfit:
                 n += 1
         return res
 
+    @pyobs.log_timer("mfit")
     def __call__(self, yobs, p0=None, min_search=None):
         if len(self.csq) > 1:
             pyobs.check_type(yobs, "yobs", list)
@@ -291,7 +291,6 @@ class mfit:
                 [self.csq[i].hess(yobs[i].mean, self.pdict) for i in range(len(yobs))]
             )
 
-        t0 = time()
         res = min_search(csq, p0, jac=dcsq, hess=ddcsq)
 
         # properly create gradients
@@ -305,11 +304,10 @@ class mfit:
             tmp = self.csq[i].gvec(self.pdict, res.x)
             g.append(pyobs.gradient(Hinv @ tmp))
 
-        if pyobs.is_verbose("mfit.run") or pyobs.is_verbose("mfit"):
+        if pyobs.is_verbose("mfit"):
             print(f"chisquare = {res.fun}")
             print(f"minimizer iterations = {res.nit}")
             print(f"minimizer status: {res.message}")
-            print(f"mfit.run executed in {time()-t0:g} secs")
         return pyobs.derobs(yobs, res.x, g)
 
     def chisquared(self, pars):

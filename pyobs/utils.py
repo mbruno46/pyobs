@@ -40,7 +40,7 @@ __all__ = [
     "import_string",
 ]
 
-verbose = ["save", "load"]
+verbose = ["save", "load", "mfit"]
 
 
 class PyobsError(Exception):
@@ -73,13 +73,15 @@ def log_timer(tag):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            t0=time.time()
+            t0 = time.time()
             result = func(*args, **kwargs)
-            t1=time.time()
+            t1 = time.time()
             if is_verbose(tag):
                 print(f"{tag} executed in {t1-t0:g} secs")
             return result
+
         return wrapper
+
     return decorator
 
 

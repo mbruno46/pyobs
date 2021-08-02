@@ -65,13 +65,12 @@ def root_scalar(a, f, dfx, dfa, x0=None, method=None, bracket=None):
        >>> dfa = lambda x,a: [1, x]
        >>> pyobs.optimize.root_scalar(f, dfx, dfa)
     """
-    if len(a.shape) > 1:  # pragma: no cover
-        raise pyobs.PyobsError(
-            f"Unexpected observable with shape ${a.shape}; only vectors are supported"
-        )
-    # res=rs(f,fprime=lambda x: dfx(x,*a.mean),x0=x0,method=method)
-    res = rs(lambda x: f(x, a.mean), x0=x0, bracket=bracket, method=method)
+    pyobs.assertion(
+        len(a.shape) == 1,
+        f"Unexpected observable with shape ${a.shape}; only vectors are supported",
+    )
 
+    res = rs(lambda x: f(x, a.mean), x0=x0, bracket=bracket, method=method)
     mean = numpy.reshape(res.root, (1,))
     _g = numpy.array(dfa(res.root, a.mean)) / dfx(res.root, a.mean)
 
