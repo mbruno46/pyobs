@@ -48,4 +48,7 @@ assert numpy.all(abs(e1-e2) < 1e-12)
 
 print('diag cov = ',e2**2)
 [cm,dcm] = obsA.covariance_matrix(errinfo={'EnsA': pyobs.errinfo(W=20)})
+print(dcm)
 print('cov matrix = \n',pyobs.valerr(cm,dcm))
+
+print(obsA[1].shape, pyobs.remove_tensor(obsA[1]).shape, pyobs.remove_tensor(obsA[1],axis=0).shape)

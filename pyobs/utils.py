@@ -57,14 +57,19 @@ def is_verbose(func):
     return False
 
 
-def set_verbose(func):
-    if func not in verbose:
-        verbose.append(func)
+def set_verbose(func, yesno=True):
+    if yesno:
+        if func not in verbose:
+            verbose.append(func)
+    else:
+        if func in verbose:
+            verbose.remove(func)
 
+        
 
 def valerr(value, error, significant_digits=2):
     """
-    Converts arrays in formatted string in the form value(error).
+    Converts arrays in formatted strings in the form "value(error)"".
 
     Parameters:
        value (array): a float, 1-D or 2-D array

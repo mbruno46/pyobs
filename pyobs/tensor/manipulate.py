@@ -24,6 +24,7 @@ import pyobs
 
 __all__ = [
     "reshape",
+    "remove_tensor",
     "concatenate",
     "transpose",
     "sort",
@@ -39,11 +40,11 @@ def reshape(x, new_shape):
     Change the shape of the observable
 
     Parameters:
-      x (obs) : observables to be reshaped
+      x (observable) : observables to be reshaped
       new_shape (tuple): the new shape of the observable
 
     Returns:
-      obs : reshaped observable
+      observable : reshaped observable
 
     Notes:
       This function acts exclusively on the mean
@@ -52,6 +53,43 @@ def reshape(x, new_shape):
     res = pyobs.observable(x)
     res.set_mean(numpy.reshape(x.mean, new_shape))
     return res
+
+
+def remove_tensor(x, axis=None):
+    """
+    Removes trivial tensor indices reducing the dimensionality of the observable.
+
+    Parameters:
+       x (observable): observable with at least 1 dimension with size 1.
+       axis (int or list): axis to be considered for tensor removal.
+
+    Returns:
+       observable
+
+    Examples:
+       >>> obs.shape
+       (10, 3, 1)
+       >>> pyobs.remove_tensor(obs).shape
+       (10, 3)
+    """
+    Nd = len(x.shape)
+    if isinstance(axis, int):
+        axis = [axis]
+    if axis is None:
+        selection = [True] * Nd
+    else:
+        selection = [False] * Nd
+        for a in axis:
+            selection[a] = True
+
+    new_shape = []
+    for mu in range(Nd):
+        if (x.shape[mu] == 1) and (selection[mu] is True):
+            continue
+        new_shape.append(x.shape[mu])
+    if not new_shape:
+        new_shape.append(1)
+    return pyobs.reshape(x, tuple(new_shape))
 
 
 def concatenate(x, y, axis=0):

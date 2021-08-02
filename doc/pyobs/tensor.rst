@@ -7,6 +7,7 @@ Manipulation of observables
    :toctree: generated 
 
    reshape
+   remove_tensor
    concatenate
    transpose
    diag

@@ -1,9 +1,13 @@
 Future milestones:
  - jackknife error support
- - IO with bdio file format and pyobs binary format
+ - IO with bdio file format
  - expected chi square and quality of fit
  - finite volume quantization condition for 2->2
  - exponential tail
+
+version 1.3.0, :
+ - added utility functions (tensor_remove, import_string)
+ - minor bugs fixed
 
 version 1.2.0, 21.07.2021:
  - added support for binning of Monte Carlo data, and blocking for master-field data

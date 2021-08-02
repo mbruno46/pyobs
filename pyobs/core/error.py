@@ -117,7 +117,7 @@ class variance:
 
             self.xopt[a] = self.x[i]
             self.var[a, 0] = self.cvar[a, i]
-            self.var[a, 1] = self.cvar[a, i] * self.stat_relerr(self.x[i], a)
+            self.var[a, 1] = numpy.abs(self.cvar[a, i]) * self.stat_relerr(self.x[i], a)
 
     def stat_relerr(self, r, a):
         return numpy.sqrt(
