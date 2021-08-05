@@ -31,8 +31,6 @@ import json
 
 
 def import_data(string):
-    if string == "":
-        return []
     return json.loads("[" + ",".join(string.split()) + "]")
 
 
@@ -68,7 +66,8 @@ def load(fname):
         elif m.group(2) == "f" and m.group(3) == "" and m.group(5) == "":
             sh = (int(m.group(1)), int(m.group(4)))
             return numpy.reshape(tmp, sh)
-        return None
+        else:  # pragma: no cover
+            check(False)
 
     def import_rdata(rd):
         rname, icnfg, mask, dat = import_array(rd)
@@ -133,7 +132,7 @@ def load(fname):
         elif dobs[k].tag == "cdata":
             cname, cdata = import_cdata(dobs[k])
             res.cdata[cname] = cdata
-        else:
+        else:  # pragma: no cover
             check(False)
 
     check(len(res.ename) == ne)
