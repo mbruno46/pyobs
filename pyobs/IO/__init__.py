@@ -88,7 +88,7 @@ def load(fname):
        Additional supported formats:
 
        * xml.gz: a file format defined by the MATLAB library obs-tools,
-       dobs-tools written by R. Sommer (DESY Zeuthen, ALPHA Collab.)
+         dobs-tools written by R. Sommer (DESY Zeuthen, ALPHA Collab.)
 
     Examples:
        >>> obsA = pyobs.load('~/analysis/obsA.json.gz')
