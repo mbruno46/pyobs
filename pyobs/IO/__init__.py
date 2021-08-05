@@ -19,7 +19,7 @@
 #
 #################################################################################
 
-from . import json, default
+from . import json, default, xml
 import pyobs
 import os
 import datetime
@@ -84,6 +84,12 @@ def load(fname):
     Returns:
        observable: the loaded observable
 
+    Notes:
+       Additional supported formats:
+
+       * xml.gz: a file format defined by the MATLAB library obs-tools,
+       dobs-tools written by R. Sommer (DESY Zeuthen, ALPHA Collab.)
+
     Examples:
        >>> obsA = pyobs.load('~/analysis/obsA.json.gz')
     """
@@ -93,6 +99,8 @@ def load(fname):
         fmt = default
     elif ".json.gz" in fname:
         fmt = json
+    elif ".xml.gz" in fname:
+        fmt = xml
     else:  # pragma: no cover
         raise pyobs.PyobsError("Format not supported")
 
