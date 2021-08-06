@@ -8,7 +8,8 @@ err=val*0.01
 sig=err*numpy.sqrt(N)
 tau=0.0
 
-data = pyobs.random.acrand(val,err,tau,N)
+rng = pyobs.random.generator('memory')
+data = rng.acrand(val,err,tau,N)
 obsA = pyobs.observable()
 obsA.create('EnsA',data)
 
@@ -17,7 +18,7 @@ obsA.peek()
 pyobs.memory.info()
 
 N=100000
-data = pyobs.random.acrand(val,err,tau,N)
+data = rng.acrand(val,err,tau,N)
 obsB = pyobs.observable()
 obsB.create('EnsB',data)
 

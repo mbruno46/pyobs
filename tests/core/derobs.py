@@ -9,7 +9,9 @@ sig=val*0.05
 N=1000
 tau=0.0
 
-data = pyobs.random.acrand(val,sig,tau,N)
+rng = pyobs.random.generator('derobs')
+
+data = rng.acrand(val,sig,tau,N)
 obsA = pyobs.observable()
 obsA.create('EnsA',data)
 

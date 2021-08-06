@@ -9,7 +9,8 @@ sig=val*0.01
 N=1000
 tau=0.0
 
-data = pyobs.random.acrand(val,sig,tau,N)
+rng = pyobs.random.generator('test=1')
+data = rng.acrand(val,sig,tau,N)
 obsA = pyobs.observable()
 try:
     obsA.create(12,data)
@@ -32,7 +33,7 @@ del _obsA
 
 obsB = pyobs.observable(obsA)
 
-data2 = pyobs.random.acrand(val,sig,tau,N)
+data2 = rng.acrand(val,sig,tau,N)
 obsC = pyobs.observable()
 obsC.create('EnsA',[data[0::2],data2],icnfg=[range(0,N,2),range(100,100+N)],rname=['r001','r002'])
 obsC.peek()

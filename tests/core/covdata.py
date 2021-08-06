@@ -8,7 +8,9 @@ sig=val*0.01
 N=1000
 tau=4.0
 
-data = pyobs.random.acrand(val,sig,tau,N)
+rng = pyobs.random.generator('covdata')
+
+data = rng.acrand(val,sig,tau,N)
 t0 = pyobs.observable()
 t0.create('EnsA',data,rname='r001')
 

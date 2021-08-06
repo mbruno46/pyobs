@@ -6,7 +6,9 @@ cov=numpy.array([[0.01, 0.002], [0.002,0.02]])**2
 N=500
 tau=0.0
 
-data = pyobs.random.acrandn(mu,cov,tau,N)
+rng = pyobs.random.generator('data')
+
+data = rng.acrandn(mu,cov,tau,N)
 mask = [True]*N
 mask[1] = False
 mask[-1] = False
