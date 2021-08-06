@@ -26,6 +26,10 @@ __all__ = ["generator"]#, "acrand", "acrandn"]
 
 
 class generator:
+    """
+    A random number generator based on `numpy.random`. It preserves the internal
+    state and guarantees complete reproducibility.
+    """
     def __init__(self, seed):
         if isinstance(seed, str):
             b = bytearray(hashlib.sha256(seed.encode()).digest())[0::8]
@@ -35,8 +39,14 @@ class generator:
         self.seed = _seed
         print(f"Random generator initialized with seed = {self.seed} [{seed}]")
         numpy.random.seed(self.seed)
+        self.state = numpy.random.get_state()
 
-
+    def sample_normal(self,N):
+        numpy.random.set_state(self.state)
+        r = numpy.random.normal(0.0, 1.0, N)
+        self.state = numpy.random.get_state()
+        return r
+        
     def acrand(self, mu, sigma, tau, N):
         """
         Create synthetic autocorrelated Monte Carlo data
@@ -58,7 +68,8 @@ class generator:
            0.12341(26)
 
         """
-        r = numpy.random.normal(0.0, 1.0, N)
+        r = self.sample_normal(N)
+
         if tau > 0.0:
             f = numpy.exp(-1.0 / tau)
         else:
@@ -97,7 +108,7 @@ class generator:
             f = 0.0
         ff = numpy.sqrt(1.0 - f * f)
 
-        r = numpy.reshape(numpy.random.normal(0.0, 1.0, N * nf), (N, nf))
+        r = numpy.reshape(self.sample_normal(N * nf), (N, nf))
         rn = numpy.zeros((N, nf))
         rn[0, :] = ff * r[0, :]
 

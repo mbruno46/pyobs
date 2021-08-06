@@ -9,7 +9,8 @@ dy = (y*0.1)**2
 N=800
 tau=3.0
 
-data = pyobs.random.acrandn(y,dy,tau,N)
+rng = pyobs.random.generator('root')
+data = rng.acrandn(y,dy,tau,N)
 yobs = pyobs.observable()
 yobs.create('test',data.flatten(),shape=(len(x),))
 

@@ -4,7 +4,8 @@ import numpy
 mat = [2,0.5,0.5,3.5]
 cov = (numpy.array(mat)*0.05)**2
 
-data = pyobs.random.acrandn(mat,cov,1.0,4000)
+rng = pyobs.random.generator('linalg')
+data = rng.acrandn(mat,cov,1.0,4000)
 
 omat = pyobs.observable()
 omat.create('test',data.flatten(),shape=(2,2))

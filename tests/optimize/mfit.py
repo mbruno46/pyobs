@@ -16,9 +16,8 @@ dy = (y*0.1)**2
 N = 1000
 tau = 1.0
 
-numpy.random.seed(46)
-
-data = pyobs.random.acrandn(y,dy,tau,N)
+rng = pyobs.random.generator('46')
+data = rng.acrandn(y,dy,tau,N)
 corr = pyobs.observable()
 corr.create('test',data.flatten(),shape=(T,))
 
