@@ -298,6 +298,44 @@ class observable:
             if name not in self.ename:
                 self.ename.append(name)
 
+    def rename(self, src, dst):
+        """
+        Rename ensembles and replica.
+
+        Parameters:
+           src (string or tuple): if a string is passed all replica belonging to the
+              ensembles defined by `src` are renamed into `dst`; if a tuple with two
+              strings is passed, then the first element is taken as the ensemble tag,
+              the second as the replica tag and only this replicum is renamed.
+           dst (string or tuple): the new name for the ensembles and replica; the behavior
+              is the same of `src`.
+
+        Examples:
+           >>> obsA = pyobs.observable()
+           >>> obsA.create('EnsA', data, icnfg, rname=['r001','r002'])
+           >>> obsA.rename('EnsA','EnsembleA') # rename both replica with the new ensemble tag
+           >>> obsA.rename(('EnsembleA','r001'),('EnsA','stream0')) # rename only a single replica
+        """
+
+        def rename_delta(e0, r0, e1, r1):
+            _tag = f"{e0}:{r0}"
+            tag = f"{e1}:{r1}"
+            pyobs.assertion(e0 in self.ename, f"Ensemble tag {e0} not found")
+            pyobs.assertion(_tag in self.delta, f"Repliaca tag {r0} not found")
+            self.delta[tag] = self.delta.pop(_tag)
+
+        if isinstance(src, str):
+            pyobs.check_type(dst, "dst", str)
+            for key in self.delta:
+                e, r = key.split(":")
+                if e == src:
+                    rename_delta(src, r, dst, r)
+        elif isinstance(src, tuple):
+            pyobs.check_type(dst, "dst", tuple)
+            rename_delta(src[0], src[1], dst[0], dst[1])
+
+        self.ename_from_delta()
+
     ##################################
     # pretty string representations
 

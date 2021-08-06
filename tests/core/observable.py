@@ -19,10 +19,16 @@ try:
     obsA.create('Ens:::A',data)
 except pyobs.PyobsError:
     print('catched error')
-    
-obsA.create('EnsA',data,rname='r001')
-obsA.peek()
-print(obsA)
+
+_obsA = pyobs.observable(obsA)
+_obsA.create('EnsA',data,rname='r001')
+_obsA.peek()
+print(_obsA)
+_obsA.rename('EnsA','EnsembleA')
+_obsA.peek()
+_obsA.rename(('EnsembleA','r001'),('EnsA','stream0'))
+_obsA.peek()
+del _obsA
 
 obsB = pyobs.observable(obsA)
 

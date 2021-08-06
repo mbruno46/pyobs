@@ -121,8 +121,6 @@ def load(fname):
         if dobs[k].tag == "edata":
             check(dobs[k][0].tag == "enstag")
             ename = dobs[k][0].text.strip()
-            if ename not in res.ename:
-                res.ename.append(ename)
 
             check(dobs[k][1].tag == "nr")
             R = int(dobs[k][1].text.strip())
@@ -135,6 +133,7 @@ def load(fname):
         else:  # pragma: no cover
             check(False)
 
+    res.ename_from_delta()
     check(len(res.ename) == ne)
     check(len(res.cdata) == nc)
     return res
