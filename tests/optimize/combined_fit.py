@@ -13,7 +13,8 @@ numpy.random.seed(46)
 
 tau = 1.0
 N = 2000
-data = pyobs.random.acrandn(corr_ex, cov_ex, tau, N)
+rng = pyobs.random.generator('fits')
+data = rng.acrandn(corr_ex, cov_ex, tau, N)
 
 corr1 = pyobs.observable()
 corr1.create('EnsA',data.flatten(),shape=(T//2,))
@@ -31,7 +32,7 @@ print(fit1(corr1))
 
 tau = 1.0
 N = 1000
-data = pyobs.random.acrandn(corr_ex, cov_ex, tau, N)
+data = rng.acrandn(corr_ex, cov_ex, tau, N)
 
 corr2 = pyobs.observable()
 corr2.create('EnsA',data.flatten(),shape=(T//2,))
