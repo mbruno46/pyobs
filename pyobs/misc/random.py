@@ -22,13 +22,17 @@
 import numpy
 import hashlib
 
-__all__ = ["generator"]  # , "acrand", "acrandn"]
+__all__ = ["generator"]
 
 
 class generator:
     """
     A random number generator based on `numpy.random`. It preserves the internal
     state and guarantees complete reproducibility.
+    
+    Parameters:
+       seed (string or int): if a string is passed a sha256 bytearray is generated
+          and used to seed the random number generator.
     """
 
     def __init__(self, seed):
@@ -62,7 +66,8 @@ class generator:
            list : the synthetic data
 
         Examples:
-           >>> data = pyobs.random.acrand(0.1234,0.0001,4.0,1000)
+           >>> rng = pyobs.random.generator('test')
+           >>> data = rng.acrand(0.1234,0.0001,4.0,1000)
            >>> obs = pyobs.observable(description='test-acrand')
            >>> obs.create('A',data)
            >>> print(obs)

@@ -230,7 +230,7 @@ def slice_ndarray(t, *args):
                 aa.append(range(s[ia]))
             else:
                 aa.append(a)
-        elif isinstance(a, (int, numpy.int)):
+        elif isinstance(a, (int, numpy.int32, numpy.int64)):
             aa.append([a])
         else:  # pragma: no cover
             raise PyobsError("slicing not understood")
