@@ -29,7 +29,7 @@ class generator:
     """
     A random number generator based on `numpy.random`. It preserves the internal
     state and guarantees complete reproducibility.
-    
+
     Parameters:
        seed (string or int): if a string is passed a sha256 bytearray is generated
           and used to seed the random number generator.

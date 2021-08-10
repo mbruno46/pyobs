@@ -95,7 +95,7 @@ class observable:
               or multiple replica
            icnfg (array of ints or list of arrays of ints, optional): indices
               of the configurations corresponding to data; if not passed the
-              measurements are assumed to be contiguous
+              measurements are assumed to be contiguous and to start from index 0
            rname (str or list of str, optional): identifier of the replica; if
               not passed integers from 0 are automatically assigned
            shape (tuple, optional): shape of the observable, data must be passed accordingly
@@ -149,78 +149,52 @@ class observable:
         if ename not in self.ename:
             self.ename.append(ename)
 
-        if isinstance(data[0], (list, numpy.ndarray)):
-            R = len(data)
-        elif isinstance(data[0], (int, float, numpy.float64, numpy.float32)):
-            R = 1
-        else:  # pragma: no cover
-            raise pyobs.PyobsError("Unexpected data type")
+        pyobs.check_type(data, "data", list, numpy.ndarray)
+        if isinstance(
+            data[0],
+            (int, numpy.int32, numpy.int64, float, numpy.float64, numpy.float32),
+        ):
+            data = [data]
 
-        if R == 1:
-            pyobs.check_type(data, "data", list, numpy.ndarray)
-            nc = int(len(data) / self.size)
-            if rname is None:
-                rname = 0
-            else:
-                pyobs.check_not_type(rname, "rname", list)
-            if icnfg is None:
-                icnfg = range(nc)
-            else:
-                pyobs.check_type(icnfg, "icnfg", list, range)
-                pyobs.check_type(icnfg[0], "icnfg[:]", int, numpy.int32, numpy.int64)
-                pyobs.assertion(
-                    len(icnfg) * self.size == len(data),
-                    f"Incompatible icnfg and data, for shape={shape}",
-                )
-            if numpy.size(self.mean) != 0:
-                N0 = sum([self.delta[key].n for key in self.delta])
-                mean0 = numpy.reshape(self.mean, (self.size,))
-                mean1 = numpy.mean(numpy.reshape(data, (nc, self.size)), 0)
-                self.mean = (N0 * mean0 + nc * mean1) / (N0 + nc)
-                shift = nc * (mean0 - mean1) / (N0 + nc)
-                for key in self.delta:
-                    self.delta[key].delta += shift[:, None]
-            else:
-                self.mean = numpy.mean(numpy.reshape(data, (nc, self.size)), 0)
+        R = len(data)
+        nc = [len(data[ir]) // self.size for ir in range(R)]
+        if rname is None:
+            rname = list(range(R))
+        elif isinstance(rname, (str, int, numpy.int32, numpy.int64)):
+            rname = [rname]
+        if icnfg is None:
+            icnfg = [range(_nc) for _nc in nc]
+        elif isinstance(icnfg[0], (int, numpy.int32, numpy.int64)):
+            icnfg = [icnfg]
 
-            key = f"{ename}:{rname}"
-            self.delta[key] = delta(mask, icnfg, data, self.mean, lat)
-        else:
+        pyobs.check_type(rname, "rname", list)
+        pyobs.assertion(len(rname) == R, "Incompatible rname and data")
+        pyobs.check_type(icnfg, "icnfg", list)
+        for ir in range(R):
             pyobs.assertion(
-                numpy.size(self.mean) == 0,
-                "Only a single replica can be added to existing observables",
+                len(icnfg[ir]) * self.size == len(data[ir]),
+                f"Incompatible icnfg[{ir}] and data[{ir}], for shape={shape}",
             )
-            for ir in range(R):
-                pyobs.check_type(data[ir], f"data[{ir}]", list, numpy.ndarray)
-            self.mean = numpy.zeros((self.size,))
-            nt = 0
-            for dd in data:
-                nc = int(len(dd) / self.size)
-                self.mean += numpy.sum(numpy.reshape(dd, (nc, self.size)), 0)
-                nt += nc
-            self.mean *= 1.0 / float(nt)
-            if rname is None:
-                rname = range(R)
-            else:
-                pyobs.check_type(rname, "rname", list)
-                pyobs.assertion(len(rname) == R, "Incompatible rname and data")
-            if icnfg is not None:
-                pyobs.check_type(icnfg, "icnfg", list)
 
-            if icnfg is None:
-                icnfg = []
-                for ir in range(len(data)):
-                    nc = int(len(data[ir]) / self.size)
-                    icnfg.append(range(nc))
-            else:
-                for ir in range(len(data)):
-                    pyobs.assertion(
-                        len(icnfg[ir]) * self.size == len(data[ir]),
-                        f"Incompatible icnfg[{ir}] and data[{ir}], for shape={shape}",
-                    )
-            for ir in range(len(data)):
-                key = f"{ename}:{rname[ir]}"
-                self.delta[key] = delta(mask, icnfg[ir], data[ir], self.mean, lat)
+        mean_data = numpy.zeros((self.size,))
+        for ir in range(R):
+            mean_data += numpy.sum(numpy.reshape(data[ir], (nc[ir], self.size)), 0)
+        mean_data *= 1.0 / sum(nc)
+
+        if numpy.size(self.mean) != 0:
+            N0 = sum([self.delta[key].n for key in self.delta])
+            mean_old = numpy.reshape(self.mean, (self.size,))
+            self.mean = (N0 * mean_old + sum(nc) * mean_data) / (N0 + sum(nc))
+            shift = sum(nc) * (mean_old - mean_data) / (N0 + sum(nc))
+            for key in self.delta:
+                self.delta[key].delta += shift[:, None]
+        else:
+            self.mean = mean_data
+
+        for ir in range(R):
+            key = f"{ename}:{rname[ir]}"
+            self.delta[key] = delta(mask, icnfg[ir], data[ir], self.mean, lat)
+
         self.mean = numpy.reshape(self.mean, self.shape)
         pyobs.memory.update(self)
 
