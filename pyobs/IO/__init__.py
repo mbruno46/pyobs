@@ -19,7 +19,7 @@
 #
 #################################################################################
 
-from . import json, default, xml
+from . import json, default, xml, bdio
 import pyobs
 import os
 import datetime
@@ -90,6 +90,10 @@ def load(fname):
        * xml.gz: a file format defined by the MATLAB library obs-tools,
          dobs-tools written by R. Sommer (DESY Zeuthen, ALPHA Collab.)
 
+       * bdio: a binary file format based on the `BDIO library <https://github.com/to-ko/bdio>`_.
+         The observables are stored in binary records whose structure is explained
+         `here <https://ific.uv.es/~alramos/docs/ADerrors/tutorial/#BDIO-Native-format>`_.
+
     Examples:
        >>> obsA = pyobs.load('~/analysis/obsA.json.gz')
     """
@@ -101,6 +105,8 @@ def load(fname):
         fmt = json
     elif ".xml.gz" in fname:
         fmt = xml
+    elif ".bdio" in fname:
+        fmt = bdio
     else:  # pragma: no cover
         raise pyobs.PyobsError("Format not supported")
 
