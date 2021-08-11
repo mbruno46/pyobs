@@ -129,16 +129,6 @@ class binary_file:
             return self.read_binary(arg).decode("utf-8")
         return ""
 
-#     def write(self, data):
-#         array = numpy.array(data)
-#         if little:
-#             self.bb += array.tobytes("C")
-#         else:
-#             self.bb += array.byteswap().tobytes("C")
-            
-#     def write_str(self, string):
-#         self.write_binary(str.encode(string))
-
     def reset_encoder(self):
         self.buf = bytearray()
         
@@ -284,7 +274,7 @@ class bdio_file(binary_file):
             else:
                 return md5_hash(self.read_binary(rlen))
         elif fmt == bdio_const.BDIO_ASC_GENERIC:
-            return self.read_str(rlen)
+            return self.read_str('\0')
         elif fmt == bdio_const.BDIO_BIN_F64BE:
             if little:
                 return self.read(
@@ -383,6 +373,9 @@ def encode_bdio_observable(f, obs):
         if (obs.delta[key].n//2 > nt[i]):
             nt[i] = obs.delta[key].n//2
     
+    if len(list(obs.cdata.keys()))>0:
+        raise pyobs.PyobsError('cdata not supported in bdio format')
+    
     f.encode(ndata, dtypes.INT32)
     f.encode(nrep, dtypes.INT32)
     f.encode(vrep, dtypes.INT32)
@@ -443,7 +436,7 @@ def save(fname, *args):
     pyobs.assertion(len(args)>1,'')
     f.write_record(args[0], 1)
     for a in args[1:]:
-        pyobs.assertion(a.shape==(1,),'Only single observables can be stored in bdio format')
+        pyobs.assertion(a.size==1,'Only single observables can be stored in bdio format')
         encode_bdio_observable(f, a)
         md5 = hashlib.md5(f.buf).digest()
         f.write_record(f.buf, 2)

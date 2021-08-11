@@ -1,10 +1,23 @@
 import pyobs
 import os
 
-fname = f"{os.path.dirname(os.path.abspath(__file__))}/observable.bdio"
+rng = pyobs.random.generator('io')
+data = rng.acrandn([2.31,3.14],[0.2**2,0.1**2],4.0,3000)
 
-res = pyobs.load(fname)
-[v, e] = pyobs.remove_tensor(res['observables'][0]).error()
+test = pyobs.observable(description='save/load bdio')
+test.create('ensA',data.flatten(),icnfg=range(0,3000*4,4),rname='rep1',shape=(2,))
 
-assert abs(v-1.42252725) < 1e-8
-assert abs(e-0.00566219) < 1e-8
+text = 'user info 1'
+pyobs.save('test-io.bdio', text, test[0], test[1])
+
+res = pyobs.load('test-io.bdio')
+
+assert res['file_content'][0] == text
+for o in res['observables']:
+    i = res['observables'].index(o)
+    [v0, e0] = test[i].error()
+    [v1, e1] = o.error()
+    assert abs(v0-v1) < 1e-12
+    assert abs(e0-e1) < 1e-12
+
+os.popen('rm ./test-io.bdio')
