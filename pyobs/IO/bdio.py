@@ -66,11 +66,12 @@ def get_bdio_const(data):
     elif isinstance(data, (bytearray, bytes)):
         return bdio_const.BDIO_BIN_GENERIC
     elif isinstance(data, numpy.ndarray):
-#         if data.dtype == dtypes.INT32:
-#             return bdio_const.BDIO_BIN_INT32LE
+        #         if data.dtype == dtypes.INT32:
+        #             return bdio_const.BDIO_BIN_INT32LE
         if data.dtype == dtypes.FLOAT64:
             return bdio_const.BDIO_BIN_F64LE
-    raise pyobs.PyobsError('data format not supported')
+    raise pyobs.PyobsError("data format not supported")
+
 
 def md5_hash(buf):
     return hashlib.md5(buf).hexdigest().upper()
