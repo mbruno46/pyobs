@@ -329,11 +329,11 @@ class observable:
             - Ensemble A
                - Replica 0 with mask [0, 1, 2, 3] and ncnfg 500
                     temporary additional memory required 0.015 MB
-            
+
         """
         print(f"Observable with shape = {self.shape}")
         print(f" - description: {self.description}")
-        print(f" - created by {self.www[0]} at {self.www[1]} on {self.www[2]}")        
+        print(f" - created by {self.www[0]} at {self.www[1]} on {self.www[2]}")
         print(f" - size: {pyobs.memory.get(self)}")
         print(f" - mean: {self.mean}")
 
