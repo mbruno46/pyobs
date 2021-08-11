@@ -66,11 +66,11 @@ def get_bdio_const(data):
     elif isinstance(data, (bytearray, bytes)):
         return bdio_const.BDIO_BIN_GENERIC
     elif isinstance(data, numpy.ndarray):
-        if data.dtype == dtypes.INT32:
-            return bdio_const.BDIO_BIN_INT32LE
-        elif data.dtype == dtypes.FLOAT64:
+#         if data.dtype == dtypes.INT32:
+#             return bdio_const.BDIO_BIN_INT32LE
+        if data.dtype == dtypes.FLOAT64:
             return bdio_const.BDIO_BIN_F64LE
-
+    raise pyobs.PyobsError('data format not supported')
 
 def md5_hash(buf):
     return hashlib.md5(buf).hexdigest().upper()
@@ -305,7 +305,7 @@ class bdio_file(binary_file):
         out += f'File modified by {self.header["muser"]} on {self.header["mtime"]} at {self.header["mhost"]} \n'
         for r in self.records:
             out += f'\nuinfo = {r["uinfo"]} ; bytes = {r["len"]} ; islong = {r["islong"]} \n'
-            out += f'\n{r["content"]}\n'
+            out += f'\t{r["content"]}\n'
         return out
 
 
@@ -434,7 +434,7 @@ def load(fname):
         elif r["uinfo"] == 8:
             out.append(r["content"])
 
-    return out
+    return out + [f]
 
 
 def save(fname, *args):

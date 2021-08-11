@@ -23,4 +23,6 @@ for i in [0,1]:
     assert abs(v0-v1) < 1e-12
     assert abs(e0-e1) < 1e-12
 
+print(res[-1])
+
 os.popen('rm ./test-io.bdio')
