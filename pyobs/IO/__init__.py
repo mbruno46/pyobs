@@ -68,6 +68,8 @@ def save(fname, *args):
             (len(args) == 1) and isinstance(args[0], pyobs.observable),
             "json file format supports only single observable",
         )
+    elif ".bdio" in fname:
+        fmt = bdio
     else:  # pragma: no cover
         raise pyobs.PyobsError("Format not supported")
 

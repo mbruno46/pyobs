@@ -27,7 +27,8 @@
 
 import numpy
 import pyobs
-import datetime
+import os, pwd
+import time, datetime
 import hashlib
 from sys import byteorder
 
@@ -53,25 +54,40 @@ class BDIO_CONSTANTS:
     BDIO_ASC_GENERIC = 10
     BDIO_ASC_XML = 11
 
-
 bdio_const = BDIO_CONSTANTS
 dtypes = BINARY_TYPES
 little = byteorder == "little"
+def get_bdio_const(data):
+    if isinstance(data, str):
+        return bdio_const.BDIO_ASC_GENERIC
+    elif isinstance(data, (bytearray, bytes)):
+        return bdio_const.BDIO_BIN_GENERIC
+    elif isinstance(data, numpy.ndarray):        
+        if data.dtype==dtypes.INT32:
+            return bdio_const.BDIO_BIN_INT32LE if little else bdio_const.BDIO_BIN_INT32BE
+        elif data.dtype==dtypes.FLOAT64:
+            return bdio_const.BDIO_BIN_F64LE if little else bdio_const.BDIO_BIN_F64BE
 
+def md5_hash(buf):
+    return hashlib.md5(buf).hexdigest().upper()
 
 class binary_file:
     def __init__(self, fname, mode):
         self.mode = mode
-        pyobs.assertion(mode == "r", "only read mode supported")
         self.fname = fname
         self.pos = 0
         if mode == "r":
             with open(fname, "rb") as f:
                 f.seek(0, 2)
                 self.len = f.tell()
-        else:
+        elif mode == "w":
+            f = open(fname, "wb")
+            f.close()
             self.len = 0
-
+        else: # pragma: no cover
+            raise pyobs.PyobsError('mode not understood or supported')
+        self.buf = bytearray()
+        
     def eof(self):
         return self.pos >= self.len
 
@@ -79,12 +95,20 @@ class binary_file:
         self.pos += n
 
     def read_binary(self, n):
+        pyobs.assertion(self.mode == 'r','Read mode')
         with open(self.fname, "rb") as f:
             f.seek(self.pos)
             bb = f.read(n)
             self.skip(n)
         return bb
 
+    def write_binary(self, bb):
+        pyobs.assertion(self.mode == 'w','Write mode')
+        with open(self.fname, "ab") as f:
+            f.seek(self.pos)
+            self.skip(f.write(bb))
+        return bb
+    
     def read(self, dtype, n=1, force_array=False):
         pyobs.assertion(self.mode == "r", "Cannot read in write mode")
         sz = dtype.itemsize * n
@@ -105,12 +129,42 @@ class binary_file:
             return self.read_binary(arg).decode("utf-8")
         return ""
 
+#     def write(self, data):
+#         array = numpy.array(data)
+#         if little:
+#             self.bb += array.tobytes("C")
+#         else:
+#             self.bb += array.byteswap().tobytes("C")
+            
+#     def write_str(self, string):
+#         self.write_binary(str.encode(string))
 
+    def reset_encoder(self):
+        self.buf = bytearray()
+        
+    def encode(self, data, dt):
+        array = numpy.array(data).astype(dt)
+        if little:
+            self.buf += array.tobytes("C")
+        else:
+            self.buf += array.byteswap().tobytes("C")
+            
+    def encode_str(self, string):
+        if string[-1]!='\0':
+            string += '\0'
+        self.buf += str.encode(string)
+
+    def flush(self):
+        self.write_binary(self.buf)
+
+        
 class bdio_file(binary_file):
     def __init__(self, fname, mode):
         super().__init__(fname, mode)
         self.BDIO_MAGIC = 2147209342
         self.BDIO_HASH_MAGIC_S = 1515784845
+        self.BDIO_VERSION = 1
+        self.BDIO_MAX_RECORD_LENGTH = 1048575
         self.header = {}
         self.records = []
 
@@ -124,6 +178,7 @@ class bdio_file(binary_file):
         pyobs.assertion(hdr[0] == self.BDIO_MAGIC, "Not a bdio file")
         rlen = hdr[1] & int("00000fff", 16)
         self.header["version"] = (hdr[1] & int("ffff0000", 16)) >> 16
+        pyobs.assertion(self.header["version"] == self.BDIO_VERSION, "Not a bdio file")
         self.header["dirinfo"] = [
             (hdr[2] & int("ffc00000", 16)) >> 22,
             (hdr[2] & int("003fffff", 16)),
@@ -138,6 +193,29 @@ class bdio_file(binary_file):
         self.header["mhost"] = info[3]
         self.header["info"] = info[4]
 
+    def write_bdio_header(self, protocol):
+        info = [pwd.getpwuid(os.getuid())[0] + '\0']*2
+        info += [os.uname()[1] + '\0']*2
+        info += [protocol[0:3505] + '\0']
+        rlen = 20 + sum([len(i) for i in info])
+   
+        minpadding = 2*33 + 2*256 + 12 - rlen;
+        minpadding += (4 - (rlen+minpadding)%4)%4
+        info += ['\0'] * minpadding
+        rlen += minpadding
+        
+        hdr = numpy.zeros((5,), dtype=dtypes.INT32)
+        hdr[0] = self.BDIO_MAGIC
+        hdr[1] = ((self.BDIO_VERSION & int('0xffff',16))<<16)|((rlen-8) & int('0x00000fff',16))
+        hdr[2] =  ((0 & int('0x3ff',16)) << 22 )|(0 & int('0x3fffff',16) )
+        hdr[3] = time.time()
+        hdr[4] = hdr[3]
+
+        self.reset_encoder()
+        self.encode(hdr, dtypes.INT32)
+        self.encode_str(''.join(info))
+        self.flush()
+        
     def read_record(self):
         hdr = int(self.read(dtypes.INT32, 1))
         islong = (hdr & int("00000008", 16)) >> 3
@@ -161,6 +239,35 @@ class bdio_file(binary_file):
         }
         self.records += [dd]
 
+    def write_record(self, data, uinfo):
+        if isinstance(data, str):
+            bb = str.encode(data + '\0')
+        elif isinstance(data, (bytearray, bytes)):
+            bb = data
+        elif isinstance(data, numpy.ndarray):
+            if little:
+                bb = data.tobytes("C")
+            else:
+                bb = data.byteswap().tobytes("C")
+        rlen = len(bb)
+        islong = (rlen > self.BDIO_MAX_RECORD_LENGTH)
+        fmt = get_bdio_const(data)
+        self.reset_encoder()
+        if islong:
+            hdr = (int('0x0000000000000001',16) | int(' 0x0000000000000008',16) | ((fmt)<<4) | ((uinfo)<<8) | (rlen <<12))
+            self.encode(hdr, dtypes.INT64)
+        else:
+            hdr = (int('00000001',16) | ((fmt)<<4) | ((uinfo)<<8) | (rlen<<12))
+            self.encode(hdr, dtypes.INT32)
+        self.buf += bb
+        self.flush()
+        
+    def write_md5_record(self, md5):
+        self.reset_encoder()
+        self.encode(self.BDIO_HASH_MAGIC_S, dtypes.INT32)
+        self.buf += md5
+        self.write_record(self.buf, 7)
+
     def parse_record_content(self, uinfo, fmt, rlen):
         if fmt == bdio_const.BDIO_BIN_GENERIC:
             if uinfo == 7:
@@ -175,7 +282,7 @@ class bdio_file(binary_file):
                 ]
                 return "".join(md5)
             else:
-                return hashlib.md5(self.read_binary(rlen)).hexdigest().upper()
+                return md5_hash(self.read_binary(rlen))
         elif fmt == bdio_const.BDIO_ASC_GENERIC:
             return self.read_str(rlen)
         elif fmt == bdio_const.BDIO_BIN_F64BE:
@@ -195,6 +302,7 @@ class bdio_file(binary_file):
         self.skip(rlen)
         return None
 
+
     def __str__(self):
         out = f'\nBDIO File {self.header["info"]}\n'
         out += f'File created by {self.header["cuser"]} on {self.header["ctime"]} at {self.header["chost"]} \n'
@@ -205,8 +313,9 @@ class bdio_file(binary_file):
         return out
 
 
-def decode_bdio_observable(f):
+def decode_bdio_observable(f, info):
     res = pyobs.observable()
+    res.www = [info['cuser'],info['chost'],info['ctime']]
     res.set_mean(f.read(dtypes.FLOAT64))
 
     neid = f.read(dtypes.INT32)
@@ -255,7 +364,50 @@ def decode_bdio_observable(f):
     pyobs.memory.update(res)
     return res
 
-
+def encode_bdio_observable(f, obs):
+    f.reset_encoder()
+    f.encode(obs.mean, dtypes.FLOAT64)
+    neid = len(obs.ename)
+    f.encode(neid, dtypes.INT32)
+    
+    nrep = [0]*neid
+    vrep = []
+    ndata = [0]*neid
+    nt = [0]*neid
+    for key in obs.delta:
+        en = key.split(':')[0]
+        i = obs.ename.index(en)
+        ndata[i] += obs.delta[key].n
+        nrep[i] += 1
+        vrep += [obs.delta[key].n]
+        if (obs.delta[key].n//2 > nt[i]):
+            nt[i] = obs.delta[key].n//2
+    
+    f.encode(ndata, dtypes.INT32)
+    f.encode(nrep, dtypes.INT32)
+    f.encode(vrep, dtypes.INT32)
+    f.encode(range(neid), dtypes.INT32)
+    f.encode(nt, dtypes.INT32)
+    f.encode([0.]*neid, dtypes.FLOAT64)
+    f.encode([4.]*neid, dtypes.FLOAT64)
+    
+    for key in obs.delta:
+        f.encode(obs.delta[key].delta, dtypes.FLOAT64)
+    f.encode_str(obs.description)
+    
+    for en in obs.ename:
+        f.encode(obs.ename.index(en), dtypes.INT32)
+        f.encode_str(en)
+    
+    for en in obs.ename:
+        f.encode(obs.ename.index(en), dtypes.INT32)
+        rnames = []
+        for key in obs.delta:
+            h = key.split(':')
+            if h[0]==en:
+                f.encode_str(h[1])
+                f.encode(obs.delta[key].idx, dtypes.INT32)
+                
 def load(fname):
     f = bdio_file(fname, "r")
     f.parse()
@@ -264,22 +416,36 @@ def load(fname):
     obs = []
     for i in range(len(f.records)):
         r = f.records[i]
-        if (r["uinfo"] == 7) and (
+        if r["uinfo"] == 2:
+            ff = binary_file(fname, "r")
+            ff.skip(r["pos"])
+            obs.append(decode_bdio_observable(ff, f.header))
+        elif r["uinfo"] == 1:
+            content.append(r["content"])
+        elif (r["uinfo"] == 7) and (
             f.records[i - 1]["fmt"] == bdio_const.BDIO_BIN_GENERIC
         ):
             pyobs.assertion(
                 f.records[i - 1]["content"] == r["content"],
                 "MD5 checksums do not match",
             )
-        elif r["uinfo"] == 2:
-            ff = binary_file(fname, "r")
-            ff.skip(r["pos"])
-            obs.append(decode_bdio_observable(ff))
-        elif r["uinfo"] == 1:
-            content.append(r["content"])
 
     return {
         "file_content": content,
         "observables": obs,
         "bdio_file": f,
     }
+
+def save(fname, *args):
+    f = bdio_file(fname, "w")
+    f.write_bdio_header('prova1')
+    
+    pyobs.assertion(len(args)>1,'')
+    f.write_record(args[0], 1)
+    for a in args[1:]:
+        pyobs.assertion(a.shape==(1,),'Only single observables can be stored in bdio format')
+        encode_bdio_observable(f, a)
+        md5 = hashlib.md5(f.buf).digest()
+        f.write_record(f.buf, 2)
+        f.write_md5_record(md5)
+    f.write_record('end', 1)
