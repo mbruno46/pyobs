@@ -323,15 +323,17 @@ class observable:
            >>> obs.peek()
            Observable with shape = (1, 4)
             - description: vector-test
+            - created by mbruno at macthxbruno.fritz.box on Wed Aug 11 10:51:26 2021
             - size: 82 KB
             - mean: [[0.20007161 0.40085252 1.19902686 1.60184989]]
             - Ensemble A
                - Replica 0 with mask [0, 1, 2, 3] and ncnfg 500
                     temporary additional memory required 0.015 MB
-
+            
         """
         print(f"Observable with shape = {self.shape}")
         print(f" - description: {self.description}")
+        print(f" - created by {self.www[0]} at {self.www[1]} on {self.www[2]}")        
         print(f" - size: {pyobs.memory.get(self)}")
         print(f" - mean: {self.mean}")
 
@@ -342,7 +344,7 @@ class observable:
                 rn = key.split(":")
                 if rn[0] == name:
                     outstr = f'    - {"Replica" if self.delta[key].lat is None else "Master-field"} {rn[1]}'
-                    outstr = f'{outstr} with {"ncnfg" if self.delta[key].lat is None else "sites"} {self.delta[key].n}'
+                    outstr = f'{outstr} with {f"ncnfg {self.delta[key].n}" if self.delta[key].lat is None else f"lattice {self.delta[key].lat}"}'
                     print(outstr)
                     mm = (
                         self.delta[key].ncnfg() * 8.0 * 2.0
