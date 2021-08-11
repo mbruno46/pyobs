@@ -24,16 +24,13 @@ import numpy
 
 
 class cdata:
-    def __init__(self, cov, mask=None):
+    def __init__(self, cov, mask):
         if numpy.ndim(cov) == 1:
             self.cov = numpy.diag(numpy.array(cov, dtype=numpy.float64))
         else:
             self.cov = numpy.array(cov, dtype=numpy.float64)
         n = numpy.shape(cov)[0]
-        if mask is None:
-            self.mask = list(range(n))
-        else:
-            self.mask = mask
+        self.mask = mask
         self.size = len(self.mask)
         self.grad = numpy.zeros((self.size, n), dtype=numpy.float64)
         for a in self.mask:

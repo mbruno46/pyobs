@@ -56,3 +56,8 @@ print('Before adding sys. err = ',obsB)
 se=0.003
 obsB.add_syst_err('syst.err #1',[se])
 print(f'After adding sys. err ({db[0]:g})({se:g}) = ({numpy.sqrt(db[0]**2+se**2):g}) : {obsB}')
+
+obsE = pyobs.observable()
+obsE.create('EnsA',data2,rname='r001')
+obsE.create('EnsA',data,rname='r002')
+obsE.peek()
