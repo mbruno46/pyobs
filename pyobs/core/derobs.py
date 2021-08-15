@@ -106,7 +106,6 @@ def derobs(inps, mean, grads, description=None):
                             numpy.all(cov == cd.cov),
                             "Unexpected cov. matrix for cdata with same tag",
                         )
-        print(new_mask, cov)
         if len(new_mask) > 0:
             res.cdata[key] = cdata(cov, list(set(new_mask)))
             for i in range(len(inps)):

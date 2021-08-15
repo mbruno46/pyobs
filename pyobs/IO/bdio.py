@@ -354,7 +354,8 @@ def decode_bdio_observable(f, info):
             else:
                 icnfg = f.read(dtypes.INT32)
                 assert icnfg == 1
-                res.cdata[ename] = pyobs.core.cdata.cdata(deltas[k] ** 2, [0])
+                res.cdata[rname[j]] = pyobs.core.cdata.cdata([1.0], [0])
+                res.cdata[rname[j]].grad[0, 0] = deltas[k]
             k += 1
 
     res.ename_from_delta()
@@ -363,9 +364,16 @@ def decode_bdio_observable(f, info):
 
 
 def encode_bdio_observable(f, obs):
+    pyobs.assertion(obs.size == 1, "bdio format supports only scalar observables")
+    cd = {}
+    for key in obs.cdata:
+        tmp = obs.cdata[key].cholesky()
+        cd[key] = tmp.grad[0, :]
+    cnames = list(cd.keys())
+
     f.reset_encoder()
     f.encode(obs.mean, dtypes.FLOAT64)
-    neid = len(obs.ename)
+    neid = len(obs.ename) + len(cnames)
     f.encode(neid, dtypes.INT32)
 
     nrep = [0] * neid
@@ -381,8 +389,13 @@ def encode_bdio_observable(f, obs):
         if obs.delta[key].n // 2 > nt[i]:
             nt[i] = obs.delta[key].n // 2
 
-    if len(list(obs.cdata.keys())) > 0:
-        raise pyobs.PyobsError("cdata not supported in bdio format")
+    k = len(obs.ename)
+    for key in cd:
+        i = k + cnames.index(key)
+        ndata[i] += 1
+        nrep[i] += 1
+        vrep += [1]
+        nt[i] = 0
 
     f.encode(ndata, dtypes.INT32)
     f.encode(nrep, dtypes.INT32)
@@ -394,14 +407,20 @@ def encode_bdio_observable(f, obs):
 
     for key in obs.delta:
         f.encode(obs.delta[key].delta, dtypes.FLOAT64)
+    for key in cd:
+        f.encode(cd[key], dtypes.FLOAT64)
+
     f.encode_str(obs.description)
 
-    for en in obs.ename:
-        f.encode(obs.ename.index(en), dtypes.INT32)
+    k = 0
+    for en in obs.ename + cnames:
+        f.encode(k, dtypes.INT32)
         f.encode_str(en)
+        k += 1
 
+    k = 0
     for en in obs.ename:
-        f.encode(obs.ename.index(en), dtypes.INT32)
+        f.encode(k, dtypes.INT32)
         for key in obs.delta:
             h = key.split(":")
             if h[0] == en:
@@ -410,6 +429,15 @@ def encode_bdio_observable(f, obs):
             h = key.split(":")
             if h[0] == en:
                 f.encode(obs.delta[key].idx, dtypes.INT32)
+        k += 1
+
+    k = 0
+    for key in cd:
+        for n in range(len(cd[key])):
+            f.encode(k, dtypes.INT32)
+            f.encode_str(f"{key}_{n}")
+            f.encode(1, dtypes.INT32)
+            k += 1
 
 
 def load(fname):

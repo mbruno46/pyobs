@@ -61,3 +61,11 @@ class cdata:
         )
         a = numpy.nonzero(numpy.in1d(self.mask, submask))[0]
         self.grad[a, :] = cd.grad
+
+    def cholesky(self):
+        L = numpy.linalg.cholesky(self.cov)
+        n = numpy.shape(self.cov)[0]
+        res = cdata(numpy.eye(n), self.mask)
+        for ia in range(len(self.mask)):
+            res.grad[ia, :] = self.grad[ia, :] @ L
+        return res
