@@ -8,6 +8,7 @@ data = [rng.acrandn([2.31,3.14],[0.2**2,0.1**2],4.0,1000).flatten() for _ in ran
 
 test = pyobs.observable(description='save/load bdio')
 test.create('ensA',data,rname=[f"r{i}" for i in range(nrep)],shape=(2,))
+test.add_syst_err('syst.err',[0.001,0.001])
 
 text = 'user info 1'
 arr = numpy.array([5.,6.], dtype=numpy.float64)

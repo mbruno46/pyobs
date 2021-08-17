@@ -393,8 +393,8 @@ def encode_bdio_observable(f, obs):
     for key in cd:
         i = k + cnames.index(key)
         ndata[i] += 1
-        nrep[i] += 1
-        vrep += [1]
+        nrep[i] += len(cd[key])
+        vrep += [1] * len(cd[key])
         nt[i] = 0
 
     f.encode(ndata, dtypes.INT32)
@@ -431,13 +431,13 @@ def encode_bdio_observable(f, obs):
                 f.encode(obs.delta[key].idx, dtypes.INT32)
         k += 1
 
-    k = 0
     for key in cd:
+        f.encode(k, dtypes.INT32)
         for n in range(len(cd[key])):
-            f.encode(k, dtypes.INT32)
             f.encode_str(f"{key}_{n}")
+        for n in range(len(cd[key])):
             f.encode(1, dtypes.INT32)
-            k += 1
+        k += 1
 
 
 def load(fname):
