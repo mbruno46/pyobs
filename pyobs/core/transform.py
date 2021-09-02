@@ -35,9 +35,7 @@ def transform(obs, f):
 
     for key in obs.delta:
         d = obs.delta[key]
-        _mask = numpy.in1d(subset_mask, d.mask).nonzero()[0]
-        #         d_mask = numpy.in1d(d.mask, subset_mask)
-        #         _mask = numpy.arange(len(subset_mask))[numpy.in1d(subset_mask, d.mask)]
+        _mask = list(numpy.in1d(subset_mask, d.mask).nonzero()[0])
         if len(_mask) > 0:
             d_mask = numpy.zeros((len(_mask),), dtype=numpy.int)
             for i in _mask:
@@ -47,9 +45,11 @@ def transform(obs, f):
 
     for key in obs.cdata:
         cd = obs.cdata[key]
-        cd_mask = numpy.in1d(cd.mask, subset_mask)
-        _mask = numpy.arange(len(subset_mask))[numpy.in1d(subset_mask, cd.mask)]
+        _mask = list(numpy.in1d(subset_mask, cd.mask).nonzero()[0])
         if len(_mask) > 0:
+            cd_mask = numpy.zeros((len(_mask),), dtype=numpy.int)
+            for i in _mask:
+                cd_mask[i] = subset_mask[i]
             res.cdata[key] = cdata(cd.cov, _mask)
             res.cdata[key].grad[:, :] = cd.grad[cd_mask, :]
 
