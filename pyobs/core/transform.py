@@ -45,7 +45,7 @@ def transform(obs, f):
         cd = obs.cdata[key]
         cd_mask = numpy.in1d(cd.mask, subset_mask)
         _mask = numpy.arange(len(subset_mask))[numpy.in1d(subset_mask, cd.mask)]
-        if cd_mask:
+        if len(_mask)>0:
             res.cdata[key] = cdata(cd.cov, _mask)
             res.cdata[key].grad[:, :] = cd.grad[cd_mask, :]
 
