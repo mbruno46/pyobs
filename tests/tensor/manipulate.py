@@ -63,3 +63,8 @@ print(pyobs.tile(vec,(3,1)))
 
 print('stack')
 print(pyobs.stack([vec,vec,vec]))
+
+print('roll')
+[c0, dc0] = pyobs.roll(corr, -1).error()
+assert numpy.all(numpy.abs(c[1:] - c0[:-1]) < 1e-12)
+assert numpy.all(numpy.abs(dc[1:] - dc0[:-1]) < 1e-12)
