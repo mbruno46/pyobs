@@ -35,11 +35,11 @@ def transform(obs, f):
 
     for key in obs.delta:
         d = obs.delta[key]
-        _mask = numpy.in1d(subset_mask,d.mask).nonzero()[0]
-#         d_mask = numpy.in1d(d.mask, subset_mask)
-#         _mask = numpy.arange(len(subset_mask))[numpy.in1d(subset_mask, d.mask)]
+        _mask = numpy.in1d(subset_mask, d.mask).nonzero()[0]
+        #         d_mask = numpy.in1d(d.mask, subset_mask)
+        #         _mask = numpy.arange(len(subset_mask))[numpy.in1d(subset_mask, d.mask)]
         if len(_mask) > 0:
-            d_mask = numpy.zeros((len(_mask),),dtype=numpy.int)
+            d_mask = numpy.zeros((len(_mask),), dtype=numpy.int)
             for i in _mask:
                 d_mask[i] = subset_mask[i]
             res.delta[key] = delta(_mask, d.idx, lat=d.lat)
@@ -49,7 +49,7 @@ def transform(obs, f):
         cd = obs.cdata[key]
         cd_mask = numpy.in1d(cd.mask, subset_mask)
         _mask = numpy.arange(len(subset_mask))[numpy.in1d(subset_mask, cd.mask)]
-        if len(_mask)>0:
+        if len(_mask) > 0:
             res.cdata[key] = cdata(cd.cov, _mask)
             res.cdata[key].grad[:, :] = cd.grad[cd_mask, :]
 
