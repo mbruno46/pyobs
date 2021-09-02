@@ -15,3 +15,5 @@ Manipulation of observables
    repeat
    tile
    stack
+   roll
+

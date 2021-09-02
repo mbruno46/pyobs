@@ -32,6 +32,7 @@ __all__ = [
     "repeat",
     "tile",
     "stack",
+    "roll",
 ]
 
 
@@ -255,15 +256,15 @@ def stack(obs, axis=0):
     return pyobs.derobs(obs, f(arr), grads)
 
 
-def roll(obs, shift, axis=0):
+def roll(x, shift, axis=0):
     """
     Roll elements of the observable along a given axis.
-    
+
     Notes:
        Check the documentation of `numpy.roll` for more details
-       on the input arguments and function behavior.    
+       on the input arguments and function behavior.
     """
-    
+
     def f(x):
         return numpy.roll(x, shift, axis)
 
