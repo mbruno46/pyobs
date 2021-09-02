@@ -253,3 +253,18 @@ def stack(obs, axis=0):
             pyobs.gradient(lambda x: f(arr0 + [x] + arr1), obs[j].mean, gtype="full")
         ]
     return pyobs.derobs(obs, f(arr), grads)
+
+
+def roll(obs, shift, axis=0):
+    """
+    Roll elements of the observable along a given axis.
+    
+    Notes:
+       Check the documentation of `numpy.roll` for more details
+       on the input arguments and function behavior.    
+    """
+    
+    def f(x):
+        return numpy.roll(x, shift, axis)
+
+    return pyobs.core.transform(x, f)
