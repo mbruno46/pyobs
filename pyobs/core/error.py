@@ -180,11 +180,10 @@ class variance:
             plt.show()
 
     def cum_var(self):
-        y = self.cvar
-        dy = self.cvar
+        dy = numpy.array(self.cvar)
         for a in range(self.size):
             dy[a, :] *= self.stat_relerr(self.x, a)
-        return [self.x, y, dy]
+        return [self.x, self.cvar, dy]
 
 
 def plot_piechart(desc, errs, tot):  # pragma: no cover
