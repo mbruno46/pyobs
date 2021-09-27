@@ -432,7 +432,12 @@ class observable:
         if isinstance(args, (int, numpy.int32, numpy.int64, slice, numpy.ndarray)):
             args = tuple(args)
         else:
-            args = tuple([[a] if isinstance(a, (int, numpy.int32, numpy.int64)) else a for a in args])
+            args = tuple(
+                [
+                    [a] if isinstance(a, (int, numpy.int32, numpy.int64)) else a
+                    for a in args
+                ]
+            )
         if self.mean[tuple(args)].size == 1:
             pyobs.assertion(yobs.size == 1, "set item : dimensions do not match")
         else:
