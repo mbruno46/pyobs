@@ -188,8 +188,10 @@ def check_not_type(obj, s, t):
 def slice_to_range(sl, n):
     def ifnone(a, b):
         return b if a is None else a
-
-    return range(ifnone(sl.start, 0), ifnone(sl.stop, n), ifnone(sl.step, 1))
+    step = ifnone(sl.step, 1)
+    if (step<0):
+        return list(reversed(range(ifnone(sl.start, 0), ifnone(sl.stop, n), abs(step))))
+    return list(range(ifnone(sl.start, 0), ifnone(sl.stop, n), step))
 
 
 def slice_ndarray(t, *args):
@@ -223,6 +225,7 @@ def slice_ndarray(t, *args):
             aa.append(range(s[ia]))
         elif isinstance(a, slice):
             aa.append(slice_to_range(a, s[ia]))
+            print(list(slice_to_range(a, s[ia])), a)
         elif isinstance(a, numpy.ndarray):
             aa.append(a)
         elif isinstance(a, list):
