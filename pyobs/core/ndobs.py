@@ -624,6 +624,7 @@ class observable:
               `plot` are saved to disk, using `pfile` as base name with an additional
               suffix.
 
+
         Returns:
            list of two arrays: the central value and error of the observable.
 
@@ -661,6 +662,13 @@ class observable:
                 plot_piechart(self.description, sigma, sigma_tot)
 
         return [self.mean, numpy.sqrt(sigma_tot)]
+
+    def error_breakdown(self, errinfo={}):
+        """
+        Returns a dictionary with the squared error of each component.
+        """
+        [sigma, _, _] = self.error_core(errinfo, False, False)
+        return sigma
 
     def error_of_error(self, errinfo={}):
         """
