@@ -37,11 +37,11 @@ def transform(obs, f):
         d = obs.delta[key]
         _mask = list(numpy.in1d(subset_mask, d.mask).nonzero()[0])
         if len(_mask) > 0:
-            d_mask = numpy.zeros((len(_mask),), dtype=numpy.int)
+            d_mask = []
             for i in _mask:
-                d_mask[i] = subset_mask[i]
+                d_mask += [d.get_mask(subset_mask[i])]
             res.delta[key] = delta(_mask, d.idx, lat=d.lat)
-            res.delta[key].delta[:, :] = d.delta[d_mask, :]
+            res.delta[key].delta[:, :] = d.delta[numpy.array(d_mask, dtype=numpy.int), :]
 
     for key in obs.cdata:
         cd = obs.cdata[key]
