@@ -31,25 +31,21 @@ def transform(obs, f):
     res = pyobs.observable(description=obs.description)
     res.set_mean(new_mean)
 
-    subset_mask = list(f(numpy.reshape(numpy.arange(obs.size), obs.shape)).flatten())
+    subset_mask = f(numpy.reshape(numpy.arange(obs.size), obs.shape)).flatten()
 
     for key in obs.delta:
         d = obs.delta[key]
-        _mask = list(numpy.in1d(subset_mask, d.mask).nonzero()[0])
+        _mask = numpy.in1d(subset_mask, d.mask).nonzero()[0]
         if len(_mask) > 0:
-            d_mask = []
-            for i in _mask:
-                d_mask += [d.get_mask(subset_mask[i])]
+            d_mask = numpy.in1d(d.mask, subset_mask[_mask]).nonzero()[0]
             res.delta[key] = delta(_mask, d.idx, lat=d.lat)
-            res.delta[key].delta[:, :] = d.delta[numpy.array(d_mask, dtype=numpy.int), :]
+            res.delta[key].delta[:, :] = d.delta[d_mask, :]
 
     for key in obs.cdata:
         cd = obs.cdata[key]
         _mask = list(numpy.in1d(subset_mask, cd.mask).nonzero()[0])
         if len(_mask) > 0:
-            cd_mask = numpy.zeros((len(_mask),), dtype=numpy.int)
-            for i in _mask:
-                cd_mask[i] = subset_mask[i]
+            cd_mask = numpy.in1d(cd.mask, subset_mask[_mask]).nonzero()[0]
             res.cdata[key] = cdata(cd.cov, _mask)
             res.cdata[key].grad[:, :] = cd.grad[cd_mask, :]
 
