@@ -105,6 +105,8 @@ def valerr(value, error, significant_digits=2):
     d = significant_digits - 1
 
     def core(v, e):
+        if e == 0:
+            return f"{v:g}"
         exp = int(numpy.floor(numpy.log10(e)) - d)
         if exp < 0:
             out = f"%.{-exp}f" % v

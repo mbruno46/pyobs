@@ -187,10 +187,23 @@ def diag(x):
         f"Unexpected matrix with shape {x.shape}; only 1-D and 2-D arrays are supported",
     )
 
-    def f(x):
-        return numpy.diag(x)
+    if len(x.shape) == 2:
+        return pyobs.core.transform(x, lambda x: numpy.diag(x))
+    else:
+        res = pyobs.observable(x)
+        N = x.size
+        res.set_mean(numpy.diag(x.mean))
+        for key in res.delta:
+            d = res.delta[key]
+            for i in range(d.size):
+                d.mask[i] += d.mask[i] * N
+        return res
 
-    return pyobs.core.transform(x, f)
+
+#     def f(x):
+#         return numpy.diag(x)
+
+#     return pyobs.core.transform(x, f)
 
 
 def repeat(x, repeats, axis=None):

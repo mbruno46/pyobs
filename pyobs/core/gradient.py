@@ -21,6 +21,7 @@
 
 import pyobs
 import numpy
+from scipy.sparse import dia_matrix
 
 # grad is Na x Ni matrix
 class gradient:
@@ -75,6 +76,10 @@ class gradient:
                 u[:, uidx] += gvec @ v
         elif self.gtype == "diag":
             if uidx is None:
-                u += self.grad[vmask, None] * v
+                grad = dia_matrix((self.grad[vmask], [0]), shape=(self.Na, len(vmask)))
+                u += grad.dot(v)
             else:
-                u[:, uidx] += self.grad[vmask, None] * v
+                grad = dia_matrix(
+                    pyobs.slice_ndarray(numpy.diag(self.grad), umask, vmask)
+                )
+                u[:, uidx] += grad.dot(v)
