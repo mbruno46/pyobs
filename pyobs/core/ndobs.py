@@ -429,8 +429,10 @@ class observable:
         return transform(self, f)
 
     def __setitem__(self, args, yobs):
-        if isinstance(args, (int, numpy.int32, numpy.int64, slice, numpy.ndarray)):
+        if isinstance(args, (slice, numpy.ndarray)):
             args = tuple(args)
+        elif isinstance(args, (int, numpy.int32, numpy.int64)):
+            args = tuple([args])
         else:
             args = tuple(
                 [
