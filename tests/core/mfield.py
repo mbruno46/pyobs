@@ -39,3 +39,18 @@ print('cov mat \n',pyobs.valerr(cm,dcm))
 [v1, e1] = mfobs.blocked({"test-mfield": [2,2,2]}).error()
 assert numpy.all(abs(v0-v1) < 1e-12)
 assert abs(e0/e1-1) < 0.2
+
+# with holes
+v = numpy.prod(L)
+sites = numpy.arange(v)
+
+rng = pyobs.random.generator('mfield')
+holes = rng.sample_boolean(v)
+
+mfobs2 = pyobs.observable()
+mfobs2.create('test-mfield', data[holes], icnfg=list(sites[holes]), lat=L)
+[v0,e0] = mfobs.error()
+[v1,e1] = mfobs2.error()
+print(mfobs, mfobs2)
+assert numpy.all(numpy.abs(v0-v1) < e1)
+assert numpy.all(e1>e0)

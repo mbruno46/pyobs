@@ -214,12 +214,8 @@ class observable:
            >>> print(mpi)
            139.57061(23)    134.97700(50)
         """
-        if isinstance(value, (int, float, numpy.float64, numpy.float32)):
-            self.mean = numpy.reshape(value, (1,))
-            cov = numpy.reshape(covariance, (1,))
-        else:
-            self.mean = numpy.array(value)
-            cov = numpy.array(covariance)
+        self.mean = numpy.array(numpy.atleast_1d(value))
+        cov = numpy.array(numpy.atleast_1d(covariance))
         self.shape = numpy.shape(self.mean)
         pyobs.assertion(
             numpy.ndim(self.shape) == 1,
@@ -380,10 +376,7 @@ class observable:
     # overloaded indicing and slicing
 
     def set_mean(self, mean):
-        if isinstance(mean, (int, float, numpy.float32, numpy.float64)):
-            self.mean = numpy.reshape(mean, (1,))
-        else:
-            self.mean = numpy.array(mean)
+        self.mean = numpy.array(numpy.atleast_1d(mean))
         self.shape = numpy.shape(self.mean)
         self.size = numpy.size(self.mean)
 

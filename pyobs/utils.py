@@ -30,7 +30,6 @@ __all__ = [
     "PyobsError",
     "assertion",
     "check_type",
-    "check_not_type",
     "is_verbose",
     "set_verbose",
     "log_timer",
@@ -180,11 +179,6 @@ def check_type(obj, s, *t):
             c += 1
     if c == len(t):
         raise TypeError(f"Unexpected type for {s} [{t}]")
-
-
-def check_not_type(obj, s, t):
-    if type(obj) is t:
-        raise TypeError(f"Unexpected type for {s}")
 
 
 def slice_to_range(sl, n):

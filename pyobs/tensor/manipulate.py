@@ -169,7 +169,8 @@ def sort(x, axis=-1):
        obs : the sorted observable
     """
     idx = numpy.argsort(x.mean, axis)
-    return pyobs.core.transform(x, lambda x: numpy.take_along_axis(x, idx, axis))
+    return x[idx]
+    # return pyobs.core.transform(x, lambda x: numpy.take_along_axis(x, idx, axis))
 
 
 def diag(x):

@@ -137,11 +137,11 @@ class delta:
                 int(self.idx[-1] - self.idx[0]) + 1
             )  # first and last config included!
 
-    def get_mask(self, a):
-        if a in self.mask:
-            return self.mask.index(a)
-        else:
-            return -1
+    # def get_mask(self, a):
+    #     if a in self.mask:
+    #         return self.mask.index(a)
+    #     else:
+    #         return -1
 
     def start_idx(self):
         self.it = 0
