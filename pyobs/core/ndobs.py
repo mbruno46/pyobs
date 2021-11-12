@@ -422,17 +422,16 @@ class observable:
         return transform(self, f)
 
     def __setitem__(self, args, yobs):
-        if isinstance(args, (slice, numpy.ndarray)):
-            args = tuple(args)
-        elif isinstance(args, (int, numpy.int32, numpy.int64)):
-            args = tuple([args])
+        if isinstance(args, (int, numpy.int32, numpy.int64, slice, numpy.ndarray)):
+            args = [args]
         else:
-            args = tuple(
-                [
-                    [a] if isinstance(a, (int, numpy.int32, numpy.int64)) else a
-                    for a in args
-                ]
-            )
+            args = [
+                [a]
+                if isinstance(a, (int, numpy.int32, numpy.int64, slice, numpy.ndarray))
+                else a
+                for a in args
+            ]
+
         if self.mean[tuple(args)].size == 1:
             pyobs.assertion(yobs.size == 1, "set item : dimensions do not match")
         else:
@@ -489,7 +488,7 @@ class observable:
             elif y.shape == (1,):
                 g0 = pyobs.gradient(lambda x: x * y.mean, self.mean, gtype="diag")
                 g1 = pyobs.gradient(lambda x: self.mean * x, y.mean, gtype="full")
-            else:
+            else:  # pragma: no cover
                 raise pyobs.PyobsError("Shape mismatch, cannot multiply")
             return pyobs.derobs([self, y], self.mean * y.mean, [g0, g1])
         else:

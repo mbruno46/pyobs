@@ -215,7 +215,7 @@ def init_var(x, name):
     if ismf:
         lat = x.delta[keys[0]].lat
         for ik in keys:
-            if numpy.any(x.delta[ik].lat != lat):
+            if numpy.any(x.delta[ik].lat != lat):  # pragma: no cover
                 raise pyobs.PyobsError(
                     "Lattice does not match among different replicas of same ensemble"
                 )

@@ -54,10 +54,10 @@ class generator:
 
     def sample_boolean(self, N):
         numpy.random.set_state(self.state)
-        r = numpy.random.choice([True,False], N)
+        r = numpy.random.choice([True, False], N)
         self.state = numpy.random.get_state()
         return r
-        
+
     def acrand(self, mu, sigma, tau, N):
         """
         Create synthetic autocorrelated Monte Carlo data

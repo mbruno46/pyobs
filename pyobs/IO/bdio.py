@@ -70,7 +70,7 @@ def get_bdio_const(data):
         #             return bdio_const.BDIO_BIN_INT32LE
         if data.dtype == dtypes.FLOAT64:
             return bdio_const.BDIO_BIN_F64LE
-    else: # pragma: no cover
+    else:  # pragma: no cover
         raise pyobs.PyobsError("data format not supported")
 
 
@@ -143,7 +143,7 @@ class binary_file:
         array = numpy.array(data).astype(dt)
         if little:
             self.buf += array.tobytes("C")
-        else: # pragma: no cover
+        else:  # pragma: no cover
             self.buf += array.byteswap().tobytes("C")
 
     def encode_str(self, string):
@@ -246,7 +246,7 @@ class bdio_file(binary_file):
         elif isinstance(data, numpy.ndarray):
             if little:
                 bb = data.tobytes("C")
-            else: # pragma: no cover
+            else:  # pragma: no cover
                 bb = data.byteswap().tobytes("C")
         rlen = len(bb)
         islong = rlen > self.BDIO_MAX_RECORD_LENGTH

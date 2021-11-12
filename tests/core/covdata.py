@@ -41,3 +41,6 @@ print('masses = ',masses)
 masses[0] = masses[0]**2
 
 phi.peek()
+
+print('error_breakdown')
+print(phi.error_breakdown())
