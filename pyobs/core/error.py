@@ -55,7 +55,7 @@ class variance:
 
         gg = numpy.zeros((self.size, len(self.x)))
 
-        idx = numpy.power(numpy.array(self.x), (1 if D == 1 else 2)).astype('i4')
+        idx = numpy.power(numpy.array(self.x), (1 if D == 1 else 2)).astype("i4")
         _n = numpy.array(n[:, idx], dtype=numpy.float)
         _n[(_n == 0)] = numpy.inf
         gg = g[:, idx] / _n

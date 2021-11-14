@@ -24,19 +24,19 @@ import scipy
 import pyobs
 
 __all__ = [
-    "sum", 
-    "cumsum", 
-    "trace", 
-    "log", 
-    "exp", 
+    "sum",
+    "cumsum",
+    "trace",
+    "log",
+    "exp",
     "sin",
     "cos",
     "tan",
     "arctan",
-    "cosh", 
-    "sinh", 
-    "arccosh", 
-    "besselk"
+    "cosh",
+    "sinh",
+    "arccosh",
+    "besselk",
 ]
 
 
@@ -135,9 +135,11 @@ def trace(x, offset=0, axis1=0, axis2=1):
         description=f"trace for axes ({axis1,axis2}) of {x.description}",
     )
 
+
 ##############################################
 
-def __unary(x,f,df):
+
+def __unary(x, f, df):
     new_mean = f(x.mean)
     aux = df(x.mean)
     g = pyobs.gradient(lambda xx: xx * aux, x.mean, gtype="diag")
@@ -221,7 +223,7 @@ def tan(x):
     Examples:
        >>> tanA = pyobs.tan(obsA)
     """
-    return __unary(x, numpy.tan, lambda x: 1/numpy.cos(x)**2)
+    return __unary(x, numpy.tan, lambda x: 1 / numpy.cos(x) ** 2)
 
 
 def arctan(x):
@@ -237,9 +239,9 @@ def arctan(x):
     Examples:
        >>> arctanA = pyobs.arctan(obsA)
     """
-    return __unary(x, numpy.arctan, lambda x: 1/(1+x**2))
+    return __unary(x, numpy.arctan, lambda x: 1 / (1 + x ** 2))
 
-    
+
 def cosh(x):
     """
     Return the Hyperbolic cosine element-wise.
@@ -285,7 +287,9 @@ def arccosh(x):
     Examples:
        >>> B = pyobs.arccosh(obsA)
     """
-    return __unary(x, numpy.arccosh, lambda x: 1./numpy.sqrt(x**2 -1))
+    return __unary(x, numpy.arccosh, lambda x: 1.0 / numpy.sqrt(x ** 2 - 1))
+
+
 #     new_mean = numpy.arccosh(x.mean)
 #     aux = numpy.reciprocal(
 #         numpy.sqrt(x.mean ** 2 - numpy.ones(x.shape))

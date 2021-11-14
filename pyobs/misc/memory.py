@@ -97,7 +97,7 @@ def available():
 
     if bb > GB:
         print(f" - Available memory {bb/GB:.2f} GB\n")
-    else: # pragma: no cover
+    else:  # pragma: no cover
         print(f" - Available memory {bb/MB:.0f} MB\n")
 
     return bb

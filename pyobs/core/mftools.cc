@@ -43,7 +43,7 @@ static void index2coor(int s,int D,int *lat,int *x)
    }
 }
 
-static int coor2block(int D,int *x,int *bs)
+static int coor2block(int D,int *x,int *lat,int *bs)
 {
    int mu, ib, b;
    ib = 0;
@@ -51,7 +51,7 @@ static int coor2block(int D,int *x,int *bs)
    for (mu=D-1;mu>=0;mu--)
    {
       ib += b*(x[mu]/bs[mu]);
-      b *= bs[mu];
+      b *= (lat[mu]/bs[mu]);
    }
    return ib;
 }
@@ -107,7 +107,7 @@ static PyObject* blockdata(PyObject *self, PyObject *args)
    for (s=0;s<v;s++) 
    {
       index2coor(s,D,lat,x);
-      sp = coor2block(D,x,bs);
+      sp = coor2block(D,x,lat,bs);
       newdata[sp] += data[s];
    }
 
