@@ -23,7 +23,21 @@ import numpy
 import scipy
 import pyobs
 
-__all__ = ["sum", "cumsum", "trace", "log", "exp", "cosh", "sinh", "arccosh", "besselk"]
+__all__ = [
+    "sum", 
+    "cumsum", 
+    "trace", 
+    "log", 
+    "exp", 
+    "sin",
+    "cos",
+    "tan",
+    "arctan",
+    "cosh", 
+    "sinh", 
+    "arccosh", 
+    "besselk"
+]
 
 
 def sum(x, axis=None):
@@ -121,15 +135,13 @@ def trace(x, offset=0, axis1=0, axis2=1):
         description=f"trace for axes ({axis1,axis2}) of {x.description}",
     )
 
+##############################################
 
-# def sin(x):
-#    g=x.gradient(lambda x:x*numpy.cos(x.mean))
-#    return pyobs.derobs([self],numpy.sin(self.mean),[g])
-#
-# def cos(x):
-#    g=unary(x.mean,lambda x:-x*numpy.sin(x.mean))
-#    return pyobs.derobs([self],numpy.cos(self.mean),[g])
-#
+def __unary(x,f,df):
+    new_mean = f(x.mean)
+    aux = df(x.mean)
+    g = pyobs.gradient(lambda xx: xx * aux, x.mean, gtype="diag")
+    return pyobs.derobs([x], new_mean, [g])
 
 
 def log(x):
@@ -145,10 +157,7 @@ def log(x):
     Examples:
        >>> logA = pyobs.log(obsA)
     """
-    new_mean = numpy.log(x.mean)
-    aux = numpy.reciprocal(x.mean)
-    g = pyobs.gradient(lambda xx: xx * aux, x.mean, gtype="diag")
-    return pyobs.derobs([x], new_mean, [g], description=f"log of {x.description}")
+    return __unary(x, numpy.log, numpy.reciprocal)
 
 
 def exp(x):
@@ -164,11 +173,73 @@ def exp(x):
     Examples:
        >>> expA = pyobs.exp(obsA)
     """
-    new_mean = numpy.exp(x.mean)
-    g = pyobs.gradient(lambda xx: xx * new_mean, x.mean, gtype="diag")
-    return pyobs.derobs([x], new_mean, [g], description=f"exp of {x.description}")
+    return __unary(x, numpy.exp, numpy.exp)
 
 
+def sin(x):
+    """
+    Return the sine element-wise.
+
+    Parameters:
+       x (obs): input observable
+
+    Returns:
+       obs : the sine of the input observable, element-wise.
+
+    Examples:
+       >>> sinA = pyobs.sin(obsA)
+    """
+    return __unary(x, numpy.sin, numpy.cos)
+
+
+def cos(x):
+    """
+    Return the cosine element-wise.
+
+    Parameters:
+       x (obs): input observable
+
+    Returns:
+       obs : the cosine of the input observable, element-wise.
+
+    Examples:
+       >>> cosA = pyobs.cos(obsA)
+    """
+    return __unary(x, numpy.cos, lambda x: -numpy.sin(x))
+
+
+def tan(x):
+    """
+    Return the tangent element-wise.
+
+    Parameters:
+       x (obs): input observable
+
+    Returns:
+       obs : the tangent of the input observable, element-wise.
+
+    Examples:
+       >>> tanA = pyobs.tan(obsA)
+    """
+    return __unary(x, numpy.tan, lambda x: 1/numpy.cos(x)**2)
+
+
+def arctan(x):
+    """
+    Return the arctangent element-wise.
+
+    Parameters:
+       x (obs): input observable
+
+    Returns:
+       obs : the arctangent of the input observable, element-wise.
+
+    Examples:
+       >>> arctanA = pyobs.arctan(obsA)
+    """
+    return __unary(x, numpy.arctan, lambda x: 1/(1+x**2))
+
+    
 def cosh(x):
     """
     Return the Hyperbolic cosine element-wise.
@@ -182,10 +253,7 @@ def cosh(x):
     Examples:
        >>> B = pyobs.cosh(obsA)
     """
-    new_mean = numpy.cosh(x.mean)
-    aux = numpy.sinh(x.mean)
-    g = pyobs.gradient(lambda xx: xx * aux, x.mean, gtype="diag")
-    return pyobs.derobs([x], new_mean, [g], description=f"cosh of {x.description}")
+    return __unary(x, numpy.cosh, numpy.sinh)
 
 
 def sinh(x):
@@ -201,10 +269,7 @@ def sinh(x):
     Examples:
        >>> B = pyobs.sinh(obsA)
     """
-    new_mean = numpy.sinh(x.mean)
-    aux = numpy.cosh(x.mean)
-    g = pyobs.gradient(lambda xx: xx * aux, x.mean, gtype="diag")
-    return pyobs.derobs([x], new_mean, [g], description=f"sinh of {x.description}")
+    return __unary(x, numpy.sinh, numpy.cosh)
 
 
 def arccosh(x):
@@ -220,12 +285,13 @@ def arccosh(x):
     Examples:
        >>> B = pyobs.arccosh(obsA)
     """
-    new_mean = numpy.arccosh(x.mean)
-    aux = numpy.reciprocal(
-        numpy.sqrt(x.mean ** 2 - numpy.ones(x.shape))
-    )  # 1/sqrt(x^2-1)
-    g = pyobs.gradient(lambda x: x * aux, x.mean, gtype="diag")
-    return pyobs.derobs([x], new_mean, [g], description=f"arccosh of {x.description}")
+    return __unary(x, numpy.arccosh, lambda x: 1./numpy.sqrt(x**2 -1))
+#     new_mean = numpy.arccosh(x.mean)
+#     aux = numpy.reciprocal(
+#         numpy.sqrt(x.mean ** 2 - numpy.ones(x.shape))
+#     )  # 1/sqrt(x^2-1)
+#     g = pyobs.gradient(lambda x: x * aux, x.mean, gtype="diag")
+#     return pyobs.derobs([x], new_mean, [g], description=f"arccosh of {x.description}")
 
 
 def besselk(v, x):

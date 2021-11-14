@@ -22,7 +22,9 @@ print(corr)
 [c,dc] = corr.error()
 
 mat = pyobs.reshape(corr, (T//8,T//8))
-flist = ['sum', 'cumsum', 'trace','log','exp','cosh','sinh','arccosh']
+flist = pyobs.tensor.unary.__all__
+flist.remove('sum')
+flist.remove('besselk')
 
 for f in ['sum']:
     [v0, e0] = pyobs.__dict__[f](mat,axis=0).error()

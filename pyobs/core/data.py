@@ -186,13 +186,16 @@ class delta:
         else:
             rrmax = xmax
             v = self.vol()
-            if v == len(self.idx):
-                m = [v] * rrmax
-            else:
-                m = conv_ND(ones, self.idx, self.lat, rrmax)
-                Sr = pyobs.core.mftools.intrsq(numpy.ones(v), self.lat, rrmax)
-                Sr = Sr + 1 * (Sr == 0.0)
-                m /= Sr
+            m = conv_ND(ones, self.idx, self.lat, rrmax)
+
+#             if v == len(self.idx):
+#                 m = [v] * rrmax
+#             else:
+#             if v!=len(self.idx):
+#                 m = conv_ND(ones, self.idx, self.lat, rrmax)
+#                 Sr = pyobs.core.mftools.intrsq(numpy.ones(v), self.lat, rrmax)
+#                 Sr = Sr + 1 * (Sr == 0.0)
+#                 m /= Sr
 
         g = conv_ND(
             self.delta, self.idx, self.ncnfg() if isMC else self.lat, xmax, a, b

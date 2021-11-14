@@ -55,7 +55,7 @@ class variance:
 
         gg = numpy.zeros((self.size, len(self.x)))
 
-        idx = numpy.array(self.x, dtype=numpy.int) ** (1 if D == 1 else 2)
+        idx = numpy.power(numpy.array(self.x), (1 if D == 1 else 2)).astype('i4')
         _n = numpy.array(n[:, idx], dtype=numpy.float)
         _n[(_n == 0)] = numpy.inf
         gg = g[:, idx] / _n
@@ -161,7 +161,7 @@ class variance:
             y = self.cvar[a, :] / self.cvar[a, 0]
             err = self.stat_relerr(self.x, a)
 
-            plt.plot(self.x, y, "-", color="C0")
+            plt.plot(self.x, y, ".-", color="C0")
             plt.fill_between(
                 self.x, y * (1.0 + err), y * (1.0 - err), alpha=0.3, color="C0"
             )
