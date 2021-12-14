@@ -85,7 +85,7 @@ class observable:
         pyobs.memory.add(self)
 
     @pyobs.log_timer("create")
-    def create(self, ename, data, icnfg=None, rname=None, shape=(1,), lat=None):
+    def create(self, ename, data, icnfg=None, rname=None, shape=(1,), grid=None):
         """
         Create an observable
 
@@ -193,7 +193,8 @@ class observable:
 
         for ir in range(R):
             key = f"{ename}:{rname[ir]}"
-            self.delta[key] = delta(mask, icnfg[ir], data[ir], self.mean, lat)
+            # if grid is None Monte Carlo chain is assumed
+            self.delta[key] = delta(mask, icnfg[ir], data[ir], self.mean, grid)
 
         self.mean = numpy.reshape(self.mean, self.shape)
         pyobs.memory.update(self)

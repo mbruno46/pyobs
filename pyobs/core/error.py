@@ -37,7 +37,7 @@ def find_closest(arr, x0):
 
 
 class variance:
-    def __init__(self, n, g, Stau, D, k, fold=False):
+    def __init__(self, n, g, Stau, D, k):
         self.D = D
         self.k = k
         self.Stau = Stau
@@ -48,24 +48,21 @@ class variance:
         self.x = []
         for i in range(xmax):
             if numpy.any(n[:, i] > 1e-15):
-                if D == 1:
-                    self.x.append(i)
-                else:
-                    self.x.append(numpy.sqrt(i))
+#                 if D == 1:
+#                     self.x.append(i)
+#                 else:
+                self.x.append(numpy.sqrt(i))
 
         gg = numpy.zeros((self.size, len(self.x)))
 
-        idx = numpy.power(numpy.array(self.x), (1 if D == 1 else 2)).astype("i4")
+#         idx = numpy.power(numpy.array(self.x), (1 if D == 1 else 2)).astype("i4")
+        idx = numpy.power(numpy.array(self.x), 2).astype("i4")
         _n = numpy.array(n[:, idx], dtype=numpy.float)
         _n[(_n == 0)] = numpy.inf
         gg = g[:, idx] / _n
 
-        if fold:
-            _gg = numpy.array(gg)
-            _gg[:, 1:] *= 2.0
-            self.cvar = numpy.cumsum(_gg, axis=1)
-        else:
-            self.cvar = numpy.cumsum(gg, axis=1)
+        self.cvar = numpy.cumsum(gg, axis=1)
+        
         self.N = n[:, 0]
         self.xopt = [self.x[-1]] * self.size
         self.var = numpy.zeros((self.size, 2))
@@ -204,43 +201,72 @@ def plot_piechart(desc, errs, tot):  # pragma: no cover
         plt.show()
 
 
+# def init_var(x, name):
+#     keys = []
+#     ismf = False
+#     for rn in x.delta:
+#         if rn.split(":")[0] == name:
+#             keys.append(rn)
+#             if not x.delta[rn].lat is None:
+#                 ismf = True
+#     if ismf:
+#         lat = x.delta[keys[0]].lat
+#         for ik in keys:
+#             if numpy.any(x.delta[ik].lat != lat):  # pragma: no cover
+#                 raise pyobs.PyobsError(
+#                     "Lattice does not match among different replicas of same ensemble"
+#                 )
+#         xmax = x.delta[
+#             keys[0]
+#         ].rrmax()  # int(min([x.mfdata[kk].rrmax() for kk in keys]))
+#         rescale = [1] * len(keys)
+#     else:
+#         rescale = numpy.zeros((len(keys),), dtype=numpy.int)
+#         wmax = numpy.zeros((len(keys),), dtype=numpy.int)
+#         for ik in range(len(keys)):
+#             d = x.delta[keys[ik]]
+#             rescale[ik] = numpy.min(numpy.diff(d.idx))
+#             wmax[ik] = d.wmax() * rescale[ik]
+#         gcd = numpy.gcd.reduce(rescale)  # greatest common divisor
+#         rescale = rescale // gcd
+#         xmax = min(wmax) // gcd
+#         del wmax
+
+#     return [keys, ismf, xmax, rescale]
+
+# replicas make sense in the context of Monte carlo
+# if mfield either we sum all configs beforehand, or
+# we perform a 5D analysis, so no replicas.
 def init_var(x, name):
     keys = []
-    ismf = False
     for rn in x.delta:
         if rn.split(":")[0] == name:
             keys.append(rn)
-            if not x.delta[rn].lat is None:
-                ismf = True
-    if ismf:
-        lat = x.delta[keys[0]].lat
-        for ik in keys:
-            if numpy.any(x.delta[ik].lat != lat):  # pragma: no cover
-                raise pyobs.PyobsError(
-                    "Lattice does not match among different replicas of same ensemble"
-                )
-        xmax = x.delta[
-            keys[0]
-        ].rrmax()  # int(min([x.mfdata[kk].rrmax() for kk in keys]))
-        rescale = [1] * len(keys)
-    else:
-        rescale = numpy.zeros((len(keys),), dtype=numpy.int)
-        wmax = numpy.zeros((len(keys),), dtype=numpy.int)
-        for ik in range(len(keys)):
-            d = x.delta[keys[ik]]
-            rescale[ik] = numpy.min(numpy.diff(d.idx))
-            wmax[ik] = d.wmax() * rescale[ik]
-        gcd = numpy.gcd.reduce(rescale)  # greatest common divisor
-        rescale = rescale // gcd
-        xmax = min(wmax) // gcd
-        del wmax
 
-    return [keys, ismf, xmax, rescale]
-
+    rescale = numpy.zeros((len(keys),), dtype=numpy.int)
+    rrmax = numpy.zeros((len(keys),), dtype=numpy.int)
+    nd = None
+    
+    for ik in range(len(keys)):
+        d = x.delta[keys[ik]]
+        if nd is None:
+            nd = d.grid.ndims
+        else:
+            pyobs.assertion(nd == d.grid.ndims, "Incompatible replicas")
+        rescale[ik] = numpy.min(numpy.diff(d.idx))
+        rrmax[ik] = d.rrmax() * rescale[ik]
+        
+    gcd = numpy.gcd.reduce(rescale)  # greatest common divisor
+    rescale = rescale // gcd
+    rrmax = min(rrmax) // gcd
+    return [keys, rrmax, nd, rescale]
+    
 
 class var(variance):
     def __init__(self, x, name, Stau, k):
-        [keys, self.ismf, xmax, rescale] = init_var(x, name)
+#         [keys, self.ismf, xmax, rescale] = init_var(x, name)
+        [keys, xmax, D, rescale] = init_var(x, name)
+
 
         # union of masks from replicas
         mask = []
@@ -263,11 +289,12 @@ class var(variance):
                 n[a, :: rescale[i]] += res[0]
                 g[a, :: rescale[i]] += res[1]
 
-        if self.ismf:
-            D = len(x.delta[keys[0]].lat)
-            variance.__init__(self, n, g, Stau, D, k)
-        else:
-            variance.__init__(self, n, g, Stau, 1, k, fold=True)
+#         if self.ismf:
+#             D = len(x.delta[keys[0]].lat)
+#             variance.__init__(self, n, g, Stau, D, k)
+#         else:
+#             variance.__init__(self, n, g, Stau, 1, k, fold=True)
+        variance.__init__(self, n, g, Stau, D, k)
         self.full_size = x.size
 
 

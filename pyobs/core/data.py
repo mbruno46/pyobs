@@ -48,14 +48,17 @@ def create_fft_data(data, idx, shape, fft_ax):
 # NOTE: if lat is integer then Monte carlo assumed, ie open BC at the boundary
 # of the markov chain. if lat is a list then periodic BC assumed in all dirs,
 # even if lat is 1D
-def conv_ND(data, idx, lat, xmax, a=0, b=None):
-    if isinstance(lat, (int, numpy.int)):
-        shape = (2 * lat,)
-        lat = [lat]
-        ismf = False
-    else:
-        shape = tuple(lat)
-        ismf = True
+# NOTE: we introduce boundary conditions via the list bc
+# accepted valuesa are: 'periodic', 'open'
+# lat and bc must always be lists
+def conv_ND(data, idx, lat, bc, xmax, a=0, b=None):
+    _s = []
+    for mu in range(len(lat)):
+        if bc[mu]=='periodic':
+            _s += [lat[mu]]
+        elif bc[mu]=='open':
+            _s += [lat[mu]*2]
+    shape = tuple(_s)
 
     D = len(lat)
     fft_ax = tuple(range(D))
@@ -74,12 +77,12 @@ def conv_ND(data, idx, lat, xmax, a=0, b=None):
         aux[0] *= aux[1].conj()
         aux[1] = numpy.fft.irfftn(aux[0].real, s=shape, axes=fft_ax)
 
-    if ismf:
-        aux[1] = numpy.reshape(aux[1], (v,))
-        return pyobs.core.mftools.intrsq(aux[1], lat, xmax)
+#     if ismf:
+    aux[1] = numpy.reshape(aux[1], (v,))
+    return pyobs.core.mftools.intrsq(aux[1], lat, xmax)
 
-    g = numpy.array(aux[1][0:xmax])
-    return numpy.around(g, decimals=15)
+#     g = numpy.array(aux[1][0:xmax])
+#     return numpy.around(g, decimals=15)
 
 
 # TODO: remove blocks that are zeros
@@ -94,28 +97,34 @@ def block_data(data, idx, lat, bs):
 
 
 class delta:
-    def __init__(self, mask, idx, data=None, mean=None, lat=None):
+    def __init__(self, mask, idx, data=None, mean=None, grid=None):
         # idx is expected to be a list or range
         self.size = len(mask)
         self.mask = [m for m in mask]
         self.it = 0
-        if lat is None:
-            self.lat = None
-        else:
-            self.lat = numpy.array(lat, dtype=numpy.int32)
 
+        dim0 = None
+    
         if type(idx) is list:
             dc = numpy.unique(numpy.diff(idx))
             pyobs.assertion(numpy.any(dc > 0), "Unsorted idx")
             if len(dc) == 1:
                 self.idx = range(idx[0], idx[-1] + dc[0], dc[0])
+                dim0 = len(self.idx)
             else:
                 self.idx = list(idx)
+                dim0 = idx[-1]+1-idx[0]
         elif type(idx) is range:
             self.idx = idx
+            dim0 = len(self.idx)
         else:  # pragma: no cover
             raise pyobs.PyobsError("Unexpected idx")
         self.n = len(self.idx)
+
+        if grid is None:
+            self.grid = pyobs.core.grid([dim0], ['open'])
+        else:      
+            self.grid = grid
 
         self.delta = numpy.zeros((self.size, self.n), dtype=numpy.float64)
 
@@ -125,7 +134,7 @@ class delta:
             )
 
     def copy(self):
-        res = delta(self.mask, self.idx, lat=self.lat)
+        res = delta(self.mask, self.idx, grid=self.grid)
         res.delta = numpy.array(self.delta)
         return res
 
@@ -179,59 +188,73 @@ class delta:
 
     def gamma(self, xmax, a, b=None):
         ones = numpy.reshape(numpy.ones(self.n), (1, self.n))
-        isMC = self.lat is None
+#         isMC = self.lat is None
 
-        if isMC:
-            m = conv_ND(ones, self.idx, self.ncnfg(), xmax)
-        else:
-            rrmax = xmax
-            v = self.vol()
-            if v == len(self.idx):
-                m = [v] * rrmax
-            else:
-                m = conv_ND(ones, self.idx, self.lat, rrmax)
-                Sr = pyobs.core.mftools.intrsq(numpy.ones(v), self.lat, rrmax)
-                Sr = Sr + 1 * (Sr == 0.0)
-                m /= Sr
+#         if isMC:
+#             m = conv_ND(ones, self.idx, self.ncnfg(), xmax)
+#         else:
+#             rrmax = xmax
+#             v = self.vol()
+#             if v == len(self.idx):
+#                 m = [v] * rrmax
+#             else:
+#                 m = conv_ND(ones, self.idx, self.lat, rrmax)
+#                 Sr = pyobs.core.mftools.intrsq(numpy.ones(v), self.lat, rrmax)
+#                 Sr = Sr + 1 * (Sr == 0.0)
+#                 m /= Sr
 
-        g = conv_ND(
-            self.delta, self.idx, self.ncnfg() if isMC else self.lat, xmax, a, b
-        )
+        m = self.grid.convolution(ones, self.idx, xmax)
+        v = self.grid.vol
+        if v != self.n:
+            Sr = self.grid.solid_angle(xmax)
+            Sr = Sr + 1 * (Sr == 0.0)
+            m /= Sr
+        
+        g = self.grid.convolution(self.delta, self.idx, xmax, a, b)
         return [m, g]
 
     def blocked(self, bs):
-        isMC = self.lat is None
-
-        if isMC:
-            if isinstance(bs, (int, numpy.int)):
-                v = self.ncnfg()  # (self.ncnfg()+bs-1) - ((self.ncnfg()+bs-1)%bs)
-                v //= bs
-                lat = None
-            else:  # pragma: no cover
-                raise pyobs.PyobsError("Unexpected block size")
-        else:
-            pyobs.assertion(
-                numpy.sum(self.lat % numpy.array(bs)) == 0,
-                "Block size does not divide lattice",
-            )
-            pyobs.assertion(len(bs) == len(self.lat), "Block size does match lattice")
-            lat = self.lat / numpy.array(bs)
-            v = int(numpy.prod(lat))
-            bs = numpy.array(bs, dtype=numpy.int32)
-
-        res = delta(self.mask, range(v), lat=lat)
+        blocked_grid = self.grid.block(bs)
+        res = delta(self.mask, blocked_grid.vol, grid=blocked_grid)
         for a in range(self.size):
-            res.delta[a, :] = block_data(
-                self.delta[a, :], self.idx, self.ncnfg() if isMC else self.lat, bs
-            )
-        return res
+            res.delta[a, :] = self.grid.block_data(self.delta[a,:], self.idx, bs)
+        
+#     def blocked(self, bs):
+#         isMC = self.lat is None
 
-    # replica ensemble utility functions
-    def wmax(self):
-        return self.ncnfg() // 2
+#         if isMC:
+#             if isinstance(bs, (int, numpy.int)):
+#                 v = self.ncnfg()  # (self.ncnfg()+bs-1) - ((self.ncnfg()+bs-1)%bs)
+#                 v //= bs
+#                 lat = None
+#             else:  # pragma: no cover
+#                 raise pyobs.PyobsError("Unexpected block size")
+#         else:
+#             pyobs.assertion(
+#                 numpy.sum(self.lat % numpy.array(bs)) == 0,
+#                 "Block size does not divide lattice",
+#             )
+#             pyobs.assertion(len(bs) == len(self.lat), "Block size does match lattice")
+#             lat = self.lat / numpy.array(bs)
+#             v = int(numpy.prod(lat))
+#             bs = numpy.array(bs, dtype=numpy.int32)
+
+#         res = delta(self.mask, range(v), lat=lat)
+#         for a in range(self.size):
+#             res.delta[a, :] = block_data(
+#                 self.delta[a, :], self.idx, self.ncnfg() if isMC else self.lat, bs
+#             )
+#         return res
+
+#     # replica ensemble utility functions
+#     def wmax(self):
+#         return self.ncnfg() // 2
 
     def rrmax(self):
-        return int(numpy.sum((self.lat / 2) ** 2) + 1)
+        return self.grid.rrmax()
+    
+#     def rrmax(self):
+#         return int(numpy.sum((self.lat / 2) ** 2) + 1)
 
-    def vol(self):
-        return numpy.prod(self.lat)
+#     def vol(self):
+#         return numpy.prod(self.lat)
