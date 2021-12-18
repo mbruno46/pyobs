@@ -76,6 +76,3 @@ class grid:
         dat = expand_data(data, idx, tuple(self.dimensions))
         return pyobs.core.mftools.blockdata(dat, self.dimensions, block_size)
 
-    
-
-

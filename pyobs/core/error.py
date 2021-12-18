@@ -371,11 +371,11 @@ def gamma_error(x, name, plot=False, pfile=None, einfo=None):
     else:
         v.set_opt(einfo.W)
 
-    if not v.ismf:
-        v.correct_gamma_bias()
-        tau = v.tauint() * 0.5
-    else:
-        tau = v.tauint()
+#     if not v.ismf:
+#         v.correct_gamma_bias()
+#         tau = v.tauint() * 0.5
+#     else:
+    tau = v.tauint()
 
     if plot:  # pragma: no cover
         v.plot("|R|/a" if v.ismf else "icnfg", x.description, name, pfile)
