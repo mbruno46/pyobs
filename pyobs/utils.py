@@ -37,6 +37,7 @@ __all__ = [
     "tex_table",
     "slice_ndarray",
     "import_string",
+    "array",
 ]
 
 verbose = ["save", "load", "mfit"]
@@ -253,3 +254,8 @@ def import_string(data):
         out = [core(s) for s in data]
         return numpy.array(out)
     return core(data)
+
+def array(x):
+    if numpy.shape(x)==():
+        return numpy.array(x).reshape((1,))
+    return numpy.array(x)
