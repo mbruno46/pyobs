@@ -24,7 +24,7 @@ import numpy
 
 def Gt(t, m, p, L):
     phat = 2 * numpy.sin(numpy.array(p) * numpy.pi / numpy.array(L))
-    om = numpy.arccosh(1.0 + 0.5 * (m ** 2 + numpy.sum(phat ** 2)))
+    om = numpy.arccosh(1.0 + 0.5 * (m**2 + numpy.sum(phat**2)))
     return numpy.exp(-numpy.abs(t) * om) * 0.5 / numpy.sinh(om)
 
 

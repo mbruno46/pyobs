@@ -239,7 +239,7 @@ def arctan(x):
     Examples:
        >>> arctanA = pyobs.arctan(obsA)
     """
-    return __unary(x, numpy.arctan, lambda x: 1 / (1 + x ** 2))
+    return __unary(x, numpy.arctan, lambda x: 1 / (1 + x**2))
 
 
 def cosh(x):
@@ -287,7 +287,7 @@ def arccosh(x):
     Examples:
        >>> B = pyobs.arccosh(obsA)
     """
-    return __unary(x, numpy.arccosh, lambda x: 1.0 / numpy.sqrt(x ** 2 - 1))
+    return __unary(x, numpy.arccosh, lambda x: 1.0 / numpy.sqrt(x**2 - 1))
 
 
 #     new_mean = numpy.arccosh(x.mean)

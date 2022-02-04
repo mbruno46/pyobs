@@ -59,9 +59,8 @@ class generator:
         self.state = numpy.random.get_state()
         return r
 
-    
     def acrand(self, tau, N, n=1):
-        r = numpy.reshape(self.sample_normal(N*n), (N,n))
+        r = numpy.reshape(self.sample_normal(N * n), (N, n))
 
         if tau > 0.5:
             f = numpy.exp(-1.0 / tau)
@@ -70,11 +69,10 @@ class generator:
             tau = 0.5
         ff = numpy.sqrt(1.0 - f * f)
         rn = numpy.zeros(numpy.shape(r))
-        rn[0,:] = ff * r[0,:]
+        rn[0, :] = ff * r[0, :]
         for i in range(1, N):
-            rn[i,:] = ff * r[i,:] + f * rn[i - 1,:]
+            rn[i, :] = ff * r[i, :] + f * rn[i - 1, :]
         return rn
-        
 
     def markov_chain(self, mu, cov, taus, N, couplings=None):
         """
@@ -82,7 +80,7 @@ class generator:
 
         Parameters:
            mu (float or 1D array): the central value
-           cov (float or array): the target covariance matrix; if a 1-D array is 
+           cov (float or array): the target covariance matrix; if a 1-D array is
               passed, a diagonal covariance matrix is assumed
            taus (float or array): the autocorrelation time(s). Values smaller
            than 0.5 are ignored and set to automatically to 0.5.
@@ -103,37 +101,43 @@ class generator:
 
         """
         mu = pyobs.array(mu)
-        pyobs.assertion(numpy.ndim(mu)==1, "only 1D arrays are supported")
+        pyobs.assertion(numpy.ndim(mu) == 1, "only 1D arrays are supported")
         na = len(mu)
-        
+
         cov = pyobs.array(cov)
-        pyobs.assertion(numpy.shape(cov)[0]==na, "covariance matrix does not match central values")
-        
+        pyobs.assertion(
+            numpy.shape(cov)[0] == na, "covariance matrix does not match central values"
+        )
+
         taus = pyobs.array(taus)
         taus = 0.5 * (taus <= 0.5) + taus * (taus > 0.5)
         nt = len(taus)
         if couplings is None:
-            couplings = pyobs.array(numpy.ones((na,nt)))
+            couplings = pyobs.array(numpy.ones((na, nt)))
         else:
             couplings = pyobs.array(couplings)
-            pyobs.assertion(numpy.shape(couplings)==(na,nt), f"unexpected couplings for {na} values and {nt} modes")
-        
-        rn = numpy.zeros((N,na))
-        _c = numpy.stack([couplings]*N)
+            pyobs.assertion(
+                numpy.shape(couplings) == (na, nt),
+                f"unexpected couplings for {na} values and {nt} modes",
+            )
+
+        rn = numpy.zeros((N, na))
+        _c = numpy.stack([couplings] * N)
         for i in range(len(taus)):
-            rn += _c[:,:,i] * self.acrand(taus[i], N, na)
-        
+            rn += _c[:, :, i] * self.acrand(taus[i], N, na)
+
         pref = numpy.sqrt(N / (2 * (couplings**2 @ taus)))
-        
+
         if numpy.ndim(cov) == 1:
             Q = numpy.diag(numpy.sqrt(cov))
         else:
             [w, v] = numpy.linalg.eig(cov)
             Q = numpy.diag(numpy.sqrt(w)) @ v.T
-        
-        if na==1:
+
+        if na == 1:
             return (mu + (pref * rn) @ Q).reshape((N,))
         return mu + (pref * rn) @ Q
+
 
 #     def acrandn(self, mu, cov, tau, N):
 #         """

@@ -195,4 +195,4 @@ def matrix_power(x, a):
        >>> matsqrt @ mat @ matsqrt # return the identity
     """
     [w, v] = eig(x)
-    return v @ pyobs.diag(w ** a) @ pyobs.transpose(v)
+    return v @ pyobs.diag(w**a) @ pyobs.transpose(v)

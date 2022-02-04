@@ -36,7 +36,7 @@ class cdata:
         for a in self.mask:
             ia = self.mask.index(a)
             # special case cobs_scalar * obs_vector, then mask is vector but n=1
-            if n==1:
+            if n == 1:
                 self.grad[ia, 0] = 1.0
             else:
                 self.grad[ia, a] = 1.0

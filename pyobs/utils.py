@@ -168,7 +168,7 @@ def tex_table(mat, fmt=None):
             else:
                 h += [f"%{fmt[i]}" % mat[a, i]]
                 i += 1
-        outstr += [fr'{" & ".join(h)} \\ ']
+        outstr += [rf'{" & ".join(h)} \\ ']
 
     return outstr
 
@@ -255,7 +255,8 @@ def import_string(data):
         return numpy.array(out)
     return core(data)
 
+
 def array(x):
-    if numpy.shape(x)==():
+    if numpy.shape(x) == ():
         return numpy.array(x).reshape((1,))
     return numpy.array(x)
