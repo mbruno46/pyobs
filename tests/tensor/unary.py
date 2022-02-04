@@ -11,10 +11,10 @@ xax=range(T//2)
 corr_ex = [pyobs.qft.free_scalar.Cphiphi(x,mass,p,T,L)+2.0 for x in xax]
 cov_ex = pyobs.qft.free_scalar.cov_Cphiphi(mass,p,T,L)[0:T//2,0:T//2]
 
-N=800
+N=1000
 tau=2.0
 rng = pyobs.random.generator('unary')
-data = rng.acrandn(corr_ex,cov_ex,tau,N)
+data = rng.markov_chain(corr_ex,cov_ex/N,tau,N)
 
 corr = pyobs.observable()
 corr.create(f'm{mass:g}-{L}x{T}', data.flatten(), shape=(len(xax),))

@@ -15,7 +15,7 @@ cov_ex = pyobs.qft.free_scalar.cov_Cphiphi(mass,p,T,L)[0:T//2,0:T//2]
 N=4000
 tau=1.0
 rng = pyobs.random.generator('slice')
-data = rng.acrandn(corr_ex,cov_ex,tau,N)
+data = rng.markov_chain(corr_ex,cov_ex,tau,N)
 
 corr = pyobs.observable()
 corr.create(f'm{mass:g}-{L}x{T}', data.flatten(), shape=(len(xax),))

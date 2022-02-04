@@ -10,7 +10,7 @@ N=800
 tau=3.0
 
 rng = pyobs.random.generator('root')
-data = rng.acrandn(y,dy,tau,N)
+data = rng.markov_chain(y,dy**2,tau,N)
 yobs = pyobs.observable()
 yobs.create('test',data.flatten(),shape=(len(x),))
 

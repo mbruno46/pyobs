@@ -10,7 +10,7 @@ tau=4.0
 
 rng = pyobs.random.generator('covdata')
 
-data = rng.synthetic_float(val,sig,tau,N)
+data = rng.markov_chain(val,sig,tau,N)
 t0 = pyobs.observable()
 t0.create('EnsA',data,rname='r001')
 

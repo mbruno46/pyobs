@@ -4,7 +4,7 @@ import numpy
 
 rng = pyobs.random.generator('io')
 nrep = 100
-data = [rng.acrandn([2.31,3.14],[0.2**2,0.1**2],4.0,1000).flatten() for _ in range(nrep)]
+data = [rng.markov_chain([2.31,3.14],[0.2**2,0.1**2],4.0,1000).flatten() for _ in range(nrep)]
 
 test = pyobs.observable(description='save/load bdio')
 test.create('ensA',data,rname=[f"r{i}" for i in range(nrep)],shape=(2,))

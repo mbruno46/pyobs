@@ -11,7 +11,7 @@ tau=0.0
 
 rng = pyobs.random.generator(46)
 
-data = rng.acrand(val,sig,tau,N)
+data = rng.markov_chain(val,sig**2,tau,N)
 obsA = pyobs.observable()
 obsA.create('EnsA',data)
 
@@ -24,7 +24,7 @@ print(f'Estimated error {da[0]:g} vs expeceted {sig:g}')
 N=10000
 tau=0.0
 
-data = rng.acrand(val,sig,tau,N)
+data = rng.markov_chain(val,sig**2,tau,N)
 obsA = pyobs.observable()
 obsA.create('EnsA',data)
 
@@ -40,7 +40,7 @@ assert abs(a-val) < da
 N=4000
 tau=4.0
 
-data = rng.acrand(val,sig,tau,N)
+data = rng.markov_chain(val,sig**2,tau,N)
 obsA = pyobs.observable()
 obsA.create('EnsA',data)
 

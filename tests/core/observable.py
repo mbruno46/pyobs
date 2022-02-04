@@ -10,7 +10,7 @@ N=1000
 tau=0.0
 
 rng = pyobs.random.generator('test=1')
-data = rng.acrand(val,sig,tau,N)
+data = rng.markov_chain(val,sig**2,tau,N).flatten()
 obsA = pyobs.observable()
 try:
     obsA.create(12,data)
@@ -33,7 +33,7 @@ del _obsA
 
 obsB = pyobs.observable(obsA)
 
-data2 = rng.acrand(val,sig,tau,N)
+data2 = rng.markov_chain(val,sig**2,tau,N).flatten()
 obsC = pyobs.observable()
 obsC.create('EnsA',[data[0::2],data2],icnfg=[range(0,N,2),range(100,100+N)],rname=['r001','r002'])
 obsC.peek()

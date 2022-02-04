@@ -16,8 +16,8 @@ dy = (y*0.1)**2
 N = 1000
 tau = 1.0
 
-rng = pyobs.random.generator('46')
-data = rng.acrandn(y,dy,tau,N)
+rng = pyobs.random.generator('mfit')
+data = rng.markov_chain(y,dy**2,tau,N)
 corr = pyobs.observable()
 corr.create('test',data.flatten(),shape=(T,))
 

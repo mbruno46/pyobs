@@ -3,12 +3,12 @@ import numpy
 
 mu=[3.14, 6.14]
 cov=numpy.array([[0.01, 0.002], [0.002,0.02]])**2
-N=500
+N=800
 tau=0.0
 
 rng = pyobs.random.generator('data')
 
-data = rng.acrandn(mu,cov,tau,N)
+data = rng.markov_chain(mu,cov,tau,N)
 mask = [True]*N
 mask[1] = False
 mask[-1] = False
@@ -28,7 +28,7 @@ ddc = obsC.error_of_error()
 
 cov = numpy.array(cov)
 g = numpy.array([-b/(2.0*a*a), 1/(2.0*a)])
-err = numpy.sqrt((g.T @ cov @ g)/N)
+err = numpy.sqrt((g.T @ cov @ g))
 
 assert abs(err-dc) < ddc
 

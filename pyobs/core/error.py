@@ -104,7 +104,7 @@ class variance:
 
     def set_opt(self, xopt):
         for a in range(self.size):
-            if type(xopt) is list:
+            if isinstance(xopt,(list, numpy.ndarray)):
                 if xopt[a] in self.x:
                     i = self.x.index(xopt[a])
                 else:
@@ -126,10 +126,14 @@ class variance:
 
     def correct_gamma_bias(self):
         for a in range(self.size):
-            f = self.OmegaD * (self.xopt[a] ** self.D) / (self.N[a] * self.D)
-            self.var[a] += self.var[a] * f
-            self.cvar[a, :] += self.cvar[a, :] * f
-
+            # f = self.OmegaD * (self.xopt[a] ** self.D) / (self.N[a] * self.D)
+            # self.var[a] += self.var[a] * f
+            # self.cvar[a, :] += self.cvar[a, :] * f
+            # Gamma -> Gamma + C/N
+            # cumsum(Gamma) -> cumsum(Gamma) + cumsum(C/N)
+            self.cvar[a, :] += numpy.arange(1,len(self.cvar[a,:])+1)*self.var[a,0] / self.N[a]
+        self.set_opt(self.xopt)
+        
     def tauint(self):
         tau = numpy.zeros((self.full_size, 2))
         for a in self.mask:

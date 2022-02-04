@@ -8,7 +8,7 @@ N=1000
 tau=2.0
 
 rng = pyobs.random.generator(46)
-data = rng.acrandn(val,cov,tau,N)
+data = rng.markov_chain(val,cov,tau,N).flatten()
 
 obsA = pyobs.observable()
 obsA.create('EnsA',data.flatten(),shape=(2,))

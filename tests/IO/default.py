@@ -3,7 +3,7 @@ import os
 import numpy
 
 rng = pyobs.random.generator('io')
-data = rng.acrandn([2.31,3.14],[0.2**2,0.1**2],4.0,3000)
+data = rng.markov_chain([2.31,3.14],[0.2**2,0.1**2],4.0,3000)
 
 test = pyobs.observable(description='save/load test')
 test.create('test',data.flatten(),icnfg=range(0,3000*4,4),rname='rep1',shape=(2,))

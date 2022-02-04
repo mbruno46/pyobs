@@ -10,9 +10,9 @@ tau=2.0
 rng = pyobs.random.generator('blocked')
 
 obsA = pyobs.observable()
-data = rng.acrandn(val,cov,tau,N)
+data = rng.markov_chain(val,cov,tau,N)
 obsA.create('EnsA',data.flatten(),rname='r0',shape=(2,))
-data = rng.acrandn(val,cov,tau,N)
+data = rng.markov_chain(val,cov,tau,N)
 obsA.create('EnsA',data.flatten(),rname='r1',shape=(2,))
 
 [a,da] = obsA.error()

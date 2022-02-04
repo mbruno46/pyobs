@@ -7,14 +7,14 @@ cov=[(val[0]*5)**2, (val[1]*2)**2]
 N=1000
 tau=2.0
 
-rng = pyobs.random.generator('math')
-data = rng.acrandn(val,cov,tau,N)
+rng = pyobs.random.generator('Math')
+data = rng.markov_chain(val,cov,tau,N)
 
 obsA = pyobs.observable()
 obsA.create('EnsA',data.flatten(),shape=(2,))
 print(obsA)
 
-data = rng.acrandn(val,cov,tau,N)
+data = rng.markov_chain(val,cov,tau,N)
 obsB = pyobs.observable()
 obsB.create('EnsB',data.flatten(),shape=(2,))
 
