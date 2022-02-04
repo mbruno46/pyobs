@@ -10,7 +10,7 @@ tau=4.0
 
 rng = pyobs.random.generator('covdata')
 
-data = rng.acrand(val,sig,tau,N)
+data = rng.synthetic_float(val,sig,tau,N)
 t0 = pyobs.observable()
 t0.create('EnsA',data,rname='r001')
 
@@ -44,3 +44,11 @@ phi.peek()
 
 print('error_breakdown')
 print(phi.error_breakdown())
+
+[v0, e0] = (masses*mpi).error()
+[v,e] = (masses[0]*mpi).error()
+assert numpy.fabs(v0[0] - v) < 1e-12
+assert numpy.fabs(e0[0] - e) < 1e-12
+[v,e] = (masses[1]*mpi).error()
+assert numpy.fabs(v0[1] - v) < 1e-12
+assert numpy.fabs(e0[1] - e) < 1e-12

@@ -35,7 +35,11 @@ class cdata:
         self.grad = numpy.zeros((self.size, n), dtype=numpy.float64)
         for a in self.mask:
             ia = self.mask.index(a)
-            self.grad[ia, a] = 1.0
+            # special case cobs_scalar * obs_vector, then mask is vector but n=1
+            if n==1:
+                self.grad[ia, 0] = 1.0
+            else:
+                self.grad[ia, a] = 1.0
 
     def copy(self):
         res = cdata(self.cov, self.mask)
