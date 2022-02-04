@@ -37,8 +37,11 @@ assert abs(a-v) < e
 [v, e] = pars[1].error()
 assert abs(m-v) < e
 
-# extrapolate value at zero
+# extrapolate to zero
 [yobs] = fit.eval(0.0,pars)
 
 [v, e] = yobs.error()
 assert abs(a-v) < e
+
+# evaluate at several points
+yobs = fit.eval(numpy.arange(0.0,T,0.1), pars)
