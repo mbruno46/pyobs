@@ -4,12 +4,12 @@ Future milestones:
  - finite volume quantization condition for 2->2
  - exponential tail
 
-version 1.3.0, 11.11.2021:
+version 1.3.0, 06.02.2021:
  - added utility functions (tensor_remove, import_string)
  - minor bugs fixed
  - added support xml and bdio format (dobs-tools, ALPHA Collab.)
  - interface for synthetic autocorrelated data changed
- - several bugs in slicing fixed
+ - several bugs fixed
 
 version 1.2.0, 21.07.2021:
  - added support for binning of Monte Carlo data, and blocking for master-field data
