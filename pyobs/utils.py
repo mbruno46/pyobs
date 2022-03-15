@@ -167,7 +167,7 @@ def tex_table(mat, fmt=None):
             else:
                 h += [f"%{fmt[i]}" % mat[a, i]]
                 i += 1
-        outstr += [fr'{" & ".join(h)} \\ ']
+        outstr += [rf'{" & ".join(h)} \\ ']
 
     return outstr
 

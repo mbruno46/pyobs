@@ -177,6 +177,6 @@ def error_bias4(x, f):
             x.delta[key].delta,
         )
         dd2 = numpy.sum(d2, axis=1)
-        bias4 += dd2 ** 2 / x.delta[key].n ** 4
+        bias4 += dd2**2 / x.delta[key].n ** 4
 
     return numpy.sqrt(bias4)

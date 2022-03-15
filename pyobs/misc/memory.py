@@ -22,8 +22,8 @@
 import sys, os, numpy
 
 book = {}
-MB = 1024.0 ** 2
-GB = 1024.0 ** 3
+MB = 1024.0**2
+GB = 1024.0**3
 
 
 def get_size(obj):

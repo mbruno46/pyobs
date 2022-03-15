@@ -84,5 +84,5 @@ class interpolate:
             x = numpy.array(x)
         res = pyobs.repeat(self.coeff[0], N)
         for i in range(1, self.k):
-            res += pyobs.repeat(self.coeff[i], N) * (x ** i)
+            res += pyobs.repeat(self.coeff[i], N) * (x**i)
         return res

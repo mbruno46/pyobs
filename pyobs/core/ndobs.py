@@ -509,7 +509,7 @@ class observable:
 
     def reciprocal(self):
         new_mean = numpy.reciprocal(self.mean)
-        g0 = pyobs.gradient(lambda x: -x * (new_mean ** 2), self.mean, gtype="diag")
+        g0 = pyobs.gradient(lambda x: -x * (new_mean**2), self.mean, gtype="diag")
         return pyobs.derobs([self], new_mean, [g0])
 
     def __truediv__(self, y):
@@ -538,7 +538,7 @@ class observable:
         return pyobs.derobs([self], y @ self.mean, [g0])
 
     def __pow__(self, a):
-        new_mean = self.mean ** a
+        new_mean = self.mean**a
         g0 = pyobs.gradient(
             lambda x: a * x * self.mean ** (a - 1), self.mean, gtype="diag"
         )
