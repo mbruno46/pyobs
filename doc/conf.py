@@ -96,7 +96,8 @@ html_theme_options = {
         # an arbitrary url.        
         'navbar_links' : [('Introduction','intro/index'),
             ('Tutorials','tutorials/index'),
-            ('Documentation','pyobs/index')],
+            ('Documentation','pyobs/index'),
+            ('Supplemental', 'supplemental/index')],
 
 
         'navbar_title' : ' ',
