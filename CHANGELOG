@@ -1,8 +1,10 @@
 Future milestones:
  - jackknife error support
  - expected chi square and quality of fit
- - finite volume quantization condition for 2->2
  - exponential tail
+
+version 1.4.0, 15.03.2022:
+ - finite volume 2to2 quantization condition
 
 version 1.3.0, 11.11.2021:
  - added utility functions (tensor_remove, import_string)
