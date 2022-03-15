@@ -13,7 +13,7 @@ def factorial(n):
         return n * factorial(n-1)
     
 class Zeta00:
-    def __init__(self, d=[0]*Nd, gamma=1, nmax=10, eps=1e-12):
+    def __init__(self, d=[0]*Nd, gamma=1, nmax=10, eps=1e-11):
         self.d = numpy.array(d)
         self.normd = self.d @ self.d
         self.gamma = gamma
@@ -25,19 +25,27 @@ class Zeta00:
             raise pyobs.PyobsError('quantization condition in 1 and 2 dimensions not implemented')
         
         self.vectors = {}
+        self.norms = {'0': {}, '1': {}}
         for n in range(nmax+1):
             self.vectors[n] = []
+            self.norms['0'][n] = []
+            self.norms['1'][n] = []
+            
         for v in vectors:
             for n in reversed(range(nmax+1)):
                 if numpy.isin(n,numpy.unique(numpy.abs(v))):
                     self.vectors[n] += [v]
+                    self.norms['0'][n] += [self.norm(v,0)]
+                    self.norms['1'][n] += [self.norm(v,1)]
                     break
         self.factorial = [factorial(n) for n in range(200)]
         
     # flag can be 0 or 1
     def norm(self, x, flag):
+        if self.normd==0.0:
+            return x @ x
         r0 = x + self.d*0.5 * flag
-        npar = numpy.zeros((len(x),)) if self.normd==0.0 else (r0@self.d)/self.normd * self.d
+        npar = (r0@self.d)/self.normd * self.d
         nperp = r0 - npar
         r = nperp + npar * self.gamma * (1-flag) + flag * npar / self.gamma
         return r @ r
@@ -45,8 +53,9 @@ class Zeta00:
     
     def I0(self, m, n, der):
         out = 0
-        for x in self.vectors[n]:
-            r = self.norm(x,1)
+        for i, x in enumerate(self.vectors[n]):
+            r = self.norms['1'][n][i]
+            # print(r,m,numpy.exp(-(r-m)) , (r-m))
             if der==0:
                 out += numpy.exp(-(r-m))/(r-m)
             elif der==1:
@@ -57,10 +66,11 @@ class Zeta00:
         
         
     def I1(self, m, n, der):
+        pref = (lambda x: (-1.0)**(x@self.d)) if self.normd!=0.0 else (lambda x: 1.0)
         def g(t):
-            return numpy.sum([(-1.0)**(x@self.d) * numpy.exp(-numpy.pi**2 * self.norm(x,0)/t) for x in self.vectors[n]])
+            return numpy.sum([pref(x) * numpy.exp(-numpy.pi**2 * self.norms['0'][n][i]/t) for i, x in enumerate(self.vectors[n])])
         pow = 1.5 - der
-        return quad(lambda t: numpy.exp(t*m) * numpy.pi**1.5/t**pow * g(t), 0.0, 1.0)[0]
+        return quad(lambda t: numpy.exp(t*m) * numpy.pi**1.5/t**pow * g(t), 0.9, 1.0)[0]
     
     
     def I2(self, m, l, der):
@@ -76,10 +86,12 @@ class Zeta00:
         n = 1
         delta = init+1
         res = init
-        while (abs(delta) > self.eps * abs(res)):
+        eps = 1.0
+        while (eps > self.eps):
             delta = func(n)
-            res += delta
+            res += float(delta)
             n += 1
+            eps = abs(delta/res)
         return res
     
     
@@ -87,6 +99,11 @@ class Zeta00:
         res = self.__sum(lambda n: self.I0(qsq, n, der), self.I0(qsq, 0, der))
         I1 = self.__sum(lambda n: self.I1(qsq, n, der), 0.0)
         I2 = self.__sum(lambda n: self.I2(qsq, n, der), self.I2(qsq, 0, der))
+        print(qsq,der)
+        print(self.norms['1'][0])
+        print([self.I0(qsq,n,der) for n in range(1,10)])
+        print([self.I1(qsq,n,der) for n in range(1,10)])
+        print([self.I2(qsq,n,der) for n in range(20)])
         return (res + self.gamma * (I1 + I2)) / numpy.sqrt(4*numpy.pi)
 
         
