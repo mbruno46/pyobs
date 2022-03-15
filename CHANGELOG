@@ -1,10 +1,12 @@
 Future milestones:
  - jackknife error support
  - expected chi square and quality of fit
- - finite volume quantization condition for 2->2
  - exponential tail
 
-version 1.3.0, 06.02.2021:
+version 1.4.0, 15.03.2022:
+ - finite volume 2to2 quantization condition
+
+version 1.3.0, 06.02.2022:
  - added utility functions (tensor_remove, import_string)
  - minor bugs fixed
  - added support xml and bdio format (dobs-tools, ALPHA Collab.)
