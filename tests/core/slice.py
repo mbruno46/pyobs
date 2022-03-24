@@ -45,3 +45,23 @@ assert numpy.all(abs(v0-v1) < 1e-12)
 assert numpy.all(abs(e0-e1) < 1e-12)
 
 pyobs.set_verbose('slice', False)
+
+data = rng.markov_chain(1.23,0.01,tau,N)
+obsA = pyobs.observable()
+obsA.create('A',data)
+[vA, eA] = obsA.error()
+
+data = rng.markov_chain(-1.23,0.01,tau,2*N)
+obsB = pyobs.observable()
+obsB.create('B',data)
+[vB, eB] = obsB.error()
+
+obsC = pyobs.remove_tensor(pyobs.stack([obsA,obsB]))
+obsC.peek()
+[v,e] = obsC[0].error()
+assert abs(vA - v) < 1e-12
+assert abs(eA - e) < 1e-12
+
+[v,e] = obsC[1].error()
+assert abs(vB - v) < 1e-12
+assert abs(eB - e) < 1e-12

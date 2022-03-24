@@ -35,19 +35,17 @@ def transform(obs, f):
 
     for key in obs.delta:
         d = obs.delta[key]
-        _mask = numpy.isin(subset_mask, d.mask).nonzero()[0]
-        if len(_mask) > 0:
-            d_mask = subset_mask[_mask]
-            res.delta[key] = delta(_mask, d.idx, lat=d.lat)
-            res.delta[key].delta[:, :] = d.delta[d_mask, :]
+        _, idx_subset_mask, idx_mask = numpy.intersect1d(subset_mask, d.mask, return_indices=True)
+        if len(idx_subset_mask) > 0:
+            res.delta[key] = delta(idx_subset_mask, d.idx, lat=d.lat)
+            res.delta[key].delta[:, :] = d.delta[idx_mask, :]
 
     for key in obs.cdata:
         cd = obs.cdata[key]
-        _mask = list(numpy.isin(subset_mask, cd.mask).nonzero()[0])
-        if len(_mask) > 0:
-            cd_mask = subset_mask[_mask]
-            res.cdata[key] = cdata(cd.cov, _mask)
-            res.cdata[key].grad[:, :] = cd.grad[cd_mask, :]
+        _, idx_subset_mask, idx_mask = numpy.intersect1d(subset_mask, cd.mask, return_indices=True)
+        if len(idx_subset_mask) > 0:
+            res.cdata[key] = cdata(cd.cov, list(idx_subset_mask))
+            res.cdata[key].grad[:, :] = cd.grad[list(idx_mask), :]
 
     res.ename_from_delta()
     pyobs.memory.update(res)
