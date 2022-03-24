@@ -64,6 +64,7 @@ setup(
     url="https://github.com/mbruno46/pyobs.git",
     packages=['pyobs', 'pyobs/core', 'pyobs/tensor', 'pyobs/optimize',
         'pyobs/qft', 'pyobs/qft/finite_volume', 'pyobs/misc', 'pyobs/IO'],
+    include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU GPLv2",
