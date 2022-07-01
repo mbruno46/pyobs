@@ -75,11 +75,8 @@ class gradient:
             else:
                 u[:, uidx] += gvec @ v
         elif self.gtype == "diag":
+            grad = dia_matrix(pyobs.slice_ndarray(numpy.diag(self.grad), umask, vmask))
             if uidx is None:
-                grad = dia_matrix((self.grad[vmask], [0]), shape=(self.Na, len(vmask)))
                 u += grad.dot(v)
             else:
-                grad = dia_matrix(
-                    pyobs.slice_ndarray(numpy.diag(self.grad), umask, vmask)
-                )
                 u[:, uidx] += grad.dot(v)

@@ -47,7 +47,6 @@ class cdata:
         return res
 
     def axpy(self, grad, cd):
-        self.grad[:, :] = 0.0
         grad.apply(self.grad, self.mask, None, cd.grad, cd.mask)
 
     def sigmasq(self, outer_shape):

@@ -88,7 +88,7 @@ def derobs(inps, mean, grads, description=None):
                     res.delta[key].axpy(grads[i], inps[i].delta[key])
 
     res.ename_from_delta()
-
+    
     for key in get_keys(inps, "cdata"):
         new_mask = []
         cov = None
@@ -101,13 +101,13 @@ def derobs(inps, mean, grads, description=None):
                     if cov is None:
                         cov = cd.cov
                     else:
-                        print(cov, cd.cov)
                         pyobs.assertion(
                             numpy.all(cov == cd.cov),
                             "Unexpected cov. matrix for cdata with same tag",
                         )
         if len(new_mask) > 0:
             res.cdata[key] = cdata(cov, list(set(new_mask)))
+            res.cdata[key].grad[:, :] = 0.0
             for i in range(len(inps)):
                 if key in inps[i].cdata:
                     res.cdata[key].axpy(grads[i], inps[i].cdata[key])
