@@ -58,7 +58,7 @@ class interpolate:
         w = numpy.linalg.eig(M)[0]
         pyobs.assertion(
             abs(max(w) / min(w)) < 1e16,
-            f"Singular matrix; decrease number of points from {self.k}",
+            f"Singular matrix; decrease number of points from {N}",
         )
         Minv = numpy.linalg.inv(M)
         mean = Minv @ y.mean
