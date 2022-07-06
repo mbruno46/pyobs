@@ -86,12 +86,14 @@ class interpolate:
         for i in range(1, self.k):
             res += pyobs.repeat(self.coeff[i], N) * (x**i)
         return res
-    
+
     def solve(self, target, bracket):
         """
         Finds the location `x` where the polynomials equals a certain target value.
         """
-        f = lambda x,a: numpy.sum([a[i] * x**i for i in range(self.k)]) - target
-        dfx = lambda x,a: numpy.sum([i * a[i] * x**(i-1) for i in range(1,self.k)])
-        dfa = lambda x,a: [x**i for i in range(self.k)]
+        f = lambda x, a: numpy.sum([a[i] * x**i for i in range(self.k)]) - target
+        dfx = lambda x, a: numpy.sum(
+            [i * a[i] * x ** (i - 1) for i in range(1, self.k)]
+        )
+        dfa = lambda x, a: [x**i for i in range(self.k)]
         return pyobs.optimize.root_scalar(self.coeff, f, dfx, dfa, bracket=bracket)

@@ -201,7 +201,7 @@ def diag(x):
         for key in res.cdata:
             cd = res.cdata[key]
             for i in range(cd.size):
-                cd.mask[i] += cd.mask[i] * N            
+                cd.mask[i] += cd.mask[i] * N
         return res
 
 

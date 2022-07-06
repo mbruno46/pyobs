@@ -88,7 +88,7 @@ def derobs(inps, mean, grads, description=None):
                     res.delta[key].axpy(grads[i], inps[i].delta[key])
 
     res.ename_from_delta()
-    
+
     for key in get_keys(inps, "cdata"):
         new_mask = []
         cov = None
