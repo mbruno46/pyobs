@@ -54,9 +54,12 @@ class interpolate:
             y.size == N,
             f"Unexpected observable with shape ${x.shape} not matching size of x",
         )
-        Minv = numpy.linalg.inv(
-            numpy.array([[x[i] ** k for k in range(N)] for i in range(N)]).astype("f8")
+        M = numpy.array([[x[i] ** k for k in range(N)] for i in range(N)]).astype("f8")
+        w = numpy.linalg.eig(M)[0]
+        pyobs.assertion(
+            abs(max(w) / min(w)) < 1e16, f"Singular matrix; decrease number of points"
         )
+        Minv = numpy.linalg.inv(M)
         mean = Minv @ y.mean
         g = pyobs.gradient(lambda x: Minv @ x, y.mean)
         self.coeff = pyobs.derobs([y], mean, [g])
