@@ -57,7 +57,8 @@ class interpolate:
         M = numpy.array([[x[i] ** k for k in range(N)] for i in range(N)]).astype("f8")
         w = numpy.linalg.eig(M)[0]
         pyobs.assertion(
-            abs(max(w) / min(w)) < 1e16, f"Singular matrix; decrease number of points"
+            abs(max(w) / min(w)) < 1e16,
+            f"Singular matrix; decrease number of points from {self.k}",
         )
         Minv = numpy.linalg.inv(M)
         mean = Minv @ y.mean
@@ -94,9 +95,14 @@ class interpolate:
         """
         Finds the location `x` where the polynomials equals a certain target value.
         """
-        f = lambda x, a: numpy.sum([a[i] * x**i for i in range(self.k)]) - target
-        dfx = lambda x, a: numpy.sum(
-            [i * a[i] * x ** (i - 1) for i in range(1, self.k)]
-        )
-        dfa = lambda x, a: [x**i for i in range(self.k)]
+
+        def f(x, a):
+            return numpy.sum([a[i] * x**i for i in range(self.k)]) - target
+
+        def dfx(x, a):
+            return numpy.sum([i * a[i] * x ** (i - 1) for i in range(1, self.k)])
+
+        def dfa(x, a):
+            return [x**i for i in range(self.k)]
+
         return pyobs.optimize.root_scalar(self.coeff, f, dfx, dfa, bracket=bracket)
