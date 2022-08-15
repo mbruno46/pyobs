@@ -26,6 +26,9 @@ from .data import delta
 from .cdata import cdata
 
 
+def index_in1d(a,b):
+    return numpy.nonzero(numpy.in1d(a, b))[0]
+
 def transform(obs, f):
     new_mean = f(obs.mean)
     res = pyobs.observable(description=obs.description)
@@ -35,16 +38,16 @@ def transform(obs, f):
 
     for key in obs.delta:
         d = obs.delta[key]
-        idx_subset_mask = numpy.nonzero(numpy.in1d(subset_mask, d.mask))[0]
-        idx_mask = subset_mask[idx_subset_mask]
+        idx_subset_mask = index_in1d(subset_mask, d.mask)
+        idx_mask = index_in1d(d.mask, subset_mask[idx_subset_mask])
         if len(idx_subset_mask) > 0:
             res.delta[key] = delta(idx_subset_mask, d.idx, lat=d.lat)
             res.delta[key].delta[:, :] = d.delta[idx_mask, :]
 
     for key in obs.cdata:
         cd = obs.cdata[key]
-        idx_subset_mask = numpy.nonzero(numpy.in1d(subset_mask, cd.mask))[0]
-        idx_mask = subset_mask[idx_subset_mask]
+        idx_subset_mask = index_in1d(subset_mask, cd.mask)
+        idx_mask = index_in1d(cd.mask, subset_mask[idx_subset_mask])
         if len(idx_subset_mask) > 0:
             res.cdata[key] = cdata(cd.cov, list(idx_subset_mask))
             res.cdata[key].grad[:, :] = cd.grad[list(idx_mask), :]
