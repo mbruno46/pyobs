@@ -40,18 +40,25 @@ def save(fname, *args):
     Notes:
        Available output formats:
 
-       * pyobs: the default binary format, with automatic checksums
+       * *pyobs*: the default binary format, with automatic checksums
          for file corruptions and fast read/write speed. It is based
          on the `bison <https://mbruno46.github.io/bison/>`_ file
          format. `args` can be an arbitrary sequence of python basic
          types, numpy arrays and observables. (check the bison
          documentation for more information).
 
-       * json.gz: apart from the compression with gunzip, the file
+       * *json.gz*: apart from the compression with gunzip, the file
          is a plain text file generated with json format, for easy
          human readability and compatibility with other programming
          languages (json format is widely supported). Currently this
          format supports only a single observable.
+
+       * *xml.gz1*: a file format defined by the MATLAB library obs-tools,
+         dobs-tools written by R. Sommer (DESY Zeuthen, ALPHA Collab.)
+
+       * *bdio*: a binary file format based on the `BDIO library <https://github.com/to-ko/bdio>`_.
+         The observables are stored in binary records whose structure is explained
+         `here <https://ific.uv.es/~alramos/docs/ADerrors/tutorial/#BDIO-Native-format>`_.
 
     Examples:
        >>> obsA = pyobs.observable('obsA')
@@ -70,6 +77,8 @@ def save(fname, *args):
         )
     elif ".bdio" in fname:
         fmt = bdio
+    elif ".xml.gz" in fname:
+        fmt = xml
     else:  # pragma: no cover
         raise pyobs.PyobsError("Format not supported")
 
@@ -86,18 +95,8 @@ def load(fname):
     Returns:
        observable: the loaded observable
 
-    Notes:
-       Additional supported formats:
-
-       * xml.gz: a file format defined by the MATLAB library obs-tools,
-         dobs-tools written by R. Sommer (DESY Zeuthen, ALPHA Collab.)
-
-       * bdio: a binary file format based on the `BDIO library <https://github.com/to-ko/bdio>`_.
-         The observables are stored in binary records whose structure is explained
-         `here <https://ific.uv.es/~alramos/docs/ADerrors/tutorial/#BDIO-Native-format>`_.
-
     Examples:
-       >>> obsA = pyobs.load('~/analysis/obsA.json.gz')
+       >>> obsA = pyobs.load('~/analysis/obsA.pyobs')
     """
     pyobs.assertion(os.path.isfile(fname) is True, f"File {fname} does not exists")
 

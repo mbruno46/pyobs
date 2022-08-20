@@ -33,6 +33,34 @@ import json
 def import_data(string):
     return json.loads("[" + ",".join(string.split()) + "]")
 
+def indent(elem, level=0):
+    i = "\n" + level*"  "
+    if len(elem):
+        if not elem.text or not elem.text.strip():
+            elem.text = i + "  "
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+        for elem in elem:
+            indent(elem, level+1)
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+        else:
+            elem.tail += i
+    else:
+        if level and (not elem.tail or not elem.tail.strip()):
+            elem.tail = i
+
+def dict2xml(parent, d):
+    for key in d:
+        el = ET.SubElement(parent, key)
+        if type(d[key]) is dict:
+            dict2xml(el, d[key])
+        else:
+            if type(d[key]) is list:
+                el.text = str(d[key][0])
+                el.tail = str(d[key][1])
+            else:
+                el.text = str(d[key])
 
 def load(fname):
     def check(condition):
@@ -137,3 +165,69 @@ def load(fname):
     check(len(res.ename) == ne)
     check(len(res.cdata) == nc)
     return res
+
+
+def save(fname, obs):
+    pyobs.assertion(len(obs.shape)==1,"Only 1-D observables supported")
+            
+    def delta2array(key, delta):
+        pyobs.assertion(len(delta.mask) == obs.size, 'Observables with sub-masks not supported')
+        sh = f'{delta.n} i f{len(delta.mask)}'
+        dat = ''
+        for _idx, _row in zip(delta.idx, delta.delta.T):
+            dat += f'\n{_idx:d} ' + ' '.join(str(f) for f in _row)
+        return {
+            'id': key,
+            'layout': [sh, dat[1:]]
+        }
+    
+    root = ET.Element('OBSERVABLES')
+    dict2xml(root, {'SCHEMA': {'NAME': 'lattobs', 'VERSION': '1.0',}})
+    dict2xml(root, {'origin': {
+        'who': obs.www[0],
+        'date': obs.www[2],
+        'host': obs.www[1],
+        'tool': {
+            'name': 'obs2mxtree',
+            'version': '1',
+        }
+    }})
+    dict2xml(root, {'dobs': {
+        'spec': 'dobs v1.0',
+        'origin': 'unknown',
+        'name': obs.description,
+        'array': {
+            'id': 'val',
+            'layout': [f'{obs.shape[0]} f1', ' '.join([str(m) for m in obs.mean])]
+        },
+        'ne': len(obs.ename),
+        'nc': len(obs.cdata),
+    }})
+    
+    def write_edata(ename):
+        xml_edata = ET.SubElement(root.find('./dobs'), 'edata')
+        dict2xml(xml_edata, {'enstag': ename})
+        nr = 0
+
+        arrays = []
+        for key in obs.delta:
+            en, rn = key.split(':')
+            if en==ename:
+                nr += 1
+                arrays += [delta2array(rn, obs.delta[key])]
+                
+        dict2xml(xml_edata, {'nr': nr})
+        for a in arrays:
+            dict2xml(xml_edata, {'array': a})
+        
+    for en in obs.ename:
+        write_edata(en)
+
+    pyobs.assertion(len(obs.cdata)==0, "cdata not yet supported")
+    
+    indent(root)
+    if fname[-7:]!='.xml.gz':
+        fname += '.xml.gz'
+    f = gzip.open(fname, 'wb')
+    ET.ElementTree(root).write(f, xml_declaration=True)
+    f.close()
