@@ -14,6 +14,7 @@
    .. autosummary::
    
       ~interpolate.__init__
+      ~interpolate.solve
    
    
 

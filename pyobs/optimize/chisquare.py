@@ -159,7 +159,7 @@ class chisquare:
 
 
 class mfit:
-    r"""
+    """
     Class to perform fits to multiple observables, via the minimization
     of the :math:`\chi^2` function
 
@@ -172,8 +172,8 @@ class mfit:
     The matrix :math:`W` defines the metric of the :math:`\chi^2` function.
 
     The ideal choice for the matrix :math:`W` is the inverse of the
-    covariance matrix, which defines a correlated fit. Instead a more
-    practical choice for cases where a reliable estimate of covariances
+    covariance matrix, which defines a correlated fit. A practical choice for 
+    cases where a reliable estimate of covariances
     is not available, is given by the inverse of the diagonal part of
     the covariance matrix, which instead defines an uncorrelated fit.
 

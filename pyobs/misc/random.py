@@ -53,12 +53,15 @@ class generator:
         self.state = numpy.random.get_state()
         return r
 
-    def sample_boolean(self, N):
+    def sample_flat(self, elements, N):
         numpy.random.set_state(self.state)
-        r = numpy.random.choice([True, False], N)
+        r = numpy.random.choice(elements, N)
         self.state = numpy.random.get_state()
         return r
-
+        
+    def sample_boolean(self, N):
+        return self.sample_flat([True, False], N)
+        
     def acrand(self, tau, N, n=1):
         r = numpy.reshape(self.sample_normal(N * n), (N, n))
 

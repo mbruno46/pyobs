@@ -110,20 +110,10 @@ class observable:
            a new replica to the same ensemble.
 
         Examples:
-           >>> data = [0.43, 0.42, ... ] # a scalar observable
-           >>> a = pyobs.observable(description='test')
-           >>> a.create('EnsembleA',data)
-
-           >>> data0 = [0.43,0.42, ... ] # replica 0
-           >>> data1 = [0.40,0.41, ... ] # replica 1
-           >>> a = pyobs.observable(description='test')
-           >>> a.create('EnsembleA',[data0,data1],rname=['r0','r1'])
-
            >>> data = [0.43, 0.42, 0.44, ... ]
            >>> icnfg= [  10,   11,   13, ... ]
            >>> a = pyobs.observable(description='test')
            >>> a.create('EnsembleA',data,icnfg=icnfg)
-
            >>> data = [1.0, 2.0, 3.0, 4.0, ... ]
            >>> a = pyobs.observable(description='matrix')
            >>> a.create('EnsembleA',data,shape=(2,2))
@@ -133,12 +123,6 @@ class observable:
            >>> lat = [64,32,32,32]
            >>> a = pyobs.observable(description='test-mf')
            >>> a.create('EnsembleA',data,lat=lat)
-
-           >>> data = [0.43, 0.42, 0.44, ... ]
-           >>> idx = [0, 2, 4, 6, ...] # measurements on all even points of time-slice
-           >>> lat = [32, 32, 32]
-           >>> a = pyobs.observable(description='test-mf')
-           >>> a.create('EnsembleA',data,lat=lat,icnfg=idx)
         """
         pyobs.check_type(ename, "ename", str)
         pyobs.assertion(":" not in ename, f"Column symbol not allowed in ename {ename}")
@@ -388,7 +372,7 @@ class observable:
         Parameters:
            *args: accepted arguments are lists, arrays, slices or integers
                   with the indices used for the extraction. `[]` is interpreted
-                  as taking all elements along that given axis, like slice(None).
+                  as taking all elements along that given axis, like `slice(None)`.
                   The number of input arguments must match the dimension of the
                   observable.
 
@@ -624,14 +608,12 @@ class observable:
 
         Note:
            By default, the errors are computed with the Gamma method, with the `Stau`
-           parameter equal to 1.5. Additionally the jackknife method can be used
-           by passing the appropriate `errinfo` dictionary with argument `bs` set
-           to a non-zero integer value. For master fields the error is computed
+           parameter equal to 1.5. For master fields the error is computed
            using the master-field approach and the automatic windowing procedure
            requires the additional argument `k` (see main documentation), which
            by default is zero, but can be specified via the errinfo dictionary.
            Through the `errinfo` dictionary the user can treat every ensemble
-           differently, as explained in the examples below.
+           differently, as explained in the examples.
 
 
         Examples:
@@ -640,8 +622,6 @@ class observable:
            >>> [v,e] = obsA.error() # collect central value and error in v,e
            >>> einfo = {'A': errinfo(Stau=3.0)} # specify non-standard Stau for ensemble A
            >>> [_,e1] = obsA.error(errinfo=einfo)
-           >>> print(e,e1) # check difference in error estimation
-
            >>> obsB = pyobs.observable('obsB')
            >>> obsB.create('B',dataB) # create the observable B from ensemble B
            >>> obsC = obsA * obsB # derived observable with fluctuations from ensembles A,B
@@ -707,7 +687,7 @@ class observable:
             dict: one key for each ensemble.
 
         Notes:
-            for every ensemble a list of 3 arrays is returned, corresponding to the
+            For every ensemble a list of 3 arrays is returned, corresponding to the
             x-axis (MC time), the integrated autocorrelation function and its error.
         """
         cgam = {}
