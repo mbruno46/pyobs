@@ -3,12 +3,12 @@ import numpy
 
 T=16
 L=16
-mass=0.25
+mass=0.30
 p=0.0
 
 xax=range(T//2)
 corr_ex = [pyobs.qft.free_scalar.Cphiphi(x,mass,p,T,L) for x in xax]
-cov_ex = pyobs.qft.free_scalar.cov_Cphiphi(mass,p,T,L)[0:T//2,0:T//2]
+cov_ex = 1e-2*pyobs.qft.free_scalar.cov_Cphiphi(mass,p,T,L)[0:T//2,0:T//2]
 
 N=4000
 tau=1.0
@@ -20,7 +20,8 @@ corr.create(f'm{mass:g}-{L}x{T}', data.flatten(), shape=(len(xax),))
 print(corr)
 [c,dc] = corr.error()
 
-[c0, dc0] = pyobs.reshape(corr, (len(xax)//2,2)).error()
+corr2d = pyobs.reshape(corr, (len(xax)//2,2))
+[c0, dc0] = corr2d.error()
 assert numpy.all(abs(dc0 - numpy.reshape(dc, (len(xax)//2,2))) < 1e-12)
 
 corr1 = corr[0:4]
