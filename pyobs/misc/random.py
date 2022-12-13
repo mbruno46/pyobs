@@ -58,10 +58,10 @@ class generator:
         r = numpy.random.choice(elements, N)
         self.state = numpy.random.get_state()
         return r
-        
+
     def sample_boolean(self, N):
         return self.sample_flat([True, False], N)
-        
+
     def acrand(self, tau, N, n=1):
         r = numpy.reshape(self.sample_normal(N * n), (N, n))
 

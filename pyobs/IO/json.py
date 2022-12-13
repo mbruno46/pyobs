@@ -76,7 +76,7 @@ def load(fname):
                 lat=tmp["delta"][key]["lat"],
             )
         res.delta[key].delta = numpy.array(tmp["delta"][key]["delta"])
-
+        
     for key in tmp["cdata"]:
         res.cdata[key] = pyobs.core.cdata.cdata(
             tmp["cdata"][key]["cov"], tmp["cdata"][key]["mask"]

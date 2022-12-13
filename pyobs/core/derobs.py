@@ -168,15 +168,6 @@ def error_bias4(x, f):
     hess = num_hess(x0, f)
 
     for key in x.delta:
-        oid = numpy.array(x.delta[key].mask)
-        idx = numpy.ix_(oid, oid)
-        d2 = numpy.einsum(
-            "abc,bj,cj->aj",
-            hess[:, idx[0], idx[1]],
-            x.delta[key].delta,
-            x.delta[key].delta,
-        )
-        dd2 = numpy.sum(d2, axis=1)
-        bias4 += dd2**2 / x.delta[key].n ** 4
+        bias4 += x.delta[key].bias4(hess)**2 / x.delta[key].n ** 4
 
     return numpy.sqrt(bias4)

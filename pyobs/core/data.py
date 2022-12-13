@@ -48,6 +48,8 @@ def create_fft_data(data, idx, shape, fft_ax):
 # NOTE: if lat is integer then Monte carlo assumed, ie open BC at the boundary
 # of the markov chain. if lat is a list then periodic BC assumed in all dirs,
 # even if lat is 1D
+# improved version does not suffer from roundoff errors from overall normalization
+# of data, eg data is of order 1e-15
 def conv_ND(data, idx, lat, xmax, a=0, b=None):
     if isinstance(lat, (int, numpy.int)):
         shape = (2 * lat,)
@@ -62,14 +64,16 @@ def conv_ND(data, idx, lat, xmax, a=0, b=None):
     v = numpy.prod(lat)
 
     aux = []
-    for index in [a, b]:
-        if index is None:
-            continue
-        aux += [create_fft_data(data[index, :], idx, shape, fft_ax)]
+    rescale = 1
+    for index in [a,b]:
+        if not index is None:
+            rescale *= data[index,0]
+            aux += [create_fft_data(data[index,:] / data[index,0], idx, shape, fft_ax)]
 
     if len(aux) == 1:
         aux[0] *= aux[0].conj()
         aux += [numpy.fft.irfftn(aux[0], s=shape, axes=fft_ax)]
+        rescale *= rescale
     else:
         aux[0] *= aux[1].conj()
         aux[1] = numpy.fft.irfftn(aux[0].real, s=shape, axes=fft_ax)
@@ -79,7 +83,7 @@ def conv_ND(data, idx, lat, xmax, a=0, b=None):
         return pyobs.core.mftools.intrsq(aux[1], lat, xmax)
 
     g = numpy.array(aux[1][0:xmax])
-    return numpy.around(g, decimals=15)
+    return numpy.around(g, decimals=16) * rescale
 
 
 # TODO: remove blocks that are zeros
@@ -118,17 +122,30 @@ class delta:
         self.n = len(self.idx)
 
         self.delta = numpy.zeros((self.size, self.n), dtype=numpy.float64)
-
+        
         if mean is not None:
             self.delta = numpy.reshape(data, (self.n, self.size)).T - numpy.stack(
                 [mean] * self.n, axis=1
             )
-
+    
     def copy(self):
         res = delta(self.mask, self.idx, lat=self.lat)
         res.delta = numpy.array(self.delta)
         return res
 
+    def __getitem__(self, args):
+        sliced_delta = pyobs.slice_ndarray(self.delta, args, [])
+        res = delta(range(sliced_delta.shape[0]), self.idx, lat=self.lat)
+        res.delta[:, :] = sliced_delta
+        return res
+    
+    def __setitem__(self, submask, rd):
+        pyobs.assertion(
+            len(submask) == len(rd.mask), "Dimensions do not match in assignment"
+        )
+        a = numpy.nonzero(numpy.in1d(self.mask, submask))[0]
+        self.delta[a, :] = rd.delta
+    
     def ncnfg(self):
         if type(self.idx) is range:
             return self.n
@@ -154,7 +171,7 @@ class delta:
                 self.it += 1
             return self.it
 
-    def axpy(self, grad, d, hess=None):
+    def axpy(self, grad, d):
         N = d.delta.shape[1]
 
         # prepare index list
@@ -169,13 +186,7 @@ class delta:
         # apply gradient
         # self.delta[:,jlist] += grad.apply(d,self.mask)
         grad.apply(self.delta, self.mask, jlist, d.delta, d.mask)
-
-    def assign(self, submask, rd):
-        pyobs.assertion(
-            len(submask) == len(rd.mask), "Dimensions do not match in assignment"
-        )
-        a = numpy.nonzero(numpy.in1d(self.mask, submask))[0]
-        self.delta[a, :] = rd.delta
+        
 
     def gamma(self, xmax, a, b=None):
         ones = numpy.reshape(numpy.ones(self.n), (1, self.n))
@@ -194,11 +205,16 @@ class delta:
                 Sr = Sr + 1 * (Sr == 0.0)
                 m /= Sr
 
-        g = conv_ND(
-            self.delta, self.idx, self.ncnfg() if isMC else self.lat, xmax, a, b
-        )
+        g = conv_ND(self.delta, self.idx, self.ncnfg() if isMC else self.lat, xmax, a, b)
         return [m, g]
 
+    def bias4(self, hess):
+        oid = numpy.array(self.mask)
+        idx = numpy.ix_(oid, oid)
+        # no rescaling factor; prone to roundoff errors
+        d2 = numpy.einsum("abc,bj,cj->aj",hess[:, idx[0], idx[1]],self.delta,self.delta)
+        return numpy.sum(d2, axis=1)
+    
     def blocked(self, bs):
         isMC = self.lat is None
 

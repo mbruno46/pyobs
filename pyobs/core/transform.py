@@ -26,9 +26,10 @@ from .data import delta
 from .cdata import cdata
 
 
-def indices_isin(a,b):
-    ia, ib = numpy.where(numpy.array(a)[:,None]==numpy.array(b)[None,:])
+def indices_isin(a, b):
+    ia, ib = numpy.where(numpy.array(a)[:, None] == numpy.array(b)[None, :])
     return list(ia), list(ib)
+
 
 def transform(obs, f):
     new_mean = f(obs.mean)
@@ -41,8 +42,8 @@ def transform(obs, f):
         d = obs.delta[key]
         idx_subset_mask, idx_mask = indices_isin(subset_mask, d.mask)
         if len(idx_subset_mask) > 0:
-            res.delta[key] = delta(idx_subset_mask, d.idx, lat=d.lat)
-            res.delta[key].delta[:, :] = d.delta[idx_mask, :]
+            res.delta[key] = d[idx_mask]
+            res.delta[key].mask = idx_subset_mask
 
     for key in obs.cdata:
         cd = obs.cdata[key]

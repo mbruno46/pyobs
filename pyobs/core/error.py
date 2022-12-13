@@ -59,7 +59,7 @@ class variance:
         _n = numpy.array(n[:, idx], dtype=numpy.float)
         _n[(_n == 0)] = numpy.inf
         gg = g[:, idx] / _n
-
+        
         if fold:
             _gg = numpy.array(gg)
             _gg[:, 1:] *= 2.0
@@ -301,8 +301,8 @@ class covar(variance):
             for u in range(d.size):
                 a = self.mask.index(d.mask[u])
                 for v in range(u, d.size):
-                    res = d.gamma(_xmax, u, v)
                     b = self.mask.index(d.mask[v])
+                    res = d.gamma(_xmax, u, v)
 
                     j = b + a * (len(self.mask) - 1) - a * (a - 1) // 2
                     n[j, :: rescale[i]] += res[0]
