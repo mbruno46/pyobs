@@ -168,6 +168,6 @@ def error_bias4(x, f):
     hess = num_hess(x0, f)
 
     for key in x.delta:
-        bias4 += x.delta[key].bias4(hess)**2 / x.delta[key].n ** 4
+        bias4 += x.delta[key].bias4(hess) ** 2 / x.delta[key].n ** 4
 
     return numpy.sqrt(bias4)

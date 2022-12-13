@@ -576,7 +576,7 @@ class observable:
         for cd in self.cdata:
             sigma[cd] = self.cdata[cd].sigmasq(self.shape)
             sigma_tot += sigma[cd]
-        
+
         return [sigma, sigma_tot, dsigma_tot]
 
     @pyobs.log_timer("error")

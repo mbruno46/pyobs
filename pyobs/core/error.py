@@ -59,7 +59,7 @@ class variance:
         _n = numpy.array(n[:, idx], dtype=numpy.float)
         _n[(_n == 0)] = numpy.inf
         gg = g[:, idx] / _n
-        
+
         if fold:
             _gg = numpy.array(gg)
             _gg[:, 1:] *= 2.0
