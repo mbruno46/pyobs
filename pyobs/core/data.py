@@ -78,12 +78,13 @@ def conv_ND(data, idx, lat, xmax, a=0, b=None):
         aux[0] *= aux[1].conj()
         aux[1] = numpy.fft.irfftn(aux[0].real, s=shape, axes=fft_ax)
 
+    aux[1] *= rescale
     if ismf:
         aux[1] = numpy.reshape(aux[1], (v,))
         return pyobs.core.mftools.intrsq(aux[1], lat, xmax)
 
     g = numpy.array(aux[1][0:xmax])
-    return numpy.around(g, decimals=16) * rescale
+    return numpy.around(g, decimals=16)
 
 
 # TODO: remove blocks that are zeros
@@ -93,8 +94,9 @@ def block_data(data, idx, lat, bs):
         bs = numpy.array([bs], dtype=numpy.int32)
 
     shape = tuple(lat)
-    dat = expand_data(data, idx, shape)
-    return pyobs.core.mftools.blockdata(dat, lat, bs)
+    norm = data[0]
+    dat = expand_data(data / data[0], idx, shape)
+    return pyobs.core.mftools.blockdata(dat, lat, bs) * norm
 
 
 class delta:
@@ -214,6 +216,7 @@ class delta:
         # no rescaling factor; prone to roundoff errors
         d2 = numpy.einsum("abc,bj,cj->aj",hess[:, idx[0], idx[1]],self.delta,self.delta)
         return numpy.sum(d2, axis=1)
+    
     
     def blocked(self, bs):
         isMC = self.lat is None

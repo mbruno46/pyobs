@@ -2,7 +2,7 @@ import pyobs
 import numpy
 
 val=[-230, 23]
-cov=[(val[0]*5)**2, (val[1]*2)**2]
+cov=[(val[0]*0.05)**2, (val[1]*0.02)**2]
 
 N=1000
 tau=2.0

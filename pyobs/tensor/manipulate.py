@@ -170,7 +170,6 @@ def sort(x, axis=-1):
     """
     idx = numpy.argsort(x.mean, axis)
     return x[idx]
-    # return pyobs.core.transform(x, lambda x: numpy.take_along_axis(x, idx, axis))
 
 
 def diag(x):
@@ -203,12 +202,6 @@ def diag(x):
             for i in range(cd.size):
                 cd.mask[i] += cd.mask[i] * N
         return res
-
-
-#     def f(x):
-#         return numpy.diag(x)
-
-#     return pyobs.core.transform(x, f)
 
 
 def repeat(x, repeats, axis=None):
