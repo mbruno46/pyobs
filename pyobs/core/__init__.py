@@ -22,9 +22,9 @@
 from .ndobs import observable
 from .derobs import derobs, num_grad, error_bias4
 from .error import errinfo
-from . import mftools
 from .gradient import gradient
 from .transform import transform
+from . import mftools
 
 __all__ = ["observable"]
 __all__.extend(["derobs", "num_grad", "error_bias4"])

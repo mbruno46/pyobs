@@ -280,7 +280,8 @@ class observable:
 
         if isinstance(src, str):
             pyobs.check_type(dst, "dst", str)
-            for key in self.delta:
+            old_keys = list(self.delta.keys())
+            for key in old_keys:
                 e, r = key.split(":")
                 if e == src:
                     rename_delta(src, r, dst, r)
