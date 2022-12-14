@@ -80,13 +80,13 @@ def conv_ND(data, idx, lat, xmax, a=0, b=None):
         aux[0] *= aux[1].conj()
         aux[1] = numpy.fft.irfftn(aux[0].real, s=shape, axes=fft_ax)
 
+    # important to rescale here for mf
     aux[1] *= rescale
     if ismf:
         aux[1] = numpy.reshape(aux[1], (v,))
         return pyobs.core.mftools.intrsq(aux[1], lat, xmax)
 
-    g = numpy.array(aux[1][0:xmax])
-    return numpy.around(g, decimals=16)
+    return aux[1][0:xmax]
 
 
 # TODO: remove blocks that are zeros
