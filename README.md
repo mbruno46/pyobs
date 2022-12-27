@@ -19,11 +19,11 @@ If you use this library in your publications please consider citing:
 
 * U. Wolff, [Monte Carlo errors with less errors](https://inspirehep.net/literature/621085). *Comput.Phys.Commun.* 156 (2004) 143-153.
 * S. Schaefer, R. Sommer, F. Virotta, [Critical slowing down and error analysis in lattice QCD simulations](https://inspirehep.net/literature/871175). *Nucl.Phys.B* 845 (2011) 93-119.
-* M. Bruno, R. Sommer, In preparation.
+* M. Bruno, R. Sommer, [On fits to correlated and auto-correlated data](https://inspirehep.net/literature/2157883) *Comput.Phys.Commun.* 285 (2023) 108643.
 
 ### Authors
 
-Copyright (C) 2020-2021, Mattia Bruno
+Copyright (C) 2020-2023, Mattia Bruno
 
 ## Installation
 
@@ -45,8 +45,7 @@ help(pyobs.observable)
 
 The library can also be installed from a local clone of
 the repository in *developer mode*, as described in the 
-documentation. Recompilation of the C++ extensions might 
-be necessary in this case.
+documentation. 
 
 ## Example
 
