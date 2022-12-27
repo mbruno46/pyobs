@@ -44,10 +44,10 @@ class gradient:
         else:  # pragma: no cover
             raise pyobs.PyobsError("gradient error")
 
-        self.grad = numpy.zeros(gsh, dtype=numpy.float64)
+        self.grad = pyobs.double_array(gsh, zeros=True)
 
         if gtype == "full":
-            dx = numpy.zeros(self.Ni)
+            dx = pyobs.double_array(self.Ni, zeros=True)
             for i in range(self.Ni):
                 dx[i] = 1.0
                 self.grad[:, i] = numpy.reshape(g(numpy.reshape(dx, x0.shape)), self.Na)
@@ -56,7 +56,7 @@ class gradient:
             self.grad = g(numpy.ones(x0.shape)).flatten()
 
     def get_mask(self, mask):
-        idx = numpy.array(mask, dtype=numpy.int32)
+        idx = pyobs.int_array(mask)
         if self.gtype == "full":
             h = numpy.sum(self.grad[:, idx] != 0.0, axis=1)
             if numpy.sum(h) > 0:

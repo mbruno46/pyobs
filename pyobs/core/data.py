@@ -24,14 +24,16 @@ import pyobs
 
 __all__ = ["delta"]
 
+def is_int(x):
+    return isinstance(x, (int, numpy.int32, numpy.int64))
 
 def expand_data(data, idx, shape):
     v = numpy.prod(shape)
     tmp = None
     if type(idx) is range:
-        tmp = numpy.array(data, dtype=numpy.float64)
+        tmp = pyobs.double_array(data)
     else:
-        tmp = numpy.zeros((v,), dtype=numpy.float64)
+        tmp = pyobs.double_array(v, zeros=True)
         for j in range(len(idx)):
             tmp[idx[j] - idx[0]] = data[j]
     return tmp
@@ -51,7 +53,7 @@ def create_fft_data(data, idx, shape, fft_ax):
 # improved version does not suffer from roundoff errors from overall normalization
 # of data, eg data is of order 1e-15
 def conv_ND(data, idx, lat, xmax, a=0, b=None):
-    if isinstance(lat, (int, numpy.int)):
+    if is_int(lat):
         shape = (2 * lat,)
         lat = [lat]
         ismf = False
@@ -91,9 +93,9 @@ def conv_ND(data, idx, lat, xmax, a=0, b=None):
 
 # TODO: remove blocks that are zeros
 def block_data(data, idx, lat, bs):
-    if isinstance(lat, (int, numpy.int)):
-        lat = numpy.array([lat], dtype=numpy.int32)
-        bs = numpy.array([bs], dtype=numpy.int32)
+    if is_int(lat):
+        lat = pyobs.int_array([lat])
+        bs = pyobs.int_array([bs])
 
     shape = tuple(lat)
     norm = data[0]
@@ -110,7 +112,7 @@ class delta:
         if lat is None:
             self.lat = None
         else:
-            self.lat = numpy.array(lat, dtype=numpy.int32)
+            self.lat = pyobs.int_array(lat)
 
         if type(idx) is list:
             dc = numpy.unique(numpy.diff(idx))
@@ -125,7 +127,7 @@ class delta:
             raise pyobs.PyobsError("Unexpected idx")
         self.n = len(self.idx)
 
-        self.delta = numpy.zeros((self.size, self.n), dtype=numpy.float64)
+        self.delta = pyobs.double_array((self.size, self.n), zeros=True)
 
         if mean is not None:
             self.delta = numpy.reshape(data, (self.n, self.size)).T - numpy.stack(
@@ -134,7 +136,7 @@ class delta:
 
     def copy(self):
         res = delta(self.mask, self.idx, lat=self.lat)
-        res.delta = numpy.array(self.delta)
+        res.delta = pyobs.double_array(self.delta)
         return res
 
     def __getitem__(self, args):
@@ -185,7 +187,7 @@ class delta:
         for i in range(N):
             k = d.idx[i]
             jlist.append(self.get_idx(k))
-        jlist = numpy.array(jlist, dtype=numpy.int)
+        jlist = pyobs.int_array(jlist)
 
         # apply gradient
         # self.delta[:,jlist] += grad.apply(d,self.mask)
@@ -226,7 +228,7 @@ class delta:
         isMC = self.lat is None
 
         if isMC:
-            if isinstance(bs, (int, numpy.int)):
+            if is_int(bs):
                 v = self.ncnfg()  # (self.ncnfg()+bs-1) - ((self.ncnfg()+bs-1)%bs)
                 v //= bs
                 lat = None
@@ -240,7 +242,7 @@ class delta:
             pyobs.assertion(len(bs) == len(self.lat), "Block size does match lattice")
             lat = self.lat / numpy.array(bs)
             v = int(numpy.prod(lat))
-            bs = numpy.array(bs, dtype=numpy.int32)
+            bs = pyobs.int_array(bs)
 
         res = delta(self.mask, range(v), lat=lat)
         for a in range(self.size):

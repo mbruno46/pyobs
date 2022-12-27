@@ -39,7 +39,7 @@ class chisquare:
             raise pyobs.PyobsError("Unexpected x")
         pyobs.assertion(len(self.v) == self.nx, "Unexpected x")
         self.x = numpy.reshape(x, (self.n, self.nx))
-        self.W = numpy.array(W)
+        self.W = pyobs.double_array(W)
         self.f = f
         self.df = df
         pyobs.assertion(
@@ -51,8 +51,8 @@ class chisquare:
             if vn not in self.v:
                 self.pars.append(vn)
         self.np = len(self.pars)
-        self.e = numpy.zeros((self.n,), dtype=numpy.float64)
-        self.de = numpy.zeros((self.n, self.np), dtype=numpy.float64)
+        self.e = pyobs.double_array((self.n,), zeros=True)
+        self.de = pyobs.double_array((self.n, self.np), zeros=True)
         self.p = [0.0] * self.np
 
     def set_pars(self, pdict, p0):
@@ -78,9 +78,9 @@ class chisquare:
         return self.e @ self.W @ self.e
 
     def grad(self, y, pdict):
-        res = numpy.zeros((len(pdict),))
+        res = pyobs.double_array((len(pdict),), zeros=True)
         for i in range(self.n):
-            self.de[i, :] = numpy.array(
+            self.de[i, :] = pyobs.double_array(
                 self.df(*self.x[i, :], *self.p)
             )  # N x Na matrix
         tmp = 2.0 * (self.e @ self.W @ self.de).T
@@ -91,7 +91,7 @@ class chisquare:
         return res
 
     def hess(self, y, pdict):
-        res = numpy.zeros((len(pdict), len(pdict)))
+        res = pyobs.double_array((len(pdict), len(pdict)), zeros=True)
         tmp = 2.0 * (self.de.T @ self.W @ self.de)
         for pn0 in self.pars:
             a = pdict[pn0]
@@ -103,10 +103,10 @@ class chisquare:
         return res
 
     def gvec(self, pdict, p0):
-        res = numpy.zeros((len(pdict), self.n))
+        res = pyobs.double_array((len(pdict), self.n), zeros=True)
 
         self.set_pars(pdict, p0)
-        g = numpy.array(
+        g = pyobs.double_array(
             [self.df(*self.x[i, :], *self.p) for i in range(self.n)]
         )  # N x Na matrix
         g = self.W @ g
@@ -117,10 +117,10 @@ class chisquare:
         return res
 
     def Hmat(self, pdict, p0):
-        H = numpy.zeros((len(pdict), len(pdict)))
+        H = pyobs.double_array((len(pdict), len(pdict)), zeros=True)
 
         self.set_pars(pdict, p0)
-        g = numpy.array(
+        g = pyobs.double_array(
             [self.df(*self.x[i, :], *self.p) for i in range(self.n)]
         )  # N x Na matrix
         _H = g.T @ self.W @ g  # Na x Na matrix
@@ -146,11 +146,11 @@ class chisquare:
         else:  # pragma: no cover
             raise pyobs.PyobsError("Unexpected x")
         x = numpy.reshape(x, (n, nx))
-        res = numpy.zeros((n, len(pdict)))
+        res = pyobs.double_array((n, len(pdict)), zeros=True)
 
         self.set_pars(pdict, p0)
-        new_mean = numpy.array([self.f(*x[i, :], *self.p) for i in range(n)])
-        g = numpy.array([self.df(*x[i, :], *self.p) for i in range(n)])  # N x Na
+        new_mean = pyobs.double_array([self.f(*x[i, :], *self.p) for i in range(n)])
+        g = pyobs.double_array([self.df(*x[i, :], *self.p) for i in range(n)])  # N x Na
         for pn in self.pars:
             a = pdict[pn]
             i = self.pars.index(pn)

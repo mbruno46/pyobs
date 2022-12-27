@@ -26,13 +26,13 @@ import numpy
 class cdata:
     def __init__(self, cov, mask):
         if numpy.ndim(cov) == 1:
-            self.cov = numpy.diag(numpy.array(cov, dtype=numpy.float64))
+            self.cov = numpy.diag(pyobs.double_array(cov))
         else:
-            self.cov = numpy.array(cov, dtype=numpy.float64)
+            self.cov = pyobs.double_array(cov)
         n = numpy.shape(cov)[0]
         self.mask = mask
         self.size = len(self.mask)
-        self.grad = numpy.zeros((self.size, n), dtype=numpy.float64)
+        self.grad = pyobs.double_array((self.size, n), zeros=True)
         for a in self.mask:
             ia = self.mask.index(a)
             # special case cobs_scalar * obs_vector, then mask is vector but n=1
@@ -52,7 +52,7 @@ class cdata:
     def sigmasq(self, outer_shape):
         size = numpy.prod(outer_shape)
         tmp = numpy.diag(self.grad @ self.cov @ self.grad.T)
-        out = numpy.zeros((size,))
+        out = pyobs.double_array((size,), zeros=True)
         for a in self.mask:
             ia = self.mask.index(a)
             out[a] = tmp[ia]

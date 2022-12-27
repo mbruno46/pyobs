@@ -160,7 +160,7 @@ class observable:
                 f"Incompatible icnfg[{ir}] and data[{ir}], for shape={shape}",
             )
 
-        mean_data = numpy.zeros((self.size,))
+        mean_data = pyobs.double_array((self.size,), zeros=True)
         for ir in range(R):
             mean_data += numpy.sum(numpy.reshape(data[ir], (nc[ir], self.size)), 0)
         mean_data *= 1.0 / sum(nc)
@@ -198,8 +198,8 @@ class observable:
            >>> print(mpi)
            139.57061(23)    134.97700(50)
         """
-        self.mean = numpy.array(numpy.atleast_1d(value))
-        cov = numpy.array(numpy.atleast_1d(covariance))
+        self.mean = pyobs.double_array(numpy.atleast_1d(value))
+        cov = pyobs.double_array(numpy.atleast_1d(covariance))
         self.shape = numpy.shape(self.mean)
         pyobs.assertion(
             numpy.ndim(self.shape) == 1,
@@ -238,7 +238,7 @@ class observable:
             numpy.shape(err) == self.shape,
             f"Unexpected error, dimensions do not match {self.shape}",
         )
-        cov = numpy.reshape(numpy.array(err) ** 2, (self.size,))
+        cov = numpy.reshape(pyobs.double_array(err) ** 2, (self.size,))
         self.cdata[name] = cdata(cov, list(range(self.size)))
         pyobs.memory.update(self)
 
@@ -361,7 +361,7 @@ class observable:
     # overloaded indicing and slicing
 
     def set_mean(self, mean):
-        self.mean = numpy.array(numpy.atleast_1d(mean))
+        self.mean = pyobs.double_array(numpy.atleast_1d(mean))
         self.shape = numpy.shape(self.mean)
         self.size = numpy.size(self.mean)
 
@@ -562,8 +562,8 @@ class observable:
     # Error functions
 
     def error_core(self, errinfo, plot, pfile):
-        sigma_tot = numpy.zeros(self.shape)
-        dsigma_tot = numpy.zeros(self.shape)
+        sigma_tot = pyobs.double_array(self.shape, zeros=True)
+        dsigma_tot = pyobs.double_array(self.shape, zeros=True)
         sigma = {}
         for e in self.ename:
             if e in errinfo:
@@ -715,8 +715,8 @@ class observable:
             >>> [cm, dcm] = obsA.covariance_matrix(errinfo = {'EnsA', pyobs.errinfo(W=10)})
             >>> print(pyobs.valerr(cm,dcm))
         """
-        covmat = numpy.zeros((self.size, self.size))
-        dcovmat = numpy.zeros((self.size, self.size))
+        covmat = pyobs.double_array((self.size, self.size), zeros=True)
+        dcovmat = pyobs.double_array((self.size, self.size), zeros=True)
         for e in self.ename:
             if e in errinfo:
                 res = covariance(self, e, errinfo[e].W)

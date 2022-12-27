@@ -71,7 +71,7 @@ class generator:
             f = 0.0
             tau = 0.5
         ff = numpy.sqrt(1.0 - f * f)
-        rn = numpy.zeros(numpy.shape(r))
+        rn = pyobs.double_array(numpy.shape(r), zeros=True)
         rn[0, :] = ff * r[0, :]
         for i in range(1, N):
             rn[i, :] = ff * r[i, :] + f * rn[i - 1, :]
@@ -103,28 +103,28 @@ class generator:
            0.12341(26)
 
         """
-        mu = pyobs.array(mu)
+        mu = pyobs.double_array(mu)
         pyobs.assertion(numpy.ndim(mu) == 1, "only 1D arrays are supported")
         na = len(mu)
 
-        cov = pyobs.array(cov)
+        cov = pyobs.double_array(cov)
         pyobs.assertion(
             numpy.shape(cov)[0] == na, "covariance matrix does not match central values"
         )
 
-        taus = pyobs.array(taus)
+        taus = pyobs.double_array(taus)
         taus = 0.5 * (taus <= 0.5) + taus * (taus > 0.5)
         nt = len(taus)
         if couplings is None:
-            couplings = pyobs.array(numpy.ones((na, nt)))
+            couplings = pyobs.double_array(numpy.ones((na, nt)))
         else:
-            couplings = pyobs.array(couplings)
+            couplings = pyobs.double_array(couplings)
             pyobs.assertion(
                 numpy.shape(couplings) == (na, nt),
                 f"unexpected couplings for {na} values and {nt} modes",
             )
 
-        rn = numpy.zeros((N, na))
+        rn = pyobs.double_array((N, na), zeros=True)
         _c = numpy.stack([couplings] * N)
         for i in range(len(taus)):
             rn += _c[:, :, i] * self.acrand(taus[i], N, na)
@@ -140,43 +140,3 @@ class generator:
         if na == 1:
             return (mu + (pref * rn) @ Q).reshape((N,))
         return mu + (pref * rn) @ Q
-
-
-#     def acrandn(self, mu, cov, tau, N):
-#         """
-#         Create synthetic correlated Monte Carlo 1-D data
-
-#         Parameters:
-#            mu (list of array): the central values of corresponding observable;
-#               a 1-D array is expected
-#            cov (array): the covariance matrix of the observable (in absence of
-#               autocorrelations); if a 1-D array is passed, a diagonal covariance
-#               matrix is assumed
-#            tau (float): the integrated autocorrelation time
-#            N (int): the number of configurations/measurements
-
-#         Returns:
-#            numpy.ndarray : 2-D array with the synthetic data, such that each row corresponds to a configuration
-#         """
-#         if len(mu) != numpy.shape(cov)[0]:  # pragma: no cover
-#             raise ValueError
-#         nf = len(mu)
-#         if tau > 0:
-#             f = numpy.exp(-1.0 / tau)
-#         else:
-#             f = 0.0
-#         ff = numpy.sqrt(1.0 - f * f)
-
-#         r = numpy.reshape(self.sample_normal(N * nf), (N, nf))
-#         rn = numpy.zeros((N, nf))
-#         rn[0, :] = ff * r[0, :]
-
-#         for i in range(N):
-#             rn[i, :] = ff * r[i, :] + f * rn[i - 1, :]
-
-#         if numpy.ndim(cov) == 1:
-#             Q = numpy.diag(numpy.sqrt(cov))
-#         else:
-#             [w, v] = numpy.linalg.eig(cov)
-#             Q = numpy.diag(numpy.sqrt(w)) @ v.T
-#         return rn @ Q + numpy.array(mu)

@@ -30,3 +30,12 @@ p2 = omat @ omat.mean
 [v2, e2] = p2.error()
 assert numpy.any(abs(v1-v2) < 1e-10)
 assert numpy.any(abs(e1-e2) < 1e-10)
+
+for f in ['sum']:
+    [v0, e0] = pyobs.__dict__[f](omat,axis=0).error()
+    func = lambda x: numpy.__dict__[f](x,axis=0)
+    mean = func(omat.mean)
+    g = pyobs.num_grad(omat, func)
+    g0 = pyobs.gradient(g)
+    [v1, e1] = pyobs.derobs([omat], mean, [g0]).error()
+    assert numpy.all(numpy.fabs(e1-e0) < 1e-10)

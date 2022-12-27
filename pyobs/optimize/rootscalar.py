@@ -72,7 +72,7 @@ def root_scalar(a, f, dfx, dfa, x0=None, method=None, bracket=None):
 
     res = rs(lambda x: f(x, a.mean), x0=x0, bracket=bracket, method=method)
     mean = numpy.reshape(res.root, (1,))
-    _g = numpy.array(dfa(res.root, a.mean)) / dfx(res.root, a.mean)
+    _g = pyobs.double_array(dfa(res.root, a.mean)) / dfx(res.root, a.mean)
 
     g = pyobs.gradient(lambda x: _g @ x, a.mean)
     return pyobs.derobs([a], mean, [g])

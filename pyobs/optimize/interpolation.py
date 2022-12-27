@@ -54,7 +54,7 @@ class interpolate:
             y.size == N,
             f"Unexpected observable with shape ${x.shape} not matching size of x",
         )
-        M = numpy.array([[x[i] ** k for k in range(N)] for i in range(N)]).astype("f8")
+        M = pyobs.double_array([[x[i] ** k for k in range(N)] for i in range(N)])
         w = numpy.linalg.eig(M)[0]
         pyobs.assertion(
             abs(max(w) / min(w)) < 1e16,
@@ -85,7 +85,7 @@ class interpolate:
             N = x.shape[0]
         else:
             N = len(x)
-            x = numpy.array(x)
+            x = pyobs.double_array(x)
         res = pyobs.repeat(self.coeff[0], N)
         for i in range(1, self.k):
             res += pyobs.repeat(self.coeff[i], N) * (x**i)

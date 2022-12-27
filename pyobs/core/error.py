@@ -53,10 +53,10 @@ class variance:
                 else:
                     self.x.append(numpy.sqrt(i))
 
-        gg = numpy.zeros((self.size, len(self.x)))
+        gg = pyobs.double_array((self.size, len(self.x)), zeros=True)
 
         idx = numpy.power(numpy.array(self.x), (1 if D == 1 else 2)).astype("i4")
-        _n = numpy.array(n[:, idx], dtype=numpy.float)
+        _n = pyobs.double_array(n[:, idx])
         _n[(_n == 0)] = numpy.inf
         gg = g[:, idx] / _n
 
@@ -68,7 +68,7 @@ class variance:
             self.cvar = numpy.cumsum(gg, axis=1)
         self.N = n[:, 0]
         self.xopt = [self.x[-1]] * self.size
-        self.var = numpy.zeros((self.size, 2))
+        self.var = pyobs.double_array((self.size, 2), zeros=True)
 
     def g(self, i, a):
         cov = self.cvar[a, i] / self.cvar[a, 0]
@@ -137,7 +137,7 @@ class variance:
         self.set_opt(self.xopt)
 
     def tauint(self):
-        tau = numpy.zeros((self.full_size, 2))
+        tau = pyobs.double_array((self.full_size, 2), zeros=True)
         for a in self.mask:
             i = self.mask.index(a)
             if self.cvar[i, 0] > 0.0:
@@ -146,8 +146,8 @@ class variance:
         return tau
 
     def sigma(self):
-        out0 = numpy.zeros((self.full_size,))
-        out1 = numpy.zeros((self.full_size,))
+        out0 = pyobs.double_array((self.full_size,), zeros=True)
+        out1 = pyobs.double_array((self.full_size,), zeros=True)
         for a in self.mask:
             i = self.mask.index(a)
             out0[a] = self.var[i, 0] / self.N[i]
@@ -230,8 +230,8 @@ def init_var(x, name):
         ].rrmax()  # int(min([x.mfdata[kk].rrmax() for kk in keys]))
         rescale = [1] * len(keys)
     else:
-        rescale = numpy.zeros((len(keys),), dtype=numpy.int)
-        wmax = numpy.zeros((len(keys),), dtype=numpy.int)
+        rescale = pyobs.int_array((len(keys),), zeros=True)
+        wmax = pyobs.int_array((len(keys),), zeros=True)
         for ik in range(len(keys)):
             d = x.delta[keys[ik]]
             rescale[ik] = numpy.min(numpy.diff(d.idx))
@@ -255,8 +255,8 @@ class var(variance):
         self.mask = list(set(mask))
         self.size = len(self.mask)
 
-        n = numpy.zeros((self.size, xmax), dtype=numpy.float)
-        g = numpy.zeros((self.size, xmax), dtype=numpy.float)
+        n = pyobs.double_array((self.size, xmax), zeros=True)
+        g = pyobs.double_array((self.size, xmax), zeros=True)
 
         # with this code we cover the situation where 1 obs happens to be known on 1 replica
         # and another obs in another replica, which may have different dtrj
@@ -290,8 +290,8 @@ class covar(variance):
         self.size *= self.size + 1
         self.size //= 2
 
-        n = numpy.zeros((self.size, xmax), dtype=numpy.float)
-        g = numpy.zeros((self.size, xmax), dtype=numpy.float)
+        n = pyobs.double_array((self.size, xmax), zeros=True)
+        g = pyobs.double_array((self.size, xmax), zeros=True)
 
         # with this code we cover the situation where 1 obs happens to be known on 1 replica
         # and another obs in another replica, which may have different dtrj
@@ -319,8 +319,8 @@ class covar(variance):
         self.full_size = x.size
 
     def covar(self):
-        out0 = numpy.zeros((self.full_size, self.full_size))
-        out1 = numpy.zeros((self.full_size, self.full_size))
+        out0 = pyobs.double_array((self.full_size, self.full_size), zeros=True)
+        out1 = pyobs.double_array((self.full_size, self.full_size), zeros=True)
         c = 0
         for a in self.mask:
             for b in self.mask[self.mask.index(a) :]:

@@ -1,7 +1,7 @@
 #################################################################################
 #
-# __init__.py: methods and functionalities of the library accessible to users
-# Copyright (C) 2020 Mattia Bruno
+# special.py: definitions of special functions for observables
+# Copyright (C) 2020-2023 Mattia Bruno
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,14 +19,28 @@
 #
 #################################################################################
 
-from .manipulate import *
-from .unary import *
-from . import linalg
-from .einsumfunc import *
-from .special import *
+import scipy
+import pyobs
 
-__all__ = ["linalg"]
-__all__.extend(unary.__all__)
-__all__.extend(manipulate.__all__)
-__all__.extend(einsumfunc.__all__)
-__all__.extend(special.__all__)
+__all__ = [
+    "besselk",
+]
+
+
+def besselk(v, x):
+    """
+    Modified Bessel function of the second kind of real order `v`, element-wise.
+
+    Parameters:
+       v (float): order of the Bessel function
+       x (obs): real observable where to evaluate the Bessel function
+
+    Returns:
+       obs : the modified bessel function computed for the input observable
+    """
+    new_mean = scipy.special.kv(v, x.mean)
+    aux = scipy.special.kv(v - 1, x.mean) + scipy.special.kv(v + 1, x.mean)
+    g = pyobs.gradient(lambda x: -0.5 * aux * x, x.mean, gtype="diag")
+    return pyobs.derobs(
+        [x], new_mean, [g], description=f"BesselK[{v}] of {x.description}"
+    )
