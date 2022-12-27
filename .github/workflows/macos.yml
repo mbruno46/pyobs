@@ -32,7 +32,6 @@ jobs:
 
     - name: Test
       run: |
-        export PYTHONPATH=$PWD/pyobs/
         cd pyobs
         ./tests/run "coverage run -p"
 
