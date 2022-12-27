@@ -33,8 +33,3 @@ include = ["pyobs*"]
 [tool.setuptools]
 include-package-data = true
 
-[tool.coverage.run]
-branch = true
-parallel = true
-omit = ['setup.py']
-source = ['pyobs']
