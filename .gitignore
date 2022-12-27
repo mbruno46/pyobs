@@ -6,6 +6,7 @@ __pycache__/
 *.ipynb*
 *.so
 !doc/tutorials/*ipynb
+*egg-info
 
 # ignores vim swap files
 *.swp

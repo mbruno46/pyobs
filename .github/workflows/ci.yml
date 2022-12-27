@@ -30,13 +30,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install numpy coverage
         pip install ./pyobs
-        cd pyobs
-        python setup.py build_ext
-        python setup.py clean	
+        #cd pyobs
+	#python setup.py build_ext
+	#python setup.py clean	
 
     - name: Test
       run: |
-        export PYTHONPATH=$PWD/pyobs/
+        #export PYTHONPATH=$PWD/pyobs/
         cd pyobs
         ./tests/run "coverage run -p"
 
@@ -48,7 +48,7 @@ jobs:
         coverage xml  # Export coverage report as XML file, for codecov.i
 
     - name: Upload coverage to Codecov
-      if: matrix.python-version == 3.6
+      if: matrix.python-version == 3.8
       env:
         PYTHON_VERSION: python${{ matrix.python-version }}
         CODECOV_TOKEN: "6f56ccbf-ceab-4666-81a7-fc2431ba9bb8"
