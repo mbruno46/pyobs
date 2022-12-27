@@ -22,7 +22,7 @@
 import numpy
 import pyobs
 
-__all__ = ["einsum","sum","cumsum","trace"]
+__all__ = ["einsum", "sum", "cumsum", "trace"]
 
 
 def einsum(subscripts, *operands):
@@ -61,6 +61,7 @@ def einsum(subscripts, *operands):
     new_mean = numpy.einsum(subscripts, *means)
     return pyobs.derobs(inps, new_mean, grads)
 
+
 def sum(x, axis=None):
     """
     Sum of observable elements over a given axis.
@@ -94,6 +95,7 @@ def sum(x, axis=None):
     g = pyobs.gradient(f, x.mean)
     return pyobs.derobs([x], f(x.mean), [g], description=t)
 
+
 def cumsum(x, axis=None):
     """
     Cumulative sum of the elements of an observable along a given axis.
@@ -119,6 +121,7 @@ def cumsum(x, axis=None):
 
     g = pyobs.gradient(f, x.mean)
     return pyobs.derobs([x], f(x.mean), [g])
+
 
 def trace(x, offset=0, axis1=0, axis2=1):
     """
@@ -153,4 +156,3 @@ def trace(x, offset=0, axis1=0, axis2=1):
         [g],
         description=f"trace for axes ({axis1,axis2}) of {x.description}",
     )
-

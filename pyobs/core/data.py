@@ -24,8 +24,10 @@ import pyobs
 
 __all__ = ["delta"]
 
+
 def is_int(x):
     return isinstance(x, (int, numpy.int32, numpy.int64))
+
 
 def expand_data(data, idx, shape):
     v = numpy.prod(shape)

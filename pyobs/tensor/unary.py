@@ -21,6 +21,7 @@
 import pyobs
 import numpy
 
+
 def __unary(x, f, df):
     new_mean = f(x.mean)
     aux = df(x.mean)
@@ -28,8 +29,19 @@ def __unary(x, f, df):
     return pyobs.derobs([x], new_mean, [g])
 
 
-
-__all__ = ["log","exp","sin","arcsin","cos","arccos","tan","arctan","cosh","arccosh","sinh","arcsinh",
+__all__ = [
+    "log",
+    "exp",
+    "sin",
+    "arcsin",
+    "cos",
+    "arccos",
+    "tan",
+    "arctan",
+    "cosh",
+    "arccosh",
+    "sinh",
+    "arcsinh",
 ]
 
 
@@ -94,7 +106,7 @@ def arcsin(x):
     Examples:
        >>> y = pyobs.arcsin(x)
     """
-    return __unary(x, numpy.arcsin, lambda x: (1-x*x)**(-0.5))
+    return __unary(x, numpy.arcsin, lambda x: (1 - x * x) ** (-0.5))
 
 
 def cos(x):
@@ -126,7 +138,7 @@ def arccos(x):
     Examples:
        >>> y = pyobs.arccos(x)
     """
-    return __unary(x, numpy.arcsin, lambda x: -(1-x*x)**(-0.5))
+    return __unary(x, numpy.arcsin, lambda x: -((1 - x * x) ** (-0.5)))
 
 
 def tan(x):
@@ -158,7 +170,7 @@ def arctan(x):
     Examples:
        >>> y = pyobs.arctan(x)
     """
-    return __unary(x, numpy.arctan, lambda x: 1 / (1 + x*x))
+    return __unary(x, numpy.arctan, lambda x: 1 / (1 + x * x))
 
 
 def cosh(x):
@@ -190,7 +202,7 @@ def arccosh(x):
     Examples:
        >>> y = pyobs.arccosh(x)
     """
-    return __unary(x, numpy.arccosh, lambda x: (x*x - 1)**(-0.5))
+    return __unary(x, numpy.arccosh, lambda x: (x * x - 1) ** (-0.5))
 
 
 def sinh(x):
@@ -222,5 +234,4 @@ def arcsinh(x):
     Examples:
        >>> y = pyobs.arcsinh(x)
     """
-    return __unary(x, numpy.arcsinh, lambda x: (x*x + 1)**(-0.5))
-
+    return __unary(x, numpy.arcsinh, lambda x: (x * x + 1) ** (-0.5))
