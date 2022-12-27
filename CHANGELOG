@@ -6,6 +6,7 @@ Future milestones:
 version 1.5.0, :
  - fixed bug in transform (roll, sort..)
  - improved behavior under roundoff errors
+ - fixed compatibility issues with numpy>=1.24.0
 
 version 1.4.0, 20.08.2022:
  - finite volume 2to2 quantization condition

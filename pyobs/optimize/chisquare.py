@@ -159,7 +159,7 @@ class chisquare:
 
 
 class mfit:
-    """
+    r"""
     Class to perform fits to multiple observables, via the minimization
     of the :math:`\chi^2` function
 
