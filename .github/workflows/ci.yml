@@ -30,9 +30,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install numpy coverage
         pip install ./pyobs
-        #cd pyobs
-	#python setup.py build_ext
-	#python setup.py clean	
 
     - name: Test
       run: |
