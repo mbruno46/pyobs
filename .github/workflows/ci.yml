@@ -22,24 +22,20 @@ jobs:
 
     - name: Clone pyobs
       uses: actions/checkout@v3
-      with:
-        path: pyobs
 
     - name: Install pyobs and dependencies
       run: |
         python -m pip install --upgrade pip
         pip install numpy coverage
-        pip install ./pyobs
+        pip install .
 
     - name: Test
       run: |
-        cd pyobs
         coverage run --debug=trace tests/core/observable.py
         ls -al .cov*
 
     - name: Coverage report
       run: |
-        cd pyobs
         coverage combine
         coverage report -m  # Print coverage report to screen
         coverage xml  # Export coverage report as XML file, for codecov.i
@@ -51,6 +47,5 @@ jobs:
         CODECOV_TOKEN: "6f56ccbf-ceab-4666-81a7-fc2431ba9bb8"
         CODECOV_ENV: PYTHON_VERSION, CODECOV_TOKEN
       run: |
-        cd pyobs
         bash <(curl -s https://codecov.io/bash) -f ./coverage.xml
 
