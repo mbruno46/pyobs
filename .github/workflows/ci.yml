@@ -31,8 +31,7 @@ jobs:
 
     - name: Test
       run: |
-        coverage run --debug=trace tests/core/observable.py
-        ls -al .cov*
+        ./test/run 'coverage run'
 
     - name: Coverage report
       run: |
