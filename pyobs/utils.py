@@ -37,7 +37,6 @@ __all__ = [
     "tex_table",
     "slice_ndarray",
     "import_string",
-    # "array",
     "double_array",
     "int_array",
 ]
@@ -258,19 +257,10 @@ def import_string(data):
     return core(data)
 
 
-# numpy.atleast_1d
-# def array(x):
-#     if numpy.shape(x) == ():
-#         return numpy.array(x).reshape((1,))
-#     return numpy.array(x)
-
-
 def pyobs_array(arg, type, zeros):
     if zeros:
         return numpy.zeros(arg, dtype=type)
-    if numpy.shape(arg) == ():
-        return numpy.array(arg).reshape((1,)).astype(type)
-    return numpy.array(arg).astype(type)
+    return numpy.atleast_1d(arg).astype(type)
 
 
 def double_array(arg, zeros=False):
@@ -279,3 +269,4 @@ def double_array(arg, zeros=False):
 
 def int_array(arg, zeros=False):
     return pyobs_array(arg, numpy.int32, zeros)
+

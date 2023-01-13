@@ -1,0 +1,4 @@
+[run]
+parallel = True
+omit = setup.py
+source = pyobs 

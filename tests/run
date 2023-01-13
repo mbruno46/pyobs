@@ -3,12 +3,10 @@
 runner=$1
 
 dir=${BASH_SOURCE%/*}
+cd $dir/..
 
-for d in `ls -d $dir $dir/*/`
+for f in `ls ./tests/*/*py`
 do
-	for f in `ls $d/*.py`
-	do
-		echo "Running: ${runner} $f"
-		${runner} --source pyobs --omit pyobs/setup.py $f
-	done
+	echo "Running: ${runner} $f"
+	${runner} $f
 done

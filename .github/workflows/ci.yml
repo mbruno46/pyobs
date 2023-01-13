@@ -34,7 +34,7 @@ jobs:
     - name: Test
       run: |
         cd pyobs
-        ./tests/run "coverage run -p"
+        ./tests/run "coverage run"
 
     - name: Coverage report
       run: |
