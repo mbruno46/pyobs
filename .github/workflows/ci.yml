@@ -34,7 +34,7 @@ jobs:
     - name: Test
       run: |
         cd pyobs
-        coverage run tests/core/observable.py
+        coverage run --debug=trace tests/core/observable.py
         ls -al .cov*
 
     - name: Coverage report
