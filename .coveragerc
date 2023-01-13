@@ -1,4 +1,4 @@
 [run]
 parallel = True
 omit = setup.py
-source = pyobs 
+source = ./pyobs 
