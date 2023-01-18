@@ -1,7 +1,7 @@
 from setuptools import setup, Extension
 import os
 
-VERSION = (1, 4, 0)
+VERSION = (1, 4, 1)
 
 def get_numpy_include():
     import numpy

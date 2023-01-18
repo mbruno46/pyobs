@@ -3,7 +3,7 @@ Future milestones:
  - expected chi square and quality of fit
  - exponential tail
 
-version 1.5.0, :
+version 1.4.1, 18.01.2023:
  - fixed bug in transform (roll, sort..)
  - improved behavior under roundoff errors
  - fixed compatibility issues with numpy>=1.24.0

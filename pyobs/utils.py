@@ -269,4 +269,3 @@ def double_array(arg, zeros=False):
 
 def int_array(arg, zeros=False):
     return pyobs_array(arg, numpy.int32, zeros)
-
