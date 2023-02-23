@@ -1,4 +1,4 @@
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
 import os
 
 VERSION = (1, 4, 1)
@@ -22,5 +22,6 @@ ext = Extension('pyobs.core.mftools', ['pyobs/core/mftools.cc'],
 setup(
     name='pyobs',
     version=version(),
+    packages=find_packages(),
     ext_modules=[ext],
 )
