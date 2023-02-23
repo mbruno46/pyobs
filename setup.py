@@ -20,6 +20,7 @@ ext = Extension('pyobs.core.mftools', ['pyobs/core/mftools.cc'],
                 include_dirs=[get_numpy_include()])
 
 setup(
+    name='pyobs',
     version=version(),
     ext_modules=[ext],
 )
