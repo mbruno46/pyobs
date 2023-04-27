@@ -22,6 +22,7 @@ ext = Extension('pyobs.core.mftools', ['pyobs/core/mftools.cc'],
 setup(
     name='pyobs',
     version=version(),
+    include_package_data=True,
     packages=find_packages(include=['pyobs*']),
     ext_modules=[ext],
 )
