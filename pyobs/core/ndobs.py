@@ -166,8 +166,14 @@ class observable:
         mean_data *= 1.0 / sum(nc)
 
         if numpy.size(self.mean) != 0:
+            for ir in range(R):
+                key = f"{ename}:{rname[ir]}"
+                pyobs.assertion(
+                    key not in self.delta.keys(), f"Replica name {key} already used"
+                )
             N0 = sum([self.delta[key].n for key in self.delta])
             mean_old = numpy.reshape(self.mean, (self.size,))
+            print(N0, mean_old, sum(nc), mean_data)
             self.mean = (N0 * mean_old + sum(nc) * mean_data) / (N0 + sum(nc))
             shift = sum(nc) * (mean_old - mean_data) / (N0 + sum(nc))
             for key in self.delta:
