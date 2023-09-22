@@ -9,7 +9,7 @@ def get_numpy_include():
     
 def version():
     v = ".".join(str(v) for v in VERSION)
-    cnt = f'__version__ = "{v}" \n__version_full__ = __version__'
+    cnt = f'__version__ = "{v}"\n__version_full__ = __version__\n'
     with open('pyobs/version.py', 'w') as f:
         f.write(cnt)
     with open('pyobs/VERSION','w') as f:

@@ -72,6 +72,8 @@ class variance:
 
     def g(self, i, a):
         cov = self.cvar[a, i] / self.cvar[a, 0]
+        if abs(cov - 1.0) < 1e-15:
+            return -1
         j = self.D - self.k
         xi = self.x[i]
 
@@ -351,7 +353,7 @@ def gamma_error(x, name, plot=False, pfile=None, einfo=None):
         v.set_opt(einfo.W)
 
     if not v.ismf:
-        v.correct_gamma_bias()
+        # v.correct_gamma_bias()
         tau = v.tauint() * 0.5
     else:
         tau = v.tauint()
@@ -365,7 +367,7 @@ def covariance(x, name, W):
     cov = covar(x, name)
     cov.set_opt(W)
 
-    if not cov.ismf:
-        cov.correct_gamma_bias()
+    # if not cov.ismf:
+    #     cov.correct_gamma_bias()
 
     return cov.covar()

@@ -23,6 +23,7 @@ import pyobs
 import numpy
 from scipy.sparse import dia_matrix
 
+
 # grad is Na x Ni matrix
 class gradient:
     def __init__(self, g, x0=None, gtype="full"):

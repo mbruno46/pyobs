@@ -33,13 +33,26 @@ class cdata:
         self.mask = mask
         self.size = len(self.mask)
         self.grad = pyobs.double_array((self.size, n), zeros=True)
-        for a in self.mask:
-            ia = self.mask.index(a)
-            # special case cobs_scalar * obs_vector, then mask is vector but n=1
-            if n == 1:
-                self.grad[ia, 0] = 1.0
-            else:
+        # special case cobs_scalar * obs_vector, then mask is vector but n=1
+        if n == 1:
+            self.grad[:, 0] = 1.0
+            return
+        if n >= self.size:
+            for a in self.mask:
+                ia = self.mask.index(a)
                 self.grad[ia, a] = 1.0
+        # reduction: n>size grad[ia,a]
+        # augmentation: n<size grad[ia,a]
+        # reduction: n>size grad[ia,a]
+
+    #         for a in self.mask:
+    #             ia = self.mask.index(a)
+    #             print(self.grad.shape, self.mask, ia, a)
+    #             # special case cobs_scalar * obs_vector, then mask is vector but n=1
+    #             if n == 1:
+    #                 self.grad[ia, 0] = 1.0
+    #             else:
+    #                 self.grad[ia, a] = 1.0
 
     def copy(self):
         res = cdata(self.cov, self.mask)

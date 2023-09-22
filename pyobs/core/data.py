@@ -71,10 +71,9 @@ def conv_ND(data, idx, lat, xmax, a=0, b=None):
     rescale = 1
     for index in [a, b]:
         if index is not None:
-            rescale *= data[index, 0]
-            aux += [
-                create_fft_data(data[index, :] / data[index, 0], idx, shape, fft_ax)
-            ]
+            f = numpy.max(data[index, :])
+            rescale *= f
+            aux += [create_fft_data(data[index, :] / f, idx, shape, fft_ax)]
 
     if len(aux) == 1:
         aux[0] *= aux[0].conj()
@@ -100,8 +99,8 @@ def block_data(data, idx, lat, bs):
         bs = pyobs.int_array([bs])
 
     shape = tuple(lat)
-    norm = data[0]
-    dat = expand_data(data / data[0], idx, shape)
+    norm = numpy.max(data)
+    dat = expand_data(data / norm, idx, shape)
     return pyobs.core.mftools.blockdata(dat, lat, bs) * norm
 
 
@@ -191,9 +190,9 @@ class delta:
             jlist.append(self.get_idx(k))
         jlist = pyobs.int_array(jlist)
 
-        # apply gradient
-        # self.delta[:,jlist] += grad.apply(d,self.mask)
-        grad.apply(self.delta, self.mask, jlist, d.delta, d.mask)
+        # takes into accounts holes present in d.delta but absent in self.delta
+        rescale_delta = self.n / d.n
+        grad.apply(self.delta, self.mask, jlist, d.delta * rescale_delta, d.mask)
 
     def gamma(self, xmax, a, b=None):
         ones = numpy.reshape(numpy.ones(self.n), (1, self.n))
