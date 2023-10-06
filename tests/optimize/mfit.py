@@ -30,6 +30,7 @@ pars = fit(corr)
 fit.parameters()
 print(pars)
 print('chisquared = ',fit.chisquared(pars))
+print('chiexp     = ',fit.chiexp(corr, pars, plot=True))
 
 [v, e] = pars[0].error()
 assert abs(a-v) < e
