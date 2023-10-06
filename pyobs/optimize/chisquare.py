@@ -160,15 +160,16 @@ class chisquare:
     def chiexp(self, yobs, pdict, p0, plot, errinfo):
         Wg = self.gvec(pdict, p0)
 
-        Hinv=numpy.linalg.inv(self.Hmat(pdict, p0)) 
+        Hinv = numpy.linalg.inv(self.Hmat(pdict, p0))
 
         PP = self.W - Wg.T @ Hinv @ Wg
-        w,v = numpy.linalg.eig(PP)
+        w, v = numpy.linalg.eig(PP)
 
         chiexp = yobs @ v
         _, ce, dce = chiexp.error_core(plot=plot, errinfo=errinfo, pfile=None)
         return w @ ce, w @ dce
-        
+
+
 class mfit:
     r"""
     Class to perform fits to multiple observables, via the minimization
@@ -321,9 +322,9 @@ class mfit:
         for i in range(len(self.csq)):
             tmp = self.csq[i].chiexp(yobs[i], self.pdict, res.x, False, {})
             self.ce += tmp[0]
-            self.dce += tmp[1]**2
+            self.dce += tmp[1] ** 2
         self.dce = self.dce**0.5
-        
+
         if pyobs.is_verbose("mfit"):
             print(f"chisquare = {self.c2}")
             print(f"chiexp    = {self.ce} +- {self.dce}")
@@ -337,7 +338,7 @@ class mfit:
             self.csq[i].set_pars(self.pdict, pars.mean)
             res += self.csq[i].csq()
         return res
-    
+
     def chiexp(self, yobs, pars, plot=False, errinfo={}):
         if len(self.csq) > 1:
             pyobs.check_type(yobs, "yobs", list)
@@ -352,7 +353,7 @@ class mfit:
         for i in range(len(self.csq)):
             tmp = self.csq[i].chiexp(yobs[i], self.pdict, pars.mean, plot, errinfo)
             ce += tmp[0]
-            dce += tmp[1]**2
+            dce += tmp[1] ** 2
         return ce, dce**0.5
 
     def eval(self, xax, pars):

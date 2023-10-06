@@ -72,7 +72,7 @@ def load(fname):
     def import_array(arr):
         check(arr[0].tag == "id")
         tag = arr[0].text.strip()
-        if arr[1].tag == 'symbol':
+        if arr[1].tag == "symbol":
             _arr = arr[2]
         else:
             _arr = arr[1]
@@ -81,7 +81,7 @@ def load(fname):
 
         l = _arr.text.strip()
         m = re.search(r"(\d+)\s+(\w?)\s*([a-z]?)(\d+)\s*(\w?)", l)
-        
+
         if m.group(2) == "i" and m.group(3) == "f":
             nc = int(m.group(1))
             na = int(m.group(4))
