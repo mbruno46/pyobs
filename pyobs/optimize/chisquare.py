@@ -199,7 +199,7 @@ class mfit:
           the program assumes :math:`x_i^\mu` correspond to the first arguments
        df (function): callable function or lambda function returning an array
           that contains the gradient of :math:`\phi`, namely
-          :math:`\partial \phi(\{p\},\{x_i\})/\partial p_\\alpha`
+          :math:`\partial \phi(\{p\},\{x_i\})/\partial p_\alpha`
        v (str, optional): a string with the list of variables used in `f` as
           the kinematic coordinates. Default value corresponds to `x`, which
           implies that `f` must be defined using `x` as first and unique
