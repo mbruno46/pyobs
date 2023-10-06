@@ -45,20 +45,12 @@ class variance:
         self.OmegaD = numpy.pi ** (z) / special.gamma(z) * 2
 
         (s, xmax) = numpy.shape(g)
-        self.x = []
-        for i in range(xmax):
-            if numpy.any(n[:, i] > 1e-15):
-                if D == 1:
-                    self.x.append(i)
-                else:
-                    self.x.append(numpy.sqrt(i))
+        mask = numpy.sum(abs(g), axis=0)>1e-15
+        idx = numpy.arange(len(mask))[mask]
+        self.x = [i for i in (idx if fold else numpy.sqrt(idx))]
 
         gg = pyobs.double_array((self.size, len(self.x)), zeros=True)
-
-        idx = numpy.power(numpy.array(self.x), (1 if D == 1 else 2)).astype("i4")
-        _n = pyobs.double_array(n[:, idx])
-        _n[(_n == 0)] = numpy.inf
-        gg = g[:, idx] / _n
+        gg = g[:, idx] / n[:, idx]
 
         if fold:
             _gg = numpy.array(gg)
@@ -75,7 +67,7 @@ class variance:
         if abs(cov - 1.0) < 1e-15:
             return -1
         j = self.D - self.k
-        xi = self.x[i]
+        xi = float(self.x[i])
 
         am = (special.gamma(j) * self.OmegaD / cov) ** (1.0 / j) / float(self.Stau)
         h = -numpy.exp(-am * xi) * xi ** (j - 1) * am ** (j) / special.gamma(j)
