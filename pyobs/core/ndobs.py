@@ -665,7 +665,7 @@ class observable:
            array: the error of the error
         """
         [_, sigma_tot, dsigma_tot] = self.error_core(errinfo, False, None)
-        return dsigma_tot / (2*numpy.sqrt(sigma_tot))
+        return dsigma_tot / (2 * numpy.sqrt(sigma_tot))
 
     def tauint(self):
         """
