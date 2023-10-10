@@ -45,7 +45,7 @@ class variance:
         self.OmegaD = numpy.pi ** (z) / special.gamma(z) * 2
 
         (s, xmax) = numpy.shape(g)
-        mask = numpy.sum(abs(g), axis=0) > 1e-15
+        mask = numpy.sum(abs(g/g[:,0][:,None]), axis=0) > 1e-15
         idx = numpy.arange(len(mask))[mask]
         self.x = [i for i in (idx if fold else numpy.sqrt(idx))]
 
