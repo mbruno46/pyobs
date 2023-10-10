@@ -3,6 +3,11 @@ Future milestones:
  - expected chi square and quality of fit
  - exponential tail
 
+version 1.5.0, 10.10.2023:
+ - improved error estimation and plotting in presence of holes
+ - minor bugs fixed (I/O xml)
+ - added support for expected chi square
+
 version 1.4.1, 18.01.2023:
  - fixed bug in transform (roll, sort..)
  - improved behavior under roundoff errors

@@ -157,6 +157,18 @@ class chisquare:
             res[:, a] = g[:, i]
         return [new_mean, res]
 
+    def chiexp(self, yobs, pdict, p0, plot, errinfo):
+        Wg = self.gvec(pdict, p0)
+
+        Hinv = numpy.linalg.inv(self.Hmat(pdict, p0))
+
+        PP = self.W - Wg.T @ Hinv @ Wg
+        w, v = numpy.linalg.eig(PP)
+
+        chiexp = yobs @ v
+        _, ce, dce = chiexp.error_core(plot=plot, errinfo=errinfo, pfile=None)
+        return w @ ce, w @ dce
+
 
 class mfit:
     r"""
@@ -188,7 +200,7 @@ class mfit:
           the program assumes :math:`x_i^\mu` correspond to the first arguments
        df (function): callable function or lambda function returning an array
           that contains the gradient of :math:`\phi`, namely
-          :math:`\partial \phi(\{p\},\{x_i\})/\partial p_\\alpha`
+          :math:`\partial \phi(\{p\},\{x_i\})/\partial p_\alpha`
        v (str, optional): a string with the list of variables used in `f` as
           the kinematic coordinates. Default value corresponds to `x`, which
           implies that `f` must be defined using `x` as first and unique
@@ -304,8 +316,18 @@ class mfit:
             tmp = self.csq[i].gvec(self.pdict, res.x)
             g.append(pyobs.gradient(Hinv @ tmp))
 
+        self.c2 = res.fun
+        self.ce = 0.0
+        self.dce = 0.0
+        for i in range(len(self.csq)):
+            tmp = self.csq[i].chiexp(yobs[i], self.pdict, res.x, False, {})
+            self.ce += tmp[0]
+            self.dce += tmp[1] ** 2
+        self.dce = self.dce**0.5
+
         if pyobs.is_verbose("mfit"):
-            print(f"chisquare = {res.fun}")
+            print(f"chisquare = {self.c2}")
+            print(f"chiexp    = {self.ce} +- {self.dce}")
             print(f"minimizer iterations = {res.nit}")
             print(f"minimizer status: {res.message}")
         return pyobs.derobs(yobs, res.x, g)
@@ -316,6 +338,23 @@ class mfit:
             self.csq[i].set_pars(self.pdict, pars.mean)
             res += self.csq[i].csq()
         return res
+
+    def chiexp(self, yobs, pars, plot=False, errinfo={}):
+        if len(self.csq) > 1:
+            pyobs.check_type(yobs, "yobs", list)
+        else:
+            if isinstance(yobs, pyobs.observable):
+                yobs = [yobs]
+        pyobs.assertion(
+            len(yobs) == len(self.csq),
+            f"Unexpected number of observables for {len(self.csq)} fits",
+        )
+        ce, dce = 0, 0
+        for i in range(len(self.csq)):
+            tmp = self.csq[i].chiexp(yobs[i], self.pdict, pars.mean, plot, errinfo)
+            ce += tmp[0]
+            dce += tmp[1] ** 2
+        return ce, dce**0.5
 
     def eval(self, xax, pars):
         """

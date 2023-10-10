@@ -84,12 +84,12 @@ class generator:
         Parameters:
            mu (float or 1D array): the central value
            cov (float or array): the target covariance matrix; if a 1-D array is
-              passed, a diagonal covariance matrix is assumed
+                passed, a diagonal covariance matrix is assumed
            taus (float or array): the autocorrelation time(s). Values smaller
-           than 0.5 are ignored and set to automatically to 0.5.
+                than 0.5 are ignored and set to automatically to 0.5.
            N (int): the number of configurations/measurements
            couplings (optional, float or array): the couplings of the modes
-           to the observable.
+                to the observable.
 
         Returns:
            list : the synthetic data

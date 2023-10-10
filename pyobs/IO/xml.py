@@ -72,11 +72,15 @@ def load(fname):
     def import_array(arr):
         check(arr[0].tag == "id")
         tag = arr[0].text.strip()
-        check(arr[1].tag == "layout")
-        tmp = import_data(arr[1].tail)
+        if arr[1].tag == "symbol":
+            _arr = arr[2]
+        else:
+            _arr = arr[1]
+        check(_arr.tag == "layout")
+        tmp = import_data(_arr.tail)
 
-        l = arr[1].text.strip()
-        m = re.search(r"(\d+)\s+(\w?)\s*(\w?)(\d+)\s*(\w?)", l)
+        l = _arr.text.strip()
+        m = re.search(r"(\d+)\s+(\w?)\s*([a-z]?)(\d+)\s*(\w?)", l)
 
         if m.group(2) == "i" and m.group(3) == "f":
             nc = int(m.group(1))
