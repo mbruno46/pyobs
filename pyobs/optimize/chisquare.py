@@ -160,7 +160,9 @@ class chisquare:
     def chiexp(self, yobs, pdict, p0, plot, errinfo):
         Wg = self.gvec(pdict, p0)
 
-        Hinv = numpy.linalg.inv(self.Hmat(pdict, p0))
+        w, v = numpy.linalg.eig(self.Hmat(pdict, p0))
+        Hinv = v @ numpy.diag(1/w * (w!=0.0)) @ v.T
+        
 
         PP = self.W - Wg.T @ Hinv @ Wg
         w, v = numpy.linalg.eig(PP)
