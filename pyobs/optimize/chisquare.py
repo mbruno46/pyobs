@@ -161,8 +161,10 @@ class chisquare:
         Wg = self.gvec(pdict, p0)
 
         w, v = numpy.linalg.eig(self.Hmat(pdict, p0))
-        Hinv = v @ numpy.diag(1/w * (w!=0.0)) @ v.T
-        
+        mask = w!=0
+        winv = w
+        winv[mask] = 1/w[mask]
+        Hinv = v @ numpy.diag(winv) @ v.T        
 
         PP = self.W - Wg.T @ Hinv @ Wg
         w, v = numpy.linalg.eig(PP)
