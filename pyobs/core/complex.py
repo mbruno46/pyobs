@@ -24,6 +24,20 @@ import numpy as np
 import time
 
 class complex_observable:
+    """
+    Interface for complex observables. It is a simple wrapper for 
+    the real and imaginary parts of a vector or matrix, which are 
+    individually normal pyobs observables. They must have the same
+    shape.
+    
+    Parameters:
+       real (observable): the real part
+       imag (observable): the imaginary part
+       
+    Examples:
+       >>> cobs = pyobs.complex_observable(re, im)
+       >>> print(cobs)
+    """
     def __init__(self, real=None, imag=None):
         pyobs.assertion((not real is None) or (not imag is None), "Unexpected real/imaginary parts")
         if real is None:
@@ -81,9 +95,22 @@ class complex_observable:
         return pyobs.complex_observable(pyobs.transpose(self.real), pyobs.transpose(self.imag))
     
     def inv(self):
+        """
+        Calculates the inverse if the complex observable is a square matrix.
+        
+        Returns:
+           pyobs.complex_obserable
+        """
         return self.unary_derobs(lambda x: np.linalg.inv(x), [lambda mean, x: -mean[0] @ x @ mean[0]])
     
     def eig(self):
+        """
+        Calculates the complex eigenvalues and eigenvectors, if the observable is a square matrix.     
+        
+        Returns:
+           pyobs.complex_observable: the eigenvalues.
+           pyobs.complex_observable: the eigenvectors.
+        """
         # d l_n = (v_n, dA v_n)
         gw = lambda mean, x: np.diag(mean[1].T @ x @ mean[1])
 
