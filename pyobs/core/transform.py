@@ -26,10 +26,13 @@ from .data import delta
 from .cdata import cdata
 
 
-def indices_isin(a, b):
-    ia, ib = numpy.where(numpy.array(a)[:, None] == numpy.array(b)[None, :])
-    return list(ia), list(ib)
+# def indices_isin(a, b):
+#     ia, ib = numpy.where(numpy.array(a)[:, None] == numpy.array(b)[None, :])
+#     return list(ia), list(ib)
 
+def indices_isin(a,b):
+    inner = lambda x,y: numpy.nonzero(numpy.in1d(x,y))[0]
+    return list(inner(a,b)), list(inner(b,a))
 
 def transform(obs, f):
     new_mean = f(obs.mean)
