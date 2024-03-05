@@ -120,10 +120,7 @@ Features
 Authors
 -------
 
-Copyright (C) 2020-2021, Mattia Bruno
-
-Changelog
----------
+Copyright (C) 2020-2024, Mattia Bruno
 
 .. include:: ../CHANGELOG
 

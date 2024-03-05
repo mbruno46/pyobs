@@ -1,12 +1,31 @@
-Future milestones:
- - jackknife error support
- - expected chi square and quality of fit
- - exponential tail
+Changelog
+---------
 
-version 1.5.0, 10.10.2023:
- - improved error estimation and plotting in presence of holes
- - minor bugs fixed (I/O xml)
- - added support for expected chi square
+All notable changes to this project will be documented in this file.
+The format is based on https://keepachangelog.com/en/1.0.0/.
+
+[Unreleased]
+ - Added
+    * jackknife error support
+    * exponential tail
+ - Fixed
+    * a
+    * b
+
+
+[1.5.1] - xx.03.2024
+ - Added
+    * support for complex observables via `complex_observable` class (binary operations `@`, `*`, unary operations `inv`, `eig`, `T`)
+ - Fixed
+    * fixed bug in chiexp for combined fits
+    * faster index search in transform.py for large observables
+
+[1.5.0] - 10.10.2023
+ - Added
+    * added support for expected chi square
+ - Fixed
+    * improved error estimation and plotting in presence of holes
+    * minor bugs fixed (I/O xml)
 
 version 1.4.1, 18.01.2023:
  - fixed bug in transform (roll, sort..)
