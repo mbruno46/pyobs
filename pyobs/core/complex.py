@@ -23,90 +23,120 @@ import pyobs
 import numpy as np
 import time
 
+
 class complex_observable:
     """
-    Interface for complex observables. It is a simple wrapper for 
-    the real and imaginary parts of a vector or matrix, which are 
+    Interface for complex observables. It is a simple wrapper for
+    the real and imaginary parts of a vector or matrix, which are
     individually normal pyobs observables. They must have the same
     shape.
-    
+
     Parameters:
        real (observable): the real part
        imag (observable): the imaginary part
-       
+
     Examples:
        >>> cobs = pyobs.complex_observable(re, im)
        >>> print(cobs)
     """
+
     def __init__(self, real=None, imag=None):
-        pyobs.assertion((not real is None) or (not imag is None), "Unexpected real/imaginary parts")
+        pyobs.assertion(
+            (not real is None) or (not imag is None), "Unexpected real/imaginary parts"
+        )
         if real is None:
-            self.real = pyobs.observable(description='auxiliary observable')
-            self.real.create_from_cov(f"{time.time()}", imag.mean*0.0, imag.mean.flatten()*0.0)
+            self.real = pyobs.observable(description="auxiliary observable")
+            self.real.create_from_cov(
+                f"{time.time()}", imag.mean * 0.0, imag.mean.flatten() * 0.0
+            )
         else:
             self.real = real
-            
+
         if imag is None:
-            self.imag = pyobs.observable(description='auxiliary observable')
-            self.imag.create_from_cov(f"{time.time()}", real.mean*0.0, real.mean.flatten()*0.0)
+            self.imag = pyobs.observable(description="auxiliary observable")
+            self.imag.create_from_cov(
+                f"{time.time()}", real.mean * 0.0, real.mean.flatten() * 0.0
+            )
         else:
             self.imag = imag
-            
-        pyobs.assertion(imag.shape == real.shape, "Real and imaginary parts must have same dimensions")
+
+        pyobs.assertion(
+            imag.shape == real.shape,
+            "Real and imaginary parts must have same dimensions",
+        )
         self.mean = self.real.mean + 1j * self.imag.mean
-    
+
     def unary_derobs(self, func, grad):
         mean = func(self.mean)
-        if not type(mean) in (tuple,list):
+        if not type(mean) in (tuple, list):
             mean = [mean]
 
         out = []
         for i, m in enumerate(mean):
+            g_re = [
+                pyobs.gradient(lambda x: grad[i](mean, x).real, self.real.mean),
+                pyobs.gradient(lambda x: grad[i](mean, x).imag, self.imag.mean),
+            ]
 
-            g_re = [pyobs.gradient(lambda x: grad[i](mean,x).real, self.real.mean), 
-                    pyobs.gradient(lambda x: grad[i](mean,x).imag, self.imag.mean)]
+            g_im = [
+                pyobs.gradient(lambda x: grad[i](mean, x).imag, self.real.mean),
+                pyobs.gradient(lambda x: grad[i](mean, x).real, self.imag.mean),
+            ]
 
-            g_im = [pyobs.gradient(lambda x: grad[i](mean,x).imag, self.real.mean), 
-                    pyobs.gradient(lambda x: grad[i](mean,x).real, self.imag.mean)]            
-            
             re = pyobs.derobs([self.real, self.imag], m.real, g_re)
             im = pyobs.derobs([self.real, self.imag], m.imag, g_im)
-                
+
             out.append(pyobs.complex_observable(re, im))
 
-        if len(out)==1:
+        if len(out) == 1:
             return out[0]
         return out
-    
+
     def __matmul__(self, y):
-        pyobs.assertion(isinstance(y, pyobs.complex_observable), "Only multiplication among complex matrices is supported")
-        re, im = self.real @ y.real - self.imag @ y.imag, self.real @ y.imag + self.imag @ y.real
+        pyobs.assertion(
+            isinstance(y, pyobs.complex_observable),
+            "Only multiplication among complex matrices is supported",
+        )
+        re, im = (
+            self.real @ y.real - self.imag @ y.imag,
+            self.real @ y.imag + self.imag @ y.real,
+        )
         return pyobs.complex_observable(re, im)
 
-    def __mul__(self,y):
-        pyobs.assertion(isinstance(y, pyobs.complex_observable), "Only multiplication among complex matrices is supported")
-        re, im = self.real * y.real - self.imag * y.imag, self.real * y.imag + self.imag * y.real
+    def __mul__(self, y):
+        pyobs.assertion(
+            isinstance(y, pyobs.complex_observable),
+            "Only multiplication among complex matrices is supported",
+        )
+        re, im = (
+            self.real * y.real - self.imag * y.imag,
+            self.real * y.imag + self.imag * y.real,
+        )
         return pyobs.complex_observable(re, im)
 
     def __str__(self):
-        return self.real.__str__() + '\n' + self.imag.__str__()
-    
+        return self.real.__str__() + "\n" + self.imag.__str__()
+
     def T(self):
-        return pyobs.complex_observable(pyobs.transpose(self.real), pyobs.transpose(self.imag))
-    
+        return pyobs.complex_observable(
+            pyobs.transpose(self.real), pyobs.transpose(self.imag)
+        )
+
     def inv(self):
         """
         Calculates the inverse if the complex observable is a square matrix.
-        
+
         Returns:
            pyobs.complex_obserable
         """
-        return self.unary_derobs(lambda x: np.linalg.inv(x), [lambda mean, x: -mean[0] @ x @ mean[0]])
-    
+        return self.unary_derobs(
+            lambda x: np.linalg.inv(x), [lambda mean, x: -mean[0] @ x @ mean[0]]
+        )
+
     def eig(self):
         """
-        Calculates the complex eigenvalues and eigenvectors, if the observable is a square matrix.     
-        
+        Calculates the complex eigenvalues and eigenvectors, if the observable is a square matrix.
+
         Returns:
            pyobs.complex_observable: the eigenvalues.
            pyobs.complex_observable: the eigenvectors.
@@ -124,4 +154,4 @@ class complex_observable:
             h = np.array(h)
             return mean[1] @ (tmp * h)
 
-        return self.unary_derobs(lambda x: np.linalg.eig(x), [gw, gv])    
+        return self.unary_derobs(lambda x: np.linalg.eig(x), [gw, gv])
