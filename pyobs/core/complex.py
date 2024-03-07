@@ -149,9 +149,9 @@ class complex_observable:
             w = mean[0].real
             tmp = mean[1].T.conj() @ y @ mean[1]
             h = []
-            for m in range(self.mean.shape[0]):
-                h.append((w != w[m]) * 1.0 / (w - w[m] + 1e-16))
+            for _w in w:
+                h.append((w != _w) * 1.0 / (w - _w + 1e-16))
             h = np.array(h)
             return mean[1] @ (tmp * h)
 
-        return self.unary_derobs(lambda x: np.linalg.eig(x), [gw, gv])
+        return self.unary_derobs(lambda x: list(np.linalg.eig(x)), [gw, gv])
