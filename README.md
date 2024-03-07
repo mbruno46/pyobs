@@ -42,41 +42,6 @@ Please also consider citing:
 
 Copyright (C) 2020-2024, Mattia Bruno
 
-## Installation
+## [Installation](https://mbruno46.github.io/pyobs/#installation)
 
-To install the library directly in your local python distribution,
-simply run
-
-```bash
-pip install git+https://github.com/mbruno46/pyobs.git@master#egg=pyobs
-# or for upgrading
-pip install -U git+https://github.com/mbruno46/pyobs.git@master#egg=pyobs
-```
-
-After installation, `pyobs` can be imported like any other package 
-
-```python
-import pyobs
-help(pyobs.observable)
-```
-
-The library can also be installed from a local clone of
-the repository in *developer mode*, as described in the 
-documentation. 
-
-## Example
-
-```python
-import numpy
-import pyobs
-
-data = numpy.loadtxt('plaquette.dat')
-
-plaq = pyobs.observable(description='the plaquette')
-plaq.create('ensembleA',data)
-
-# perform arbitrary operations
-print(plaq, plaq**2)
-
-logplaq = pyobs.log(plaq)
-```
+## [Examples](https://mbruno46.github.io/pyobs/tutorials/index.html)

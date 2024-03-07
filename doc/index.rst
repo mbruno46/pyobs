@@ -17,6 +17,50 @@ from (Monte Carlo) Markov chains.
 The software is hosted on `GitHub <https://github.com/mbruno46/pyobs>`__ and is distributed 
 under the `GNU GPLv2 <https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html>`__ license.
 
+**Features**
+
+* object-oriented for easy manipulation of data
+* FFT acceleration for calculation of autocorrelations
+* minimal memory footprint for large data sets and memory monitoring
+  system
+* support for master-field setup, ie autocorrelations in more
+  than one dimension
+* support for systematic errors and external input data
+* flexible interface for fits
+* support for linear algebra operations (e.g. matrix inverse, eigenvalue problem, etc..)
+
+Citation
+--------
+
+If you use this library in your publications cite it in BibTex format with
+
+.. code-block:: latex
+
+   @software{mattia_bruno_2023_8428049,
+     author       = {Mattia Bruno},
+     title        = {mbruno46/pyobs: v1.5.0},
+     month        = oct,
+     year         = 2023,
+     publisher    = {Zenodo},
+     version      = {v1.5.0},
+     doi          = {10.5281/zenodo.7546850},
+     url          = {https://doi.org/10.5281/zenodo.7546850}
+   }
+
+For citations in other formats check out the `Zenodo webpage <https://zenodo.org/doi/10.5281/zenodo.7546850>`__.
+
+
+Please also consider citing:
+
+* M. Bruno, R. Sommer, `On fits to correlated and auto-correlated data <https://inspirehep.net/literature/2157883>`__. *Comput.Phys.Commun.* 285 (2023) 108643.
+* S. Schaefer, R. Sommer, F. Virotta, `Critical slowing down and error analysis in lattice QCD simulations <https://inspirehep.net/literature/871175>`__. *Nucl.Phys.B* 845 (2011) 93-119.
+* U. Wolff, `Monte Carlo errors with less errors <https://inspirehep.net/literature/621085>`__. *Comput.Phys.Commun.* 156 (2004) 143-153.
+
+Authors
+-------
+
+Copyright (C) 2020-2024, Mattia Bruno
+
 Installation
 ------------
 
@@ -103,24 +147,6 @@ Alternatively, just use the full path
    $ ./pip install numpy
    $ ./pip install git+https://github.com/mbruno46/pyobs.git@master#egg=pyobs
 
-
-Features
---------
-
-* object-oriented for easy manipulation of data
-* FFT acceleration for calculation of autocorrelations
-* minimal memory footprint for large data sets and memory monitoring
-  system
-* support for master-field setup, ie autocorrelations in more
-  than one dimension
-* support for systematic errors and external input data
-* flexible interface for fits
-* support for linear algebra operations (e.g. matrix inverse, eigenvalue problem, etc..)
-
-Authors
--------
-
-Copyright (C) 2020-2024, Mattia Bruno
 
 .. include:: ../CHANGELOG
 

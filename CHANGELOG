@@ -2,41 +2,55 @@ Changelog
 ---------
 
 All notable changes to this project will be documented in this file.
-The format is based on https://keepachangelog.com/en/1.0.0/.
+The format is based on `Keep a changelog <https://keepachangelog.com/en/1.0.0/>`__.
 
 [Unreleased]
- - Added
-    * jackknife error support
-    * exponential tail
- - Fixed
-    * a
-    * b
+++++++++++++
+
+Added 
+ * jackknife error support
+ * exponential tail
+
+Fixed
+ * a
+ * b
 
 
 [1.5.1] - xx.03.2024
- - Added
-    * support for complex observables via `complex_observable` class (binary operations `@`, `*`, unary operations `inv`, `eig`, `T`)
- - Fixed
-    * fixed bug in chiexp for combined fits
-    * faster index search in transform.py for large observables
+++++++++++++++++++++
+
+Added
+ * support for complex observables via `complex_observable` class (binary operations `@`, `*`, unary operations `inv`, `eig`, `T`)
+Fixed
+ * fixed bug in chiexp for combined fits
+ * faster index search in transform.py for large observables
 
 [1.5.0] - 10.10.2023
- - Added
-    * added support for expected chi square
- - Fixed
-    * improved error estimation and plotting in presence of holes
-    * minor bugs fixed (I/O xml)
+++++++++++++++++++++
+Added
+ * added support for expected chi square
+Fixed
+ * improved error estimation and plotting in presence of holes
+ * minor bugs fixed (I/O xml)
 
-version 1.4.1, 18.01.2023:
+[1.4.1] - 18.01.2023
+++++++++++++++++++++
+
+Fixed
  - fixed bug in transform (roll, sort..)
  - improved behavior under roundoff errors
  - fixed compatibility issues with numpy>=1.24.0
 
-version 1.4.0, 20.08.2022:
+[1.4.0] - 20.08.2022
+++++++++++++++++++++
+
+Added
  - finite volume 2to2 quantization condition
- - added write support for xml.gz format
+ - write support for xml.gz format
  - documentation updated
- - minor bugs fixed
+
+Fixed
+- several minor bugs fixed
 
 version 1.3.0, 06.02.2022:
  - added utility functions (tensor_remove, import_string)
