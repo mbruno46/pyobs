@@ -83,10 +83,13 @@ class variance:
                 for i in range(1, len(self.x)):
                     if self.g(i, a) > 0:
                         break
+                while (self.cvar[a, i] < self.cvar[a, 0]):
+                    i -= 1
             if self.cvar[a, i] < 0:
                 i = 0
                 print(f"Warning: automatic window failed for obs {a}, using {i}")
-
+            
+            
             self.xopt[a] = self.x[i]
             self.var[a, 0] = self.cvar[a, i]
             self.var[a, 1] = self.cvar[a, i] * self.stat_relerr(self.x[i], a)
@@ -95,6 +98,7 @@ class variance:
                 print(
                     f"Warning: automatic window failed for obs {a}, using {self.xopt[a]}"
                 )
+                
 
     def set_opt(self, xopt):
         for a in range(self.size):
