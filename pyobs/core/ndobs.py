@@ -300,7 +300,7 @@ class observable:
     ##################################
     # pretty string representations
 
-    def peek(self):
+    def peek(self, verbose=False):
         """
         Display a brief summary of the content of the observable, including
         its memory footprint and requirements (for error computation), its
@@ -332,6 +332,8 @@ class observable:
                 if rn[0] == name:
                     outstr = f'    - {"Replica" if self.delta[key].lat is None else "Master-field"} {rn[1]}'
                     outstr = f'{outstr} with {f"ncnfg {self.delta[key].n}" if self.delta[key].lat is None else f"lattice {self.delta[key].lat}"}'
+                    print(outstr)
+                    outstr = f'      index field {self.delta[key].idx}'
                     print(outstr)
                     mm = (
                         self.delta[key].ncnfg() * 8.0 * 2.0
