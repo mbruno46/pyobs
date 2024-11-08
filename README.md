@@ -15,22 +15,7 @@ from (Monte Carlo) Markov chains.
 - **Source code:** https://github.com/mbruno46/pyobs/
 - **Bug reports:** https://github.com/mbruno46/pyobs/issues
 
-If you use this library in your publications cite it with (BibTeX) 
-
-```latex
-@software{mattia_bruno_2023_7546851,
-  author       = {Mattia Bruno},
-  title        = {pyobs},
-  month        = jan,
-  year         = 2023,
-  publisher    = {Zenodo},
-  version      = {v1.4.1},
-  doi          = {10.5281/zenodo.7546851},
-  url          = {https://doi.org/10.5281/zenodo.7546851}
-}
-```
-For citations in other formats plaese take a look at [Zenodo](https://zenodo.org/record/7546851).
-
+For updated instructions on how to cite this library in your publication click here [Zenodo](https://doi.org/10.5281/zenodo.7546850)
 
 Please also consider citing:
 

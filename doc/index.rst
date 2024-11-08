@@ -32,23 +32,7 @@ under the `GNU GPLv2 <https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html>
 Citation
 --------
 
-If you use this library in your publications cite it in BibTex format with
-
-.. code-block:: latex
-
-   @software{mattia_bruno_2023_8428049,
-     author       = {Mattia Bruno},
-     title        = {mbruno46/pyobs: v1.5.0},
-     month        = oct,
-     year         = 2023,
-     publisher    = {Zenodo},
-     version      = {v1.5.0},
-     doi          = {10.5281/zenodo.7546850},
-     url          = {https://doi.org/10.5281/zenodo.7546850}
-   }
-
-For citations in other formats check out the `Zenodo webpage <https://zenodo.org/doi/10.5281/zenodo.7546850>`__.
-
+If you use this library in your publications cite it following the instructions here `Zenodo webpage <https://zenodo.org/doi/10.5281/zenodo.7546850>`__.
 
 Please also consider citing:
 
