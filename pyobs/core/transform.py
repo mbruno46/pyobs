@@ -25,23 +25,26 @@ import pyobs
 from .data import delta
 from .cdata import cdata
 
+# def indices_isin(a,b):
+#     idx_a = []
+#     idx_b = []
+#     for ia, _a in enumerate(a):
+#         if _a in b:
+#             idx_a += [ia]
+#             idx_b += [b.index(_a)]
+#     return idx_a, idx_b
 
-# def indices_isin(a, b):
-#     ia, ib = numpy.where(numpy.array(a)[:, None] == numpy.array(b)[None, :])
-#     return list(ia), list(ib)
-
-# for operations like transpose the order of a and b matters
-# so the intersection should keep the correct ordering
-# in1d does not preserve the ordering
-# def indices_isin(a, b):
-#     inner = lambda x, y: numpy.nonzero(numpy.in1d(x, y))[0]
-#     return list(inner(a, b)), list(inner(b, a))
-
-
-# returns indices of elements of a that are present in b preserving the order a
 def indices_isin(a,b):
-    idx = numpy.in1d(a,b)
-    return list(numpy.arange(len(a))[idx]), list(numpy.array(a)[idx])
+    # idx_a = indices of elements of a that are present in b preserving the order a
+    idx_a = numpy.arange(len(a))[numpy.in1d(a,b)]
+    if idx_a.size==0:
+        return [], []
+    # idx_b = indices of elements of b that are present in a preserving the order a
+    idx_b = numpy.arange(len(b))[numpy.in1d(b,a)]
+    mask = numpy.array(a)[idx_a,None] == numpy.array(b)[idx_b]
+    idx_b_2 = numpy.stack([idx_b]*len(idx_a))[mask]
+    return list(idx_a), list(idx_b_2)
+    
 
 def transform(obs, f):
     new_mean = f(obs.mean)
@@ -53,6 +56,10 @@ def transform(obs, f):
     for key in obs.delta:
         d = obs.delta[key]
         idx_subset_mask, idx_mask = indices_isin(subset_mask, d.mask)
+        if pyobs.is_verbose("transform"):
+            print("\ntransform debugging")
+            print("subset_mask", subset_mask, f"{key}->mask", d.mask)
+            print("idx_subset_mask", idx_subset_mask, "idx_mask", idx_mask)
         if len(idx_subset_mask) > 0:
             res.delta[key] = d[idx_mask]
             res.delta[key].mask = idx_subset_mask
