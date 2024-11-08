@@ -2,6 +2,7 @@ import pyobs
 import numpy
 
 pyobs.set_verbose('slice', True)
+pyobs.set_verbose('transform', True)
 
 T=16
 L=16
@@ -43,6 +44,11 @@ assert numpy.all(abs(e0-e1) < 1e-12)
 [v1, e1] = obs.slice([0],numpy.array([0,1])).error()
 assert numpy.all(abs(v0-v1) < 1e-12)
 assert numpy.all(abs(e0-e1) < 1e-12)
+
+[v0, e0] = obs.error()
+[v1, e1] = obs[::-1,:].error()
+assert numpy.all(abs(v0[::-1,:]-v1) < 1e-12)
+assert numpy.all(abs(e0[::-1,:]-e1) < 1e-12)
 
 pyobs.set_verbose('slice', False)
 

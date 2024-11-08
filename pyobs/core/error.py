@@ -332,11 +332,11 @@ class covar(variance):
 
 
 class errinfo:
-    def __init__(self, Stau=1.5, k=0, W=None):
+    def __init__(self, Stau=1.5, k=0, W=None, gamma_bias=True):
         self.Stau = Stau
         self.k = k
         self.W = W
-
+        self.gamma_bias = gamma_bias
 
 def gamma_error(x, name, plot=False, pfile=None, einfo=None):
     if einfo is None:
@@ -349,7 +349,8 @@ def gamma_error(x, name, plot=False, pfile=None, einfo=None):
         v.set_opt(einfo.W)
 
     if not v.ismf:
-        # v.correct_gamma_bias()
+        if einfo.gamma_bias:
+            v.correct_gamma_bias()
         tau = v.tauint() * 0.5
     else:
         tau = v.tauint()
@@ -363,7 +364,7 @@ def covariance(x, name, W):
     cov = covar(x, name)
     cov.set_opt(W)
 
-    # if not cov.ismf:
-    #     cov.correct_gamma_bias()
+    if not cov.ismf:
+        cov.correct_gamma_bias()
 
     return cov.covar()
