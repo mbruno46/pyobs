@@ -154,7 +154,7 @@ class variance:
 
     def plot(self, xlab, desc, ed, pfile):  # pragma: no cover
         if not MATPLOTLIB:
-            pass
+            return
 
         for a in range(self.size):
             plt.figure()
