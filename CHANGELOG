@@ -10,17 +10,18 @@ The format is based on `Keep a changelog <https://keepachangelog.com/en/1.0.0/>`
 Added 
  * jackknife error support
  * exponential tail
+ * remove class complex_observable and make main class observable compatible with complex values
 
 Fixed
- * a
- * b
+ * BDIO format has bug for python>=3.10
 
 
-[1.5.1] - xx.03.2024
+[1.5.1] - xx.11.2024
 ++++++++++++++++++++
 
 Added
- * support for complex observables via `complex_observable` class (binary operations `@`, `*`, unary operations `inv`, `eig`, `T`)
+ * temporary support for complex observables via `complex_observable` class (binary operations `@`, `*`, unary operations `inv`, `eig`, `T`)
+ * extended output for peek function
 Fixed
  * fixed bug in chiexp for combined fits
  * faster index search in transform.py for large observables

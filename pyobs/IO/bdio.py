@@ -209,7 +209,6 @@ class bdio_file(binary_file):
         hdr[2] = ((0 & int("0x3ff", 16)) << 22) | (0 & int("0x3fffff", 16))
         hdr[3] = time.time()
         hdr[4] = hdr[3]
-
         self.reset_encoder()
         self.encode(hdr, dtypes.INT32)
         self.encode_str("".join(info))
@@ -469,7 +468,7 @@ def load(fname):
 
 def save(fname, *args):
     f = bdio_file(fname, "w")
-    f.write_bdio_header("prova1")
+    f.write_bdio_header("bdio")
 
     pyobs.assertion(len(args) > 1, "")
     f.write_record(args[0], 1)
