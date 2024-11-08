@@ -30,11 +30,18 @@ from .cdata import cdata
 #     ia, ib = numpy.where(numpy.array(a)[:, None] == numpy.array(b)[None, :])
 #     return list(ia), list(ib)
 
+# for operations like transpose the order of a and b matters
+# so the intersection should keep the correct ordering
+# in1d does not preserve the ordering
+# def indices_isin(a, b):
+#     inner = lambda x, y: numpy.nonzero(numpy.in1d(x, y))[0]
+#     return list(inner(a, b)), list(inner(b, a))
 
-def indices_isin(a, b):
-    inner = lambda x, y: numpy.nonzero(numpy.in1d(x, y))[0]
-    return list(inner(a, b)), list(inner(b, a))
 
+# returns indices of elements of a that are present in b preserving the order a
+def indices_isin(a,b):
+    idx = numpy.in1d(a,b)
+    return list(numpy.arange(len(a))[idx]), list(numpy.array(a)[idx])
 
 def transform(obs, f):
     new_mean = f(obs.mean)
@@ -42,7 +49,7 @@ def transform(obs, f):
     res.set_mean(new_mean)
 
     subset_mask = f(numpy.reshape(numpy.arange(obs.size), obs.shape)).flatten()
-
+    
     for key in obs.delta:
         d = obs.delta[key]
         idx_subset_mask, idx_mask = indices_isin(subset_mask, d.mask)

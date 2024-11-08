@@ -35,15 +35,15 @@ tmp = pyobs.observable()
 tmp = pyobs.concatenate(corr1, tmp)
 del tmp
 
-
+print('transpose')
 corr3 = pyobs.concatenate(corr1,corr2)
 print(corr3)
 [c0, dc0] = corr3.error()
 assert numpy.all(abs(c0 - numpy.transpose(c)) < 1e-12)
 assert numpy.all(abs(dc0 - numpy.transpose(dc)) < 1e-12)
 
-[c0, dc0] = pyobs.transpose(corr).error()
-assert numpy.all(abs(dc0 - numpy.transpose(dc)) < 1e-12)
+[c0, dc0] = pyobs.transpose(corr2d).error()
+assert numpy.all(abs(dc0 - numpy.transpose(corr2d.error()[1])) < 1e-12)
 
 [c0, dc0] = pyobs.sort(corr).error()
 idx = numpy.argsort(c)
