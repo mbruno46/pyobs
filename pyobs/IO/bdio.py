@@ -174,10 +174,10 @@ class bdio_file(binary_file):
         hdr = self.read(dtypes.INT32, 5)
         pyobs.assertion(hdr[0] == self.BDIO_MAGIC, "Not a bdio file")
         rlen = hdr[1] & int("00000fff", 16)
-        self.header["version"] = (hdr[1] & int("ffff0000", 16)) >> 16
+        self.header["version"] = (int(hdr[1]) & int("ffff0000", 16)) >> 16
         pyobs.assertion(self.header["version"] == self.BDIO_VERSION, "Not a bdio file")
         self.header["dirinfo"] = [
-            (hdr[2] & int("ffc00000", 16)) >> 22,
+            (int(hdr[2]) & int("ffc00000", 16)) >> 22,
             (hdr[2] & int("003fffff", 16)),
         ]
         self.header["ctime"] = datetime.datetime.fromtimestamp(hdr[3])
