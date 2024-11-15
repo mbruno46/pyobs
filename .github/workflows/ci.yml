@@ -1,6 +1,9 @@
 name: Build/Test
 
-on: [push]
+on:
+  push:
+    paths-ignore:
+      - 'doc/**'
 
 jobs:
   build:
