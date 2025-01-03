@@ -21,6 +21,7 @@
 
 __all__ = []
 
+from .default import *
 from .utils import *
 from .core import *
 from .tensor import *
@@ -30,6 +31,7 @@ from .version import __version__, __version_full__
 from . import qft
 from .IO import *
 
+__all__.extend(default.__all__)
 __all__.extend(utils.__all__)
 __all__.extend(core.__all__)
 __all__.extend(tensor.__all__)
