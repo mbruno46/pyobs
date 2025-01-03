@@ -23,25 +23,34 @@ import numpy
 import sys
 import inspect
 import re
-import time
-import functools
+
+import pyobs
 
 __all__ = [
     "PyobsError",
     "assertion",
     "check_type",
-    "is_verbose",
-    "set_verbose",
-    "log_timer",
     "valerr",
     "tex_table",
     "slice_ndarray",
     "import_string",
+    "array",
     "double_array",
     "int_array",
 ]
 
-verbose = ["save", "load", "mfit"]
+def array(arg, type, zeros=False):
+    if zeros:
+        return numpy.zeros(arg, dtype=type)
+    return numpy.atleast_1d(arg).astype(type)
+
+
+def double_array(arg, zeros=False):
+    return array(arg, pyobs.double, zeros)
+
+
+def int_array(arg, zeros=False):
+    return array(arg, pyobs.int, zeros)
 
 
 class PyobsError(Exception):
@@ -53,37 +62,6 @@ def assertion(condition, message):
         stk = inspect.stack()[1]
         mod = inspect.getmodule(stk[0])
         raise PyobsError(f"{mod}.{stk[3]}\n{message: >16}")
-
-
-def is_verbose(func):
-    if func in verbose:
-        return True
-    return False
-
-
-def set_verbose(func, yesno=True):
-    if yesno:
-        if func not in verbose:
-            verbose.append(func)
-    else:
-        if func in verbose:
-            verbose.remove(func)
-
-
-def log_timer(tag):
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            t0 = time.time()
-            result = func(*args, **kwargs)
-            t1 = time.time()
-            if is_verbose(tag):
-                print(f"{tag} executed in {t1-t0:g} secs")
-            return result
-
-        return wrapper
-
-    return decorator
 
 
 def valerr(value, error, significant_digits=2):
@@ -212,8 +190,7 @@ def slice_ndarray(t, *args):
     assertion(len(args) == len(s), "Dimensions of tensor do not match indices")
 
     aa = []
-    for ia in range(len(args)):
-        a = args[ia]
+    for ia, a in enumerate(args):
         if a is None:
             aa.append(range(s[ia]))
         elif isinstance(a, slice):
@@ -255,17 +232,3 @@ def import_string(data):
         out = [core(s) for s in data]
         return numpy.array(out)
     return core(data)
-
-
-def pyobs_array(arg, type, zeros):
-    if zeros:
-        return numpy.zeros(arg, dtype=type)
-    return numpy.atleast_1d(arg).astype(type)
-
-
-def double_array(arg, zeros=False):
-    return pyobs_array(arg, numpy.float64, zeros)
-
-
-def int_array(arg, zeros=False):
-    return pyobs_array(arg, numpy.int32, zeros)
