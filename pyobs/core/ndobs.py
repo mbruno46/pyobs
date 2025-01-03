@@ -1,7 +1,7 @@
 ################################################################################
 #
 # ndobs.py: definition and properties of the core class of the library
-# Copyright (C) 2020-2021 Mattia Bruno
+# Copyright (C) 2020-2025 Mattia Bruno
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,7 +19,7 @@
 #
 #################################################################################
 
-import numpy
+import numpy as np
 import copy
 import gzip, json
 import os, pwd, re
@@ -48,7 +48,7 @@ class observable:
        >>> a = observable(description='test')
     """
 
-    def __init__(self, orig=None, description="unknown"):
+    def __init__(self, orig=None, description="unknown", projector=lambda x: x):
         if orig is None:
             pyobs.check_type(description, "text", str)
             self.description = description
@@ -68,13 +68,13 @@ class observable:
                 self.description = orig.description
                 self.www = orig.www
                 self.shape = orig.shape
-                self.size = numpy.prod(self.shape)
-                self.mean = numpy.array(orig.mean)  # or orig.mean.copy()
+                self.size = np.prod(self.shape)
+                self.mean = np.array(projector(orig.mean))  # or orig.mean.copy()
 
                 self.ename = [e for e in orig.ename]
                 self.delta = {}
                 for key in orig.delta:
-                    self.delta[key] = orig.delta[key].copy()
+                    self.delta[key] = orig.delta[key].copy(projector)
 
                 self.cdata = {}
                 for key in orig.cdata:
@@ -105,7 +105,7 @@ class observable:
               is not passed data is assumed to be contiguous on all sites.
 
         Note:
-           For data and icnfg array can mean either a list or a 1-D numpy.array.
+           For data and icnfg array can mean either a list or a 1-D np.array.
            If the observable has already been created, calling create again will add
            a new replica to the same ensemble.
 
@@ -128,27 +128,30 @@ class observable:
         pyobs.assertion(":" not in ename, f"Column symbol not allowed in ename {ename}")
         pyobs.check_type(shape, "shape", tuple)
         self.shape = shape
-        self.size = numpy.prod(shape)
+        self.size = np.prod(shape)
         mask = range(self.size)
         if ename not in self.ename:
             self.ename.append(ename)
 
-        pyobs.check_type(data, "data", list, numpy.ndarray)
-        if isinstance(
-            data[0],
-            (int, numpy.int32, numpy.int64, float, numpy.float64, numpy.float32),
-        ):
-            data = [data]
-
+        pyobs.check_type(data, "data", list, np.ndarray)
+        if isinstance(data[0], (int, np.int32, np.int64)):
+            data = [np.array(data).astype(pyobs.int)]
+        elif isinstance(data[0], (float, np.float32, np.float64)):
+            data = [np.array(data).astype(pyobs.double)]
+        elif isinstance(data[0], (complex, np.complex64, np.complex128)):
+            data = [np.array(data).astype(pyobs.complex)]
+        else:
+            pyobs.assertion(True, "Data type not supported")
+            
         R = len(data)
         nc = [len(data[ir]) // self.size for ir in range(R)]
         if rname is None:
             rname = list(range(R))
-        elif isinstance(rname, (str, int, numpy.int32, numpy.int64)):
+        elif isinstance(rname, (str, int, np.int32, np.int64)):
             rname = [rname]
         if icnfg is None:
             icnfg = [range(_nc) for _nc in nc]
-        elif isinstance(icnfg[0], (int, numpy.int32, numpy.int64)):
+        elif isinstance(icnfg[0], (int, np.int32, np.int64)):
             icnfg = [icnfg]
 
         pyobs.check_type(rname, "rname", list)
@@ -160,19 +163,19 @@ class observable:
                 f"Incompatible icnfg[{ir}] and data[{ir}], for shape={shape}",
             )
 
-        mean_data = pyobs.double_array((self.size,), zeros=True)
+        mean_data = pyobs.array((self.size,), data[0].dtype, zeros=True)
         for ir in range(R):
-            mean_data += numpy.sum(numpy.reshape(data[ir], (nc[ir], self.size)), 0)
+            mean_data += np.sum(np.reshape(data[ir], (nc[ir], self.size)), 0)
         mean_data *= 1.0 / sum(nc)
 
-        if numpy.size(self.mean) != 0:
+        if np.size(self.mean) != 0:
             for ir in range(R):
                 key = f"{ename}:{rname[ir]}"
                 pyobs.assertion(
                     key not in self.delta.keys(), f"Replica name {key} already used"
                 )
             N0 = sum([self.delta[key].n for key in self.delta])
-            mean_old = numpy.reshape(self.mean, (self.size,))
+            mean_old = np.copy(self.mean.flatten()) #np.reshape(self.mean, (self.size,))
             print(N0, mean_old, sum(nc), mean_data)
             self.mean = (N0 * mean_old + sum(nc) * mean_data) / (N0 + sum(nc))
             shift = sum(nc) * (mean_old - mean_data) / (N0 + sum(nc))
@@ -185,7 +188,7 @@ class observable:
             key = f"{ename}:{rname[ir]}"
             self.delta[key] = delta(mask, icnfg[ir], data[ir], self.mean, lat)
 
-        self.mean = numpy.reshape(self.mean, self.shape)
+        self.mean = np.reshape(self.mean, self.shape)
         pyobs.memory.update(self)
 
     def create_from_cov(self, cname, value, covariance):
@@ -204,14 +207,14 @@ class observable:
            >>> print(mpi)
            139.57061(23)    134.97700(50)
         """
-        self.mean = pyobs.double_array(numpy.atleast_1d(value))
-        cov = pyobs.double_array(numpy.atleast_1d(covariance))
-        self.shape = numpy.shape(self.mean)
+        self.mean = pyobs.double_array(np.atleast_1d(value))
+        cov = pyobs.double_array(np.atleast_1d(covariance))
+        self.shape = np.shape(self.mean)
         pyobs.assertion(
-            numpy.ndim(self.shape) == 1,
+            np.ndim(self.shape) == 1,
             "Unexpected value, only 1-D arrays are supported",
         )
-        self.size = numpy.prod(self.shape)
+        self.size = np.prod(self.shape)
         if cov.shape != (self.size,) and cov.shape != (self.size, self.size):
             raise pyobs.PyobsError(f"Unexpected shape for covariance {cov.shape}")
         pyobs.check_type(cname, "cname", str)
@@ -241,10 +244,10 @@ class observable:
         pyobs.check_type(name, "name", str)
         pyobs.assertion(name not in self.cdata, f"Label {name} already used")
         pyobs.assertion(
-            numpy.shape(err) == self.shape,
+            np.shape(err) == self.shape,
             f"Unexpected error, dimensions do not match {self.shape}",
         )
-        cov = numpy.reshape(pyobs.double_array(err) ** 2, (self.size,))
+        cov = np.reshape(pyobs.double_array(err) ** 2, (self.size,))
         self.cdata[name] = cdata(cov, list(range(self.size)))
         pyobs.memory.update(self)
 
@@ -369,9 +372,9 @@ class observable:
     # overloaded indicing and slicing
 
     def set_mean(self, mean):
-        self.mean = pyobs.double_array(numpy.atleast_1d(mean))
-        self.shape = numpy.shape(self.mean)
-        self.size = numpy.size(self.mean)
+        self.mean = mean.copy()
+        self.shape = np.shape(self.mean)
+        self.size = np.size(self.mean)
 
     @pyobs.log_timer("slice")
     def slice(self, *args):
@@ -404,7 +407,7 @@ class observable:
         return transform(self, f)
 
     def __getitem__(self, args):
-        if isinstance(args, (int, numpy.int32, numpy.int64, slice, numpy.ndarray)):
+        if isinstance(args, (int, np.int32, np.int64, slice, np.ndarray)):
             args = [args]
         na = len(args)
         pyobs.assertion(na == len(self.shape), "Unexpected argument")
@@ -415,12 +418,12 @@ class observable:
         return transform(self, f)
 
     def __setitem__(self, args, yobs):
-        if isinstance(args, (int, numpy.int32, numpy.int64, slice, numpy.ndarray)):
+        if isinstance(args, (int, np.int32, np.int64, slice, np.ndarray)):
             args = [args]
         else:
             args = [
                 [a]
-                if isinstance(a, (int, numpy.int32, numpy.int64, slice, numpy.ndarray))
+                if isinstance(a, (int, np.int32, np.int64, slice, np.ndarray))
                 else a
                 for a in args
             ]
@@ -434,7 +437,7 @@ class observable:
             )
         self.mean[tuple(args)] = yobs.mean
 
-        idx = numpy.arange(self.size).reshape(self.shape)[tuple(args)]
+        idx = np.arange(self.size).reshape(self.shape)[tuple(args)]
         submask = idx.flatten()
 
         for key in yobs.delta:
@@ -501,7 +504,7 @@ class observable:
             return pyobs.derobs([self], self.mean @ y, [g0])
 
     def reciprocal(self):
-        new_mean = numpy.reciprocal(self.mean)
+        new_mean = np.reciprocal(self.mean)
         g0 = pyobs.gradient(lambda x: -x * (new_mean**2), self.mean, gtype="diag")
         return pyobs.derobs([self], new_mean, [g0])
 
@@ -565,7 +568,13 @@ class observable:
         self = pyobs.observable(tmp)
         del tmp
         return self
-
+        
+    def real(self):
+        return pyobs.observable(self, projector = lambda x: x.real)
+    
+    def imag(self):
+        return pyobs.observable(self, projector = lambda x: x.imag)
+        
     ##################################
     # Error functions
 
@@ -578,9 +587,9 @@ class observable:
                 res = gamma_error(self, e, plot, pfile, errinfo[e])
             else:
                 res = gamma_error(self, e, plot, pfile)
-            sigma[e] = numpy.reshape(res[0], self.shape)
+            sigma[e] = np.reshape(res[0], self.shape)
             sigma_tot += sigma[e]
-            dsigma_tot += numpy.reshape(res[1], self.shape)
+            dsigma_tot += np.reshape(res[1], self.shape)
 
         for cd in self.cdata:
             sigma[cd] = self.cdata[cd].sigmasq(self.shape)
@@ -643,9 +652,9 @@ class observable:
         if plot:  # pragma: no cover
             h = [len(self.ename), len(self.cdata)]
             if sum(h) > 1:
-                plot_piechart(self.description, sigma, sigma_tot)
-
-        return [self.mean, numpy.sqrt(sigma_tot)]
+                plot_piechart(self.description, sigma, sigma_tot.real)
+        
+        return [self.mean, np.sqrt(sigma_tot)]
 
     def error_breakdown(self, errinfo={}):
         """
@@ -667,7 +676,7 @@ class observable:
            array: the error of the error
         """
         [_, sigma_tot, dsigma_tot] = self.error_core(errinfo, False, None)
-        return dsigma_tot / (2 * numpy.sqrt(sigma_tot))
+        return dsigma_tot / (2 * np.sqrt(sigma_tot))
 
     def tauint(self):
         """
@@ -682,8 +691,8 @@ class observable:
         for e in self.ename:
             res = gamma_error(self, e)
             tau[e] = [
-                numpy.reshape(res[2][:, 0], self.shape),
-                numpy.reshape(res[2][:, 1], self.shape),
+                np.reshape(res[2][:, 0], self.shape),
+                np.reshape(res[2][:, 1], self.shape),
             ]
 
         return tau

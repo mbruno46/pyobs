@@ -1,7 +1,7 @@
 #################################################################################
 #
 # error.py: definition and properties of the error classes and functions
-# Copyright (C) 2020-2021 Mattia Bruno
+# Copyright (C) 2020-2025 Mattia Bruno
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -49,7 +49,7 @@ class variance:
         idx = numpy.arange(len(mask))[mask]
         self.x = [i for i in (idx if fold else numpy.sqrt(idx))]
 
-        gg = pyobs.double_array((self.size, len(self.x)), zeros=True)
+        ###gg = pyobs.double_array((self.size, len(self.x)), zeros=True)
         gg = g[:, idx] / n[:, idx]
 
         if fold:
@@ -252,10 +252,10 @@ class var(variance):
             mask += x.delta[ik].mask
         self.mask = list(set(mask))
         self.size = len(self.mask)
-
+                
         n = pyobs.double_array((self.size, xmax), zeros=True)
         g = pyobs.double_array((self.size, xmax), zeros=True)
-
+        
         # with this code we cover the situation where 1 obs happens to be known on 1 replica
         # and another obs in another replica, which may have different dtrj
         for i in range(len(keys)):
