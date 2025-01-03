@@ -1,7 +1,7 @@
 #################################################################################
 #
 # gradient.py: implementation of the core function for gradient of functions
-# Copyright (C) 2020 Mattia Bruno
+# Copyright (C) 2020-2025 Mattia Bruno
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -37,25 +37,23 @@ class gradient:
         self.Ni = numpy.size(x0)
         self.gtype = gtype
 
+        _grad = g(numpy.ones(x0.shape)).flatten()
+        
         if gtype == "full":
-            gsh = (self.Na, self.Ni)
-        elif gtype == "diag":
-            gsh = self.Na
-            pyobs.assertion(self.Na == self.Ni, "diagonal gradient error")
-        else:  # pragma: no cover
-            raise pyobs.PyobsError("gradient error")
-
-        self.grad = pyobs.double_array(gsh, zeros=True)
-
-        if gtype == "full":
+            self.grad = pyobs.array((self.Na, self.Ni), _grad.dtype, zeros=True)
             dx = pyobs.double_array(self.Ni, zeros=True)
             for i in range(self.Ni):
                 dx[i] = 1.0
                 self.grad[:, i] = numpy.reshape(g(numpy.reshape(dx, x0.shape)), self.Na)
                 dx[i] = 0.0
         elif gtype == "diag":
-            self.grad = g(numpy.ones(x0.shape)).flatten()
-
+            self.grad = _grad.copy()
+            pyobs.assertion(self.Na == self.Ni, "diagonal gradient error")
+        else:  # pragma: no cover
+            raise pyobs.PyobsError("gradient error")
+            
+        del _grad
+        
     def get_mask(self, mask):
         idx = pyobs.int_array(mask)
         if self.gtype == "full":
