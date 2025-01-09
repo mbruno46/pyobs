@@ -574,6 +574,11 @@ class observable:
     
     def imag(self):
         return pyobs.observable(self, projector = lambda x: x.imag)
+    
+    def conj(self):
+        if np.iscomplexobj(self.mean):
+            return self.real() - 1j * self.imag()
+        return self
         
     ##################################
     # Error functions

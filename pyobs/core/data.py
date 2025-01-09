@@ -147,6 +147,7 @@ class delta:
     def __getitem__(self, args):
         sliced_delta = pyobs.slice_ndarray(self.delta, args, [])
         res = delta(range(sliced_delta.shape[0]), self.idx, lat=self.lat)
+        res.delta = res.delta.astype(sliced_delta.dtype)
         res.delta[:, :] = sliced_delta
         return res
 
