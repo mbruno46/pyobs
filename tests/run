@@ -5,7 +5,7 @@ runner=$1
 dir=${BASH_SOURCE%/*}
 cd $dir/..
 
-failed=0
+failed=()
 for f in `ls ./tests/*/*py`
 do
 	echo "Running: ${runner} $f"
@@ -17,12 +17,13 @@ do
 		echo "OK"
 	else
 		echo "ERROR $f"
-		((failed++))
+		failed+=($f)
 	fi
 done
 
-if ((failed != 0))
+if ((${#failed[@]} != 0))
 then
+	echo ${failed[@]}
 	exit 1
 else
 	echo "All tests passed"
