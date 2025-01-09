@@ -313,7 +313,7 @@ class bdio_file(binary_file):
 def decode_bdio_observable(f, info):
     res = pyobs.observable()
     res.www = [info["cuser"], info["chost"], info["ctime"]]
-    res.set_mean(f.read(dtypes.FLOAT64))
+    res.set_mean(f.read(dtypes.FLOAT64, force_array=True))
 
     neid = f.read(dtypes.INT32)
     f.skip(dtypes.INT32.itemsize * neid)  # ndata
