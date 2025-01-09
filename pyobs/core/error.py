@@ -49,7 +49,6 @@ class variance:
         idx = numpy.arange(len(mask))[mask]
         self.x = [i for i in (idx if fold else numpy.sqrt(idx))]
 
-        ###gg = pyobs.double_array((self.size, len(self.x)), zeros=True)
         gg = g[:, idx] / n[:, idx]
 
         if fold:
@@ -83,13 +82,12 @@ class variance:
                 for i in range(1, len(self.x)):
                     if self.g(i, a) > 0:
                         break
-                while (self.cvar[a, i] < self.cvar[a, 0]):
+                while self.cvar[a, i] < self.cvar[a, 0]:
                     i -= 1
             if self.cvar[a, i] < 0:
                 i = 0
                 print(f"Warning: automatic window failed for obs {a}, using {i}")
-            
-            
+
             self.xopt[a] = self.x[i]
             self.var[a, 0] = self.cvar[a, i]
             self.var[a, 1] = self.cvar[a, i] * self.stat_relerr(self.x[i], a)
@@ -98,7 +96,6 @@ class variance:
                 print(
                     f"Warning: automatic window failed for obs {a}, using {self.xopt[a]}"
                 )
-                
 
     def set_opt(self, xopt):
         for a in range(self.size):
@@ -252,10 +249,10 @@ class var(variance):
             mask += x.delta[ik].mask
         self.mask = list(set(mask))
         self.size = len(self.mask)
-                
+
         n = pyobs.double_array((self.size, xmax), zeros=True)
         g = pyobs.double_array((self.size, xmax), zeros=True)
-        
+
         # with this code we cover the situation where 1 obs happens to be known on 1 replica
         # and another obs in another replica, which may have different dtrj
         for i in range(len(keys)):
@@ -337,6 +334,7 @@ class errinfo:
         self.k = k
         self.W = W
         self.gamma_bias = gamma_bias
+
 
 def gamma_error(x, name, plot=False, pfile=None, einfo=None):
     if einfo is None:

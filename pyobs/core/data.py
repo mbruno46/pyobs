@@ -197,7 +197,7 @@ class delta:
 
         # takes into accounts holes present in d.delta but absent in self.delta
         rescale_delta = self.n / d.n
-        
+
         if (np.iscomplexobj(grad.grad)) or (np.iscomplexobj(d.delta)):
             self.delta = self.delta.astype(pyobs.complex)
         grad.apply(self.delta, self.mask, jlist, d.delta * rescale_delta, d.mask)
@@ -223,14 +223,12 @@ class delta:
             self.delta, self.idx, self.ncnfg() if isMC else self.lat, xmax, a, b
         )
         return [m, g]
-        
+
     def bias4(self, hess):
         oid = np.array(self.mask)
         idx = np.ix_(oid, oid)
         # no rescaling factor; prone to roundoff errors
-        d2 = np.einsum(
-            "abc,bj,cj->aj", hess[:, idx[0], idx[1]], self.delta, self.delta
-        )
+        d2 = np.einsum("abc,bj,cj->aj", hess[:, idx[0], idx[1]], self.delta, self.delta)
         return np.sum(d2, axis=1)
 
     def blocked(self, bs):

@@ -34,17 +34,18 @@ from .cdata import cdata
 #             idx_b += [b.index(_a)]
 #     return idx_a, idx_b
 
-def indices_isin(a,b):
+
+def indices_isin(a, b):
     # idx_a = indices of elements of a that are present in b preserving the order a
-    idx_a = numpy.arange(len(a))[numpy.in1d(a,b)]
-    if idx_a.size==0:
+    idx_a = numpy.arange(len(a))[numpy.in1d(a, b)]
+    if idx_a.size == 0:
         return [], []
     # idx_b = indices of elements of b that are present in a preserving the order a
-    idx_b = numpy.arange(len(b))[numpy.in1d(b,a)]
-    mask = numpy.array(a)[idx_a,None] == numpy.array(b)[idx_b]
-    idx_b_2 = numpy.stack([idx_b]*len(idx_a))[mask]
+    idx_b = numpy.arange(len(b))[numpy.in1d(b, a)]
+    mask = numpy.array(a)[idx_a, None] == numpy.array(b)[idx_b]
+    idx_b_2 = numpy.stack([idx_b] * len(idx_a))[mask]
     return list(idx_a), list(idx_b_2)
-    
+
 
 def transform(obs, f):
     new_mean = f(obs.mean)
@@ -52,7 +53,7 @@ def transform(obs, f):
     res.set_mean(new_mean)
 
     subset_mask = f(numpy.reshape(numpy.arange(obs.size), obs.shape)).flatten()
-    
+
     for key in obs.delta:
         d = obs.delta[key]
         idx_subset_mask, idx_mask = indices_isin(subset_mask, d.mask)

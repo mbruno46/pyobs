@@ -38,7 +38,7 @@ class gradient:
         self.gtype = gtype
 
         _grad = g(numpy.ones(x0.shape)).flatten()
-        
+
         if gtype == "full":
             self.grad = pyobs.array((self.Na, self.Ni), _grad.dtype, zeros=True)
             dx = pyobs.double_array(self.Ni, zeros=True)
@@ -51,9 +51,9 @@ class gradient:
             pyobs.assertion(self.Na == self.Ni, "diagonal gradient error")
         else:  # pragma: no cover
             raise pyobs.PyobsError("gradient error")
-            
+
         del _grad
-        
+
     def get_mask(self, mask):
         idx = pyobs.int_array(mask)
         if self.gtype == "full":

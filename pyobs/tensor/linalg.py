@@ -142,7 +142,9 @@ def eigLR(x):
     w = w[:, idx]
 
     # d l_n = (w_n, dA v_n) / (w_n, v_n)
-    gl = pyobs.gradient(lambda x: numpy.diag(w.T.conj() @ x @ v) / numpy.diag(w.T.conj() @ v), x.mean)
+    gl = pyobs.gradient(
+        lambda x: numpy.diag(w.T.conj() @ x @ v) / numpy.diag(w.T.conj() @ v), x.mean
+    )
 
     # d v_n = sum_{m \neq n} (w_m, dA v_n) / (l_n - l_m) w_m
     def gradv(y):

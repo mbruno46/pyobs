@@ -142,7 +142,7 @@ class observable:
             data = [np.array(data).astype(pyobs.complex)]
         else:
             pyobs.assertion(True, "Data type not supported")
-            
+
         R = len(data)
         nc = [len(data[ir]) // self.size for ir in range(R)]
         if rname is None:
@@ -175,7 +175,9 @@ class observable:
                     key not in self.delta.keys(), f"Replica name {key} already used"
                 )
             N0 = sum([self.delta[key].n for key in self.delta])
-            mean_old = np.copy(self.mean.flatten()) #np.reshape(self.mean, (self.size,))
+            mean_old = np.copy(
+                self.mean.flatten()
+            )  # np.reshape(self.mean, (self.size,))
             print(N0, mean_old, sum(nc), mean_data)
             self.mean = (N0 * mean_old + sum(nc) * mean_data) / (N0 + sum(nc))
             shift = sum(nc) * (mean_old - mean_data) / (N0 + sum(nc))
@@ -336,7 +338,7 @@ class observable:
                     outstr = f'    - {"Replica" if self.delta[key].lat is None else "Master-field"} {rn[1]}'
                     outstr = f'{outstr} with {f"ncnfg {self.delta[key].n}" if self.delta[key].lat is None else f"lattice {self.delta[key].lat}"}'
                     print(outstr)
-                    outstr = f'      index field {self.delta[key].idx}'
+                    outstr = f"      index field {self.delta[key].idx}"
                     print(outstr)
                     mm = (
                         self.delta[key].ncnfg() * 8.0 * 2.0
@@ -568,18 +570,18 @@ class observable:
         self = pyobs.observable(tmp)
         del tmp
         return self
-        
+
     def real(self):
-        return pyobs.observable(self, projector = lambda x: x.real)
-    
+        return pyobs.observable(self, projector=lambda x: x.real)
+
     def imag(self):
-        return pyobs.observable(self, projector = lambda x: x.imag)
-    
+        return pyobs.observable(self, projector=lambda x: x.imag)
+
     def conj(self):
         if np.iscomplexobj(self.mean):
             return self.real() - 1j * self.imag()
         return self
-        
+
     ##################################
     # Error functions
 
@@ -658,7 +660,7 @@ class observable:
             h = [len(self.ename), len(self.cdata)]
             if sum(h) > 1:
                 plot_piechart(self.description, sigma, sigma_tot.real)
-        
+
         return [self.mean, np.sqrt(sigma_tot)]
 
     def error_breakdown(self, errinfo={}):

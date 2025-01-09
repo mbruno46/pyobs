@@ -23,20 +23,14 @@ import numpy
 import functools
 import time
 
-__all__ = [
-    "is_verbose",
-    "set_verbose",
-    "log_timer",
-    "complex",
-    "double",
-    "int"
-]
+__all__ = ["is_verbose", "set_verbose", "log_timer", "complex", "double", "int"]
 
 complex = numpy.complex128
 double = numpy.float64
 int = numpy.int32
 
 verbose = ["save", "load", "mfit"]
+
 
 def is_verbose(func):
     if func in verbose:
@@ -51,6 +45,7 @@ def set_verbose(func, yesno=True):
     else:
         if func in verbose:
             verbose.remove(func)
+
 
 def log_timer(tag):
     def decorator(func):

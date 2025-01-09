@@ -39,6 +39,7 @@ __all__ = [
     "int_array",
 ]
 
+
 def array(arg, type, zeros=False):
     if zeros:
         return numpy.zeros(arg, dtype=type)
