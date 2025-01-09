@@ -80,17 +80,17 @@ def eig(x):
         raise pyobs.PyobsError(
             f"Unexpected matrix with shape {x.shape}; only 2-D arrays are supported"
         )
-    if numpy.any(numpy.fabs(x.mean - x.mean.T) > 1e-10):  # pragma: no cover
+    if numpy.any(numpy.abs(x.mean - x.mean.T) > 1e-10):  # pragma: no cover
         raise pyobs.PyobsError("Unexpected non-symmetric matrix: user eigLR")
 
     [w, v] = numpy.linalg.eig(x.mean)
 
     # d l_n = (v_n, dA v_n)
-    gw = pyobs.gradient(lambda x: numpy.diag(v.T @ x @ v), x.mean)
+    gw = pyobs.gradient(lambda x: numpy.diag(v.T.conj() @ x @ v), x.mean)
 
     # d v_n = sum_{m \neq n} (v_m, dA v_n) / (l_n - l_m) v_m
     def gradv(y):
-        tmp = v.T @ y @ v
+        tmp = v.T.conj() @ y @ v
         h = []
         for m in range(x.shape[0]):
             h.append((w != w[m]) * 1.0 / (w - w[m] + 1e-16))
@@ -142,11 +142,11 @@ def eigLR(x):
     w = w[:, idx]
 
     # d l_n = (w_n, dA v_n) / (w_n, v_n)
-    gl = pyobs.gradient(lambda x: numpy.diag(w.T @ x @ v) / numpy.diag(w.T @ v), x.mean)
+    gl = pyobs.gradient(lambda x: numpy.diag(w.T.conj() @ x @ v) / numpy.diag(w.T.conj() @ v), x.mean)
 
     # d v_n = sum_{m \neq n} (w_m, dA v_n) / (l_n - l_m) w_m
     def gradv(y):
-        tmp = w.T @ y @ v
+        tmp = w.T.conj() @ y @ v
         gv = numpy.zeros(x.shape)
         for n in range(x.shape[0]):
             for m in range(x.shape[1]):
@@ -158,7 +158,7 @@ def eigLR(x):
 
     # d w_n = sum_{m \neq n} (v_m, dA^T w_n) / (l_n - l_m) v_m
     def gradw(y):
-        tmp = v.T @ y.T @ w
+        tmp = v.T.conj() @ y.T @ w
         gw = numpy.zeros(x.shape)
         for n in range(x.shape[0]):
             for m in range(x.shape[1]):
@@ -195,4 +195,4 @@ def matrix_power(x, a):
        >>> matsqrt @ mat @ matsqrt # return the identity
     """
     [w, v] = eig(x)
-    return v @ pyobs.diag(w**a) @ pyobs.transpose(v)
+    return v @ pyobs.diag(w**a) @ pyobs.transpose(v.conj())
