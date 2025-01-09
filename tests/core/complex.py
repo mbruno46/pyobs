@@ -124,7 +124,7 @@ class complex_observable:
             re = pyobs.derobs([self.real, self.imag], m.real, g_re)
             im = pyobs.derobs([self.real, self.imag], m.imag, g_im)
 
-            out.append(pyobs.complex_observable(re, im))
+            out.append(complex_observable(re, im))
 
         if len(out) == 1:
             return out[0]
@@ -132,31 +132,31 @@ class complex_observable:
 
     def __matmul__(self, y):
         pyobs.assertion(
-            isinstance(y, pyobs.complex_observable),
+            isinstance(y, complex_observable),
             "Only multiplication among complex matrices is supported",
         )
         re, im = (
             self.real @ y.real - self.imag @ y.imag,
             self.real @ y.imag + self.imag @ y.real,
         )
-        return pyobs.complex_observable(re, im)
+        return complex_observable(re, im)
 
     def __mul__(self, y):
         pyobs.assertion(
-            isinstance(y, pyobs.complex_observable),
+            isinstance(y, complex_observable),
             "Only multiplication among complex matrices is supported",
         )
         re, im = (
             self.real * y.real - self.imag * y.imag,
             self.real * y.imag + self.imag * y.real,
         )
-        return pyobs.complex_observable(re, im)
+        return complex_observable(re, im)
 
     def __str__(self):
         return self.real.__str__() + "\n" + self.imag.__str__()
 
     def T(self):
-        return pyobs.complex_observable(
+        return complex_observable(
             pyobs.transpose(self.real), pyobs.transpose(self.imag)
         )
 
