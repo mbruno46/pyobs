@@ -164,13 +164,16 @@ def check_type(obj, s, *t):
     if c == len(t):
         raise TypeError(f"Unexpected type for {s} [{t}]")
 
+
 class types:
     INT = (int, numpy.int32, numpy.int64)
     FLOAT = (float, numpy.float32, numpy.float64)
     COMPLEX = (complex, numpy.complex64, numpy.complex128)
 
+
 def is_type(x, *args):
     return isinstance(x, args)
+
 
 def slice_to_range(sl, n):
     return list(range(n)[sl])
@@ -244,7 +247,8 @@ def import_string(data):
         return numpy.array(out)
     return core(data)
 
+
 def to_list(x):
-    if numpy.isdim(x)==0:
+    if numpy.isdim(x) == 0:
         return [x]
     return list(x)

@@ -424,9 +424,7 @@ class observable:
             args = [args]
         else:
             args = [
-                [a]
-                if pyobs.is_type(a, pyobs.types.INT, slice, np.ndarray)
-                else a
+                [a] if pyobs.is_type(a, pyobs.types.INT, slice, np.ndarray) else a
                 for a in args
             ]
 
@@ -470,7 +468,7 @@ class observable:
            >>> obs.rt().shape
            (10, 3)
         """
-        ## duplicate of pyobs.remove_tensor, to be eventually deprecated
+        # duplicate of pyobs.remove_tensor to be eventually deprecated
         Nd = len(self.shape)
         if axis is None:
             selection = [True] * Nd
@@ -478,7 +476,7 @@ class observable:
             selection = [False] * Nd
             for a in pyobs.to_list(axis):
                 selection[a] = True
-                
+
         new_shape = []
         for mu in range(Nd):
             if (self.shape[mu] == 1) and (selection[mu] is True):
@@ -487,8 +485,7 @@ class observable:
         if not new_shape:
             new_shape.append(1)
         return pyobs.reshape(self, tuple(new_shape))
-        
-            
+
     ##################################
     # overloaded basic math operations
 
@@ -689,6 +686,7 @@ class observable:
            >>> einfo = {'A': errinfo(Stau=3.0), 'B': errinfo(W=30)}
            >>> [v,e] = obsC.error(errinfo=einfo,plot=True)
         """
+
         def error_real(obs):
             [sigma, sigma_tot, _] = obs.error_core(errinfo, plot, pfile)
 
@@ -697,9 +695,13 @@ class observable:
                 if sum(h) > 1:
                     plot_piechart(obs.description, sigma, sigma_tot.real)
             return sigma_tot
-        
+
         if np.iscomplexobj(self.mean):
-            return [self.mean, np.sqrt(error_real(self.real())) + 1j*np.sqrt(error_real(self.imag()))]        
+            return [
+                self.mean,
+                np.sqrt(error_real(self.real()))
+                + 1j * np.sqrt(error_real(self.imag())),
+            ]
         return [self.mean, np.sqrt(error_real(self))]
 
     def error_breakdown(self, errinfo={}):

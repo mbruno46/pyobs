@@ -24,11 +24,11 @@ import functools
 import time
 
 __all__ = [
-    "is_verbose", 
-    "set_verbose", 
-    "log_timer", 
-    "complex", 
-    "double", 
+    "is_verbose",
+    "set_verbose",
+    "log_timer",
+    "complex",
+    "double",
     "int",
 ]
 
@@ -52,6 +52,7 @@ def set_verbose(func, yesno=True):
     else:
         if func in verbose:
             verbose.remove(func)
+
 
 def log_timer(tag):
     def decorator(func):
