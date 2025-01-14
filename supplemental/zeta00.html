@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Implementation of \(Z_{00}(1,q^2)\) &#8212; pyobs 1.5.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=2a422f08" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.3.4/spacelab/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=515d8a7f"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+<div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="../index.html">
+         </a>
+      <span class="navbar-text navbar-version pull-left"><b></b></span>
+    </div>
+
+      <div class="collapse navbar-collapse nav-collapse">
+        <ul class="nav navbar-nav">
+          
+              <li><a href="../intro/index.html">Introduction</a></li>
+              <li><a href="../tutorials/index.html">Tutorials</a></li>
+              <li><a href="../pyobs/index.html">Documentation</a></li>
+              <li><a href="index.html">Supplemental</a></li>
+          
+          
+          
+          
+        </ul>
+
+        
+          
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        
+        
+      </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">Implementation of <span class="math notranslate nohighlight">\(Z_{00}(1,q^2)\)</span></a></li>
+</ul>
+
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form><div id="navbar-logo" style="margin:auto;text-align:center">
+	<img src="/pyobs/_images/pyobs-logo.png" alt="" width="200" />
+</div>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <section id="Implementation-of-Z_{00}(1,q^2)">
+<h1>Implementation of <span class="math notranslate nohighlight">\(Z_{00}(1,q^2)\)</span><a class="headerlink" href="#Implementation-of-Z_{00}(1,q^2)" title="Permalink to this heading">¶</a></h1>
+<p>In collab. with Max Hansen.</p>
+<p>The following derivation in largely inspired by <a class="reference external" href="https://arxiv.org/pdf/1104.5484.pdf">Flavor physics and lattice quantum chromodynamics, L.Lellouch</a></p>
+<p>We want to evaluate the so-called Luescher Zeta function</p>
+<div class="math notranslate nohighlight">
+\[\sqrt{4 \pi} Z_{00}(s,q^2) =  \sum_{\vec n} \frac{1}{(|\vec n|^2 - q^2)^s} = \sum_k \nu_{k,D} \frac{1}{(k- q^2)^s}\]</div>
+<p>We note that the proper regularized version is defined as follows</p>
+<div class="math notranslate nohighlight">
+\[\sum_{\vec n} \frac{1}{(|\vec n|^2 - q^2)^s} - PV \int d^3 x \frac{1}{(|\vec x|^2 - q^2)^s}\]</div>
+<p>but here we consider the analytic continuation of the former equation. We are interested in the derivatives (for error propagation)</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial Z_{00}(s,q^2)}{\partial q^2} = \frac{1}{\sqrt{4\pi}}
+\sum_{\vec n} \frac{s}{(|\vec n|^2 - q^2)^{s+1}} =
+s Z_{00}(s+1, q^2)\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{\partial^2 Z_{00}(s,q^2)}{\partial (q^2)^2} = \frac{1}{\sqrt{4\pi}}
+\sum_{\vec n} \frac{s(s+1)}{(|\vec n|^2 - q^2)^{s+2}} =
+s(s+1) Z_{00}(s+2, q^2)\]</div>
+<p>in the limit <span class="math notranslate nohighlight">\(s \to 1\)</span>, and possibly for <span class="math notranslate nohighlight">\(D\)</span> dimensions.</p>
+<p>Using the integral representation of the special Gamma funtion</p>
+<div class="math notranslate nohighlight">
+\[\Gamma(s) a^{-s} = \int_0^\infty dt \, e^{-at} \, t^{s-1}\]</div>
+<p>we obtain</p>
+<div class="math notranslate nohighlight">
+\[ \sqrt{4 \pi} Z_{00}(s,q^2) \Gamma(s) = \sum_{\vec n} \int dt e^{-(|\vec n|^2 - q^2) t } t^{s-1}
+= \sum_{\vec n} \Big[ \int_0^\mu + \int_\mu^\infty \Big] dt e^{-(|\vec n|^2 - q^2) t } t^{s-1} = I_0(s,q^2) + I_1(s,q^2)\]</div>
+<p>and we split the integral in two regions. Using this integral representation the higher derivatives become</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial Z_{00}(s,q^2)}{\partial q^2} =
+\frac{s}{\sqrt{4 \pi} \Gamma(s+1)} [I_0(s+1, q^2) + I_1(s+1, q^2)]\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{\partial^2 Z_{00}(s,q^2)}{\partial (q^2)^2} =
+\frac{s(s+1)}{\sqrt{4 \pi} \Gamma(s+2)} [I_0(s+2, q^2) + I_1(s+2, q^2)]\]</div>
+<p>The second piece</p>
+<div class="math notranslate nohighlight">
+\[I_1(s,q^2) = \sum_{\vec n} \int_\mu^\infty dt e^{-(|\vec n|^2 - q^2) t } t^{s-1} =
+\sum_k \nu_{k,D} \int_\mu^\infty dt e^{-(k - q^2) t } t^{s-1}\]</div>
+<p>is easily calculable for the limits <span class="math notranslate nohighlight">\(s=1,2,3\)</span> and for any dimension <span class="math notranslate nohighlight">\(D\)</span> (we drop the subscript in <span class="math notranslate nohighlight">\(\nu_{k,D}\)</span>)</p>
+<div class="math notranslate nohighlight">
+\[ \lim_{s \to 1} I_1(s,q^2) =
+\sum_{k=0}^\infty \nu_k e^{-\mu(k - q^2)}\frac{1}{k - q^2}\]</div>
+<div class="math notranslate nohighlight">
+\[\lim_{s \to 2} I_1(s,q^2) = \sum_k \nu_k e^{-\mu (k^2 - q^2)}
+\frac{1 + (k-q^2) \mu}{(k - q^2)^2}\]</div>
+<div class="math notranslate nohighlight">
+\[\lim_{s \to 3} I_1(s,q^2) = \sum_k \nu_k e^{-\mu (k^2 - q^2)}
+\frac{2 + 2 (k-q^2) \mu + (k-q^2)^2 \mu^2}{(k - q^2)^3}\]</div>
+<p>where we have used $ k =0 ,1, 2, <span class="math">\dots `$. In our code, depending on the number of dimensions :math:`D</span> we loop only over the values of <span class="math notranslate nohighlight">\(k\)</span> whose <span class="math notranslate nohighlight">\(\nu_{k,D}\)</span> is non-zero.</p>
+<p>To evaluate the first integral <span class="math notranslate nohighlight">\(I_0\)</span> we use Poisson’s summation formula</p>
+<div class="math notranslate nohighlight">
+\[\sum_{\vec n} f(\vec n) = \sum_{\vec n} \int d^D x f(\vec x) e^{2 \pi i \vec n \cdot \vec x}\]</div>
+<p>to get</p>
+<div class="math notranslate nohighlight">
+\[ I_0(s,q^2) = \sum_{\vec n} \int_0^\mu dt e^{q^2 t} e^{-|\vec n|^2 t} t^{s-1} =
+\int_0^\mu dt e^{q^2 t}  t^{s-1} \sum_{\vec n} \int d^D x e^{-|\vec x|^2 t} e^{2 \pi i \vec n \cdot \vec x}\]</div>
+<p>Using the following relation</p>
+<div class="math notranslate nohighlight">
+\[\int d x e^{-x^2 a} e^{2 \pi i b x} = \sqrt{\pi/a} \, e^{-\frac{\pi^2 b^2}{a}}\]</div>
+<p>we can solve the integral in <span class="math notranslate nohighlight">\(D\)</span> dimensions</p>
+<div class="math notranslate nohighlight">
+\[\sum_{\vec n} \int d^D x e^{-|\vec x|^2 t} e^{2 \pi i \vec n \cdot \vec x}  =
+\sum_k \nu_{k,D} \frac{\pi^{D/2}}{t^{D/2}} e^{- \pi^2 k/t}\]</div>
+<p>leading to the following expression</p>
+<div class="math notranslate nohighlight">
+\[I_0(s,q^2) = \sum_k \nu_{k,D} \pi^{D/2} \int_0^\mu dt e^{q^2 t} e^{- \pi^2 k/t} t^{s-1-\frac{D}{2}}\]</div>
+<p>We note that for <span class="math notranslate nohighlight">\(k=0\)</span> and <span class="math notranslate nohighlight">\(s-\frac{D}{2} \leq 0\)</span> the integral is divergent because</p>
+<div class="math notranslate nohighlight">
+\[\int_0^\mu dt e^{q^2 t} t^{s-1-\frac{D}{2}} = \int_0^\mu dt \Big[\frac1t + q^2 + O(t) \Big] t^{s-\frac{D}{2}}\]</div>
+<p>Isolating the <span class="math notranslate nohighlight">\(k=0\)</span> case we regulate the integral</p>
+<div class="math notranslate nohighlight">
+\[\int_0^\mu dt (e^{q^2 t} -1) t^{s-1-\frac{D}{2}} + \int_0^\mu dt t^{s-1-\frac{D}{2}}\]</div>
+<p>and simply analytically continue the second part (which is finite for <span class="math notranslate nohighlight">\(s-\frac{D}{2}&gt;0\)</span>)</p>
+<div class="math notranslate nohighlight">
+\[\int_0^\mu dt \ t^{s-1-\frac{D}{2}} = 2\frac{\sqrt{\mu}^{2s-D}}{2s-D}\]</div>
+<p>The final result for the first integral is</p>
+<div class="math notranslate nohighlight">
+\[\frac{1}{\sqrt{4 \pi}}
+I_0(s,q^2) = \frac{\pi^{(D-1)/2}}{2} \int_0^\mu dt (e^{q^2 t} -1) t^{s-1-\frac{D}{2}}
++ \pi \frac{\sqrt{\mu}^{2s-D}}{2s-D} +
+\frac{\pi}{2} \sum_{k \neq 0} \nu_{k,D} \int_0^\mu dt e^{q^2 t - \pi^2 k/t} t^{s-1-\frac{D}{2}}\]</div>
+<p>Putting all results together we obtain the following representation of the L”uescher zeta function</p>
+<div class="math notranslate nohighlight">
+\[Z_{00}(1,q^2) = \frac{1}{\sqrt{4 \pi}} [I_0(1,q^2) + I_1(1,q^2)]\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{\partial Z_{00}(s,q^2)}{\partial q^2} =
+\frac{1}{\sqrt{4 \pi}} [I_0(2, q^2) + I_1(2, q^2)]\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{\partial^2 Z_{00}(s,q^2)}{\partial (q^2)^2} =
+\frac{1}{\sqrt{4 \pi}} [I_0(3, q^2) + I_1(3, q^2)]\]</div>
+<p>We remark that the freedom given by the parameter <span class="math notranslate nohighlight">\(\mu\)</span> is very important to keep the evaluation of <span class="math notranslate nohighlight">\(Z_{00}\)</span> for high values of <span class="math notranslate nohighlight">\(q^2\)</span> under control from the numerical point of view (rounding errors and convergence). We find beneficial to set <span class="math notranslate nohighlight">\(\mu = (q^2)^{1/2}\)</span>.</p>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-2024, Mattia Bruno.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

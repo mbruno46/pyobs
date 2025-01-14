@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>pyobs 1.5.2 &#8212; pyobs 1.5.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=2a422f08" />
+    <link rel="stylesheet" href="_static/bootswatch-3.3.4/spacelab/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=515d8a7f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/jquery-1.11.0.min.js"></script>
+    <script src="_static/js/jquery-fix.js"></script>
+    <script src="_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script src="_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+<div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">
+         </a>
+      <span class="navbar-text navbar-version pull-left"><b></b></span>
+    </div>
+
+      <div class="collapse navbar-collapse nav-collapse">
+        <ul class="nav navbar-nav">
+          
+              <li><a href="intro/index.html">Introduction</a></li>
+              <li><a href="tutorials/index.html">Tutorials</a></li>
+              <li><a href="pyobs/index.html">Documentation</a></li>
+              <li><a href="supplemental/index.html">Supplemental</a></li>
+          
+          
+          
+          
+        </ul>
+
+        
+          
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        
+        
+      </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">pyobs 1.5.2</a><ul>
+<li><a class="reference internal" href="#citation">Citation</a></li>
+<li><a class="reference internal" href="#authors">Authors</a></li>
+<li><a class="reference internal" href="#installation">Installation</a><ul>
+<li><a class="reference internal" href="#python-environments">Python Environments</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#changelog">Changelog</a><ul>
+<li><a class="reference internal" href="#unreleased">[Unreleased]</a></li>
+<li><a class="reference internal" href="#xx-01-2025">[1.5.2] - XX.01.2025</a></li>
+<li><a class="reference internal" href="#id1">[1.5.1] - 15.11.2024</a></li>
+<li><a class="reference internal" href="#id2">[1.5.0] - 10.10.2023</a></li>
+<li><a class="reference internal" href="#id3">[1.4.1] - 18.01.2023</a></li>
+<li><a class="reference internal" href="#id4">[1.4.0] - 20.08.2022</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form><div id="navbar-logo" style="margin:auto;text-align:center">
+	<img src="/pyobs/_images/pyobs-logo.png" alt="" width="200" />
+</div>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <section id="pyobs-release">
+<h1>pyobs 1.5.2<a class="headerlink" href="#pyobs-release" title="Permalink to this heading">¶</a></h1>
+<p>A Python3 library to analyse data generated
+from (Monte Carlo) Markov chains.</p>
+<p>The software is hosted on <a class="reference external" href="https://github.com/mbruno46/pyobs">GitHub</a> and is distributed
+under the <a class="reference external" href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">GNU GPLv2</a> license.</p>
+<p><strong>Features</strong></p>
+<ul class="simple">
+<li><p>object-oriented for easy manipulation of data</p></li>
+<li><p>FFT acceleration for calculation of autocorrelations</p></li>
+<li><p>minimal memory footprint for large data sets and memory monitoring
+system</p></li>
+<li><p>support for master-field setup, ie autocorrelations in more
+than one dimension</p></li>
+<li><p>support for systematic errors and external input data</p></li>
+<li><p>flexible interface for fits</p></li>
+<li><p>support for linear algebra operations (e.g. matrix inverse, eigenvalue problem, etc..)</p></li>
+</ul>
+<section id="citation">
+<h2>Citation<a class="headerlink" href="#citation" title="Permalink to this heading">¶</a></h2>
+<p>If you use this library in your publications cite it following the instructions here <a class="reference external" href="https://zenodo.org/doi/10.5281/zenodo.7546850">Zenodo webpage</a>.</p>
+<p>Please also consider citing:</p>
+<ul class="simple">
+<li><ol class="upperalpha simple" start="13">
+<li><p>Bruno, R. Sommer, <a class="reference external" href="https://inspirehep.net/literature/2157883">On fits to correlated and auto-correlated data</a>. <em>Comput.Phys.Commun.</em> 285 (2023) 108643.</p></li>
+</ol>
+</li>
+<li><ol class="upperalpha simple" start="19">
+<li><p>Schaefer, R. Sommer, F. Virotta, <a class="reference external" href="https://inspirehep.net/literature/871175">Critical slowing down and error analysis in lattice QCD simulations</a>. <em>Nucl.Phys.B</em> 845 (2011) 93-119.</p></li>
+</ol>
+</li>
+<li><ol class="upperalpha simple" start="21">
+<li><p>Wolff, <a class="reference external" href="https://inspirehep.net/literature/621085">Monte Carlo errors with less errors</a>. <em>Comput.Phys.Commun.</em> 156 (2004) 143-153.</p></li>
+</ol>
+</li>
+</ul>
+</section>
+<section id="authors">
+<h2>Authors<a class="headerlink" href="#authors" title="Permalink to this heading">¶</a></h2>
+<p>Copyright (C) 2020-2025, Mattia Bruno</p>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h2>
+<p><cite>pyobs</cite> can be installed in three different ways.
+After installation it can be imported like any other package</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pyobs</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">help</span><span class="p">(</span><span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>pip install from remote repository</strong></p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/mbruno46/pyobs.git@master#egg<span class="o">=</span>pyobs
+$<span class="w"> </span><span class="c1"># for upgrading</span>
+$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>git+https://github.com/mbruno46/pyobs.git@master#egg<span class="o">=</span>pyobs
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>pip install from local repository</strong></p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git+https://github.com/mbruno46/pyobs.git
+$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>./pyobs
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>developer mode</strong></p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>./pyobs
+</pre></div>
+</div>
+<p>The library can alternatively be used without installation
+by adding the appropriate path to <cite>sys</cite>.
+In this case it is recommended to recompile the C++ extensions
+manually with <cite>python setup.py build_ext</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;/path/to/pyobs/directory/&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pyobs</span>
+</pre></div>
+</div>
+<p>Note that recompiling the C++ extensions might be necessary
+also after pulling the latest commits, in the developer mode.</p>
+<section id="python-environments">
+<h3>Python Environments<a class="headerlink" href="#python-environments" title="Permalink to this heading">¶</a></h3>
+<p>Virtual environments can be used to create a copy of the python
+distribution in the home directory where the user can freely
+install additional packages, including <cite>pyobs</cite>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>
+$<span class="w"> </span>python3.6<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>mypy
+</pre></div>
+</div>
+<p>The environment can be activated, meaning that <cite>pip</cite> and <cite>python</cite>
+commands will be automatically identified with those in the environment</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">source</span><span class="w"> </span>mypy/bin/activate
+$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>jupyter<span class="w"> </span>notebook
+</pre></div>
+</div>
+<p>Alternatively, just use the full path</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>mypy/bin
+$<span class="w"> </span>./pip<span class="w"> </span>install<span class="w"> </span>numpy
+$<span class="w"> </span>./pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/mbruno46/pyobs.git@master#egg<span class="o">=</span>pyobs
+</pre></div>
+</div>
+</section>
+</section>
+<section id="changelog">
+<h2>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading">¶</a></h2>
+<p>All notable changes to this project will be documented in this file.
+The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a changelog</a>.</p>
+<section id="unreleased">
+<h3>[Unreleased]<a class="headerlink" href="#unreleased" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Added</dt><dd><ul class="simple">
+<li><p>jackknife error support</p></li>
+<li><p>exponential tail</p></li>
+</ul>
+</dd>
+<dt>Fixed</dt><dd><ul class="simple">
+<li><p>BDIO format has bug for python&gt;=3.10</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="xx-01-2025">
+<h3>[1.5.2] - XX.01.2025<a class="headerlink" href="#xx-01-2025" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Added</dt><dd><ul class="simple">
+<li><p>added full support for complex observables</p></li>
+<li><p>added conj method to observable class</p></li>
+<li><p>temporary class <cite>complex_observable</cite> migrated to tests</p></li>
+</ul>
+</dd>
+<dt>Fixed</dt><dd><ul class="simple">
+<li><p>minor bugs</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="id1">
+<h3>[1.5.1] - 15.11.2024<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Added</dt><dd><ul class="simple">
+<li><p>temporary support for complex observables via <cite>complex_observable</cite> class (binary operations <cite>&#64;</cite>, <cite>*</cite>, unary operations <cite>inv</cite>, <cite>eig</cite>, <cite>T</cite>)</p></li>
+<li><p>extended output for peek function</p></li>
+</ul>
+</dd>
+<dt>Fixed</dt><dd><ul class="simple">
+<li><p>fixed bug in chiexp for combined fits</p></li>
+<li><p>faster index search in transform.py for large observables</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h3>[1.5.0] - 10.10.2023<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Added</dt><dd><ul class="simple">
+<li><p>added support for expected chi square</p></li>
+</ul>
+</dd>
+<dt>Fixed</dt><dd><ul class="simple">
+<li><p>improved error estimation and plotting in presence of holes</p></li>
+<li><p>minor bugs fixed (I/O xml)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h3>[1.4.1] - 18.01.2023<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Fixed</dt><dd><ul class="simple">
+<li><p>fixed bug in transform (roll, sort..)</p></li>
+<li><p>improved behavior under roundoff errors</p></li>
+<li><p>fixed compatibility issues with numpy&gt;=1.24.0</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h3>[1.4.0] - 20.08.2022<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Added</dt><dd><ul class="simple">
+<li><p>finite volume 2to2 quantization condition</p></li>
+<li><p>write support for xml.gz format</p></li>
+<li><p>documentation updated</p></li>
+</ul>
+</dd>
+</dl>
+<p>Fixed
+- several minor bugs fixed</p>
+<dl class="simple">
+<dt>version 1.3.0, 06.02.2022:</dt><dd><ul class="simple">
+<li><p>added utility functions (tensor_remove, import_string)</p></li>
+<li><p>minor bugs fixed</p></li>
+<li><p>added support xml and bdio format (dobs-tools, ALPHA Collab.)</p></li>
+<li><p>interface for synthetic autocorrelated data changed</p></li>
+<li><p>several bugs fixed</p></li>
+</ul>
+</dd>
+<dt>version 1.2.0, 21.07.2021:</dt><dd><ul class="simple">
+<li><p>added support for binning of Monte Carlo data, and blocking for master-field data</p></li>
+<li><p>added support for linting of code</p></li>
+<li><p>performance improvements for slicing/indexing/extending observables</p></li>
+</ul>
+</dd>
+<dt>version 1.1.0, 08.05.2021:</dt><dd><ul class="simple">
+<li><p>added support for root finder, basic interpolation, cumsum</p></li>
+<li><p>fixed documentation bugs</p></li>
+<li><p>minor improvements to mfit</p></li>
+<li><p>added support for variance and cov. matrix (data.py rewritten)</p></li>
+</ul>
+</dd>
+<dt>version 1.0.1, 10.11.2020:</dt><dd><ul class="simple">
+<li><p>added IO with binary file format (default), based on bison</p></li>
+<li><p>performance improvements in create and derobs</p></li>
+<li><p>additional gradient class for optimization of element-wise operations</p></li>
+<li><p>minor bug fixes</p></li>
+</ul>
+</dd>
+<dt>version 1.0.0-alpha, 11.10.2020:</dt><dd><ul class="simple">
+<li><p>IO with json file format supported</p></li>
+<li><p>pip install supported</p></li>
+<li><p>error of the error and 4th moment bias supported</p></li>
+<li><p>support for code coverage and automatic unit tests</p></li>
+<li><p>flexible fit modules (Levenberg-Marquardt minimizer)</p></li>
+<li><p>documentation and tutorials</p></li>
+<li><p>symbolic differentiation for fit functions</p></li>
+<li><p>support for eigenvalue/eigenvectors (including non-symmetric case)</p></li>
+<li><p>support for exp, log, cosh, arccosh, besselk</p></li>
+<li><p>fast C++ extensions for master-field case</p></li>
+<li><p>overloaded basic math operations (+,-,*,/)</p></li>
+<li><p>tensor operations: unary support (sum, trace), matmul via &#64; operand</p></li>
+<li><p>basic tensor manipulation (reshape, concatenate) and getitem</p></li>
+<li><p>FFT for autocorrelations</p></li>
+<li><p>support for external data with known covariances and systematic errors</p></li>
+<li><p>memory management system, utility functions</p></li>
+<li><p>random module for generation of autocorrelated data sets</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-2024, Mattia Bruno.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

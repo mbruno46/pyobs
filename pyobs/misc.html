@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Additional utility functions &#8212; pyobs 1.5.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=2a422f08" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.3.4/spacelab/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=515d8a7f"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+<div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="../index.html">
+         </a>
+      <span class="navbar-text navbar-version pull-left"><b></b></span>
+    </div>
+
+      <div class="collapse navbar-collapse nav-collapse">
+        <ul class="nav navbar-nav">
+          
+              <li><a href="../intro/index.html">Introduction</a></li>
+              <li><a href="../tutorials/index.html">Tutorials</a></li>
+              <li><a href="index.html">Documentation</a></li>
+              <li><a href="../supplemental/index.html">Supplemental</a></li>
+          
+          
+          
+          
+        </ul>
+
+        
+          
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        
+        
+      </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">Additional utility functions</a><ul>
+<li><a class="reference internal" href="#module-pyobs.random">Generation of synthetic autocorrelated data</a><ul>
+<li><a class="reference internal" href="#pyobs.random.generator"><code class="docutils literal notranslate"><span class="pre">generator</span></code></a><ul>
+<li><a class="reference internal" href="#pyobs.random.generator.markov_chain"><code class="docutils literal notranslate"><span class="pre">generator.markov_chain()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-pyobs.memory">Memory checking</a><ul>
+<li><a class="reference internal" href="#pyobs.memory.info"><code class="docutils literal notranslate"><span class="pre">info()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#formatting-of-arrays">Formatting of arrays</a><ul>
+<li><a class="reference internal" href="#pyobs.valerr"><code class="docutils literal notranslate"><span class="pre">valerr()</span></code></a></li>
+<li><a class="reference internal" href="#pyobs.import_string"><code class="docutils literal notranslate"><span class="pre">import_string()</span></code></a></li>
+<li><a class="reference internal" href="#pyobs.tex_table"><code class="docutils literal notranslate"><span class="pre">tex_table()</span></code></a></li>
+<li><a class="reference internal" href="#pyobs.slice_ndarray"><code class="docutils literal notranslate"><span class="pre">slice_ndarray()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form><div id="navbar-logo" style="margin:auto;text-align:center">
+	<img src="/pyobs/_images/pyobs-logo.png" alt="" width="200" />
+</div>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <section id="additional-utility-functions">
+<h1>Additional utility functions<a class="headerlink" href="#additional-utility-functions" title="Permalink to this heading">¶</a></h1>
+<section id="module-pyobs.random">
+<span id="generation-of-synthetic-autocorrelated-data"></span><h2>Generation of synthetic autocorrelated data<a class="headerlink" href="#module-pyobs.random" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyobs.random.generator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyobs.random.</span></span><span class="sig-name descname"><span class="pre">generator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.random.generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>A random number generator based on <cite>numpy.random</cite>. It preserves the internal
+state and guarantees complete reproducibility.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seed</strong> (<em>string</em><em> or </em><em>int</em>) – if a string is passed a sha256 bytearray is generated
+and used to seed the random number generator.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyobs.random.generator.markov_chain">
+<span class="sig-name descname"><span class="pre">markov_chain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">taus</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">couplings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.random.generator.markov_chain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create synthetic autocorrelated Monte Carlo data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mu</strong> (<em>float</em><em> or </em><em>1D array</em>) – the central value</p></li>
+<li><p><strong>cov</strong> (<em>float</em><em> or </em><em>array</em>) – the target covariance matrix; if a 1-D array is
+passed, a diagonal covariance matrix is assumed</p></li>
+<li><p><strong>taus</strong> (<em>float</em><em> or </em><em>array</em>) – the autocorrelation time(s). Values smaller
+than 0.5 are ignored and set to automatically to 0.5.</p></li>
+<li><p><strong>N</strong> (<em>int</em>) – the number of configurations/measurements</p></li>
+<li><p><strong>couplings</strong> (<em>optional</em><em>, </em><em>float</em><em> or </em><em>array</em>) – the couplings of the modes
+to the observable.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the synthetic data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rng</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">generator</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">acrand</span><span class="p">(</span><span class="mf">0.1234</span><span class="p">,</span><span class="mf">0.0001</span><span class="p">,</span><span class="mf">4.0</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;test-acrand&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+<span class="go">0.12341(26)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pyobs.memory">
+<span id="memory-checking"></span><h2>Memory checking<a class="headerlink" href="#module-pyobs.memory" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyobs.memory.info">
+<span class="sig-prename descclassname"><span class="pre">pyobs.memory.</span></span><span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.memory.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the size of all allocated observables and the total
+amount memory used by <cite>pyobs</cite></p>
+</dd></dl>
+
+</section>
+<section id="formatting-of-arrays">
+<h2>Formatting of arrays<a class="headerlink" href="#formatting-of-arrays" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyobs.valerr">
+<span class="sig-prename descclassname"><span class="pre">pyobs.</span></span><span class="sig-name descname"><span class="pre">valerr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">significant_digits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.valerr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts arrays in formatted strings in the form “value(error)””.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<em>array</em>) – a float, 1-D or 2-D array</p></li>
+<li><p><strong>error</strong> (<em>array</em>) – a float, 1-D or 2-D array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the formatted string</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">v</span><span class="p">,</span> <span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">error</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">pyobs</span><span class="o">.</span><span class="n">valerr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">e</span><span class="p">))</span>
+<span class="go">1234(4)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyobs.import_string">
+<span class="sig-prename descclassname"><span class="pre">pyobs.</span></span><span class="sig-name descname"><span class="pre">import_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.import_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports strings in the format value(error) into arrays</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">import_string</span><span class="p">([</span><span class="s1">&#39;1234(4)&#39;</span><span class="p">,</span><span class="s1">&#39;0.02345(456)&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+<span class="go">array([[1.234e+03, 4.000e+00],</span>
+<span class="go">       [2.345e-02, 4.560e-03]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyobs.tex_table">
+<span class="sig-prename descclassname"><span class="pre">pyobs.</span></span><span class="sig-name descname"><span class="pre">tex_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.tex_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats a matrix to a tex table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mat</strong> (<em>array</em>) – 2D array</p></li>
+<li><p><strong>fmt</strong> (<em>list</em><em>, </em><em>optional</em>) – a list of formats for each columns; if 0 is passed
+on two consecutive columns the program assumes that they correspond
+to value and error and prints them together in a single column; otherwise
+accepted values are ‘d’ for integers, ‘.2f’ for floats with 2 digit
+precision, etc …</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a list where each element is a line of the tex table</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of str</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tsl</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span> <span class="c1"># time-slice</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="n">dc</span><span class="p">]</span> <span class="o">=</span> <span class="n">correlator</span><span class="o">.</span><span class="n">error</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">tsl</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">dc</span><span class="p">]</span> <span class="c1"># pack data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pyobs</span><span class="o">.</span><span class="n">tex_table</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyobs.slice_ndarray">
+<span class="sig-prename descclassname"><span class="pre">pyobs.</span></span><span class="sig-name descname"><span class="pre">slice_ndarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.slice_ndarray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slices a N-D array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>array</em>) – N-D array</p></li>
+<li><p><strong>*args</strong> (<em>list</em>) – a series of lists, arrays, slices or integers with the indices
+used for the extraction. <cite>[]</cite> is interpreted as taking
+all elements along that given axis, like slice(None).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the sliced N-D array.
+Note that the number of dimensions does not change even
+when only a single coordinate is selected along a given axis.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pyobs</span><span class="o">.</span><span class="n">slice_tensor</span><span class="p">(</span><span class="n">mat</span><span class="p">,[],[</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="go">array([[[0, 2]],</span>
+<span class="go">       [[6, 8]]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-2024, Mattia Bruno.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

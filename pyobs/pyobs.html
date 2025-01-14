@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>The class observable &#8212; pyobs 1.5.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=2a422f08" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.3.4/spacelab/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=515d8a7f"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+<div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="../index.html">
+         </a>
+      <span class="navbar-text navbar-version pull-left"><b></b></span>
+    </div>
+
+      <div class="collapse navbar-collapse nav-collapse">
+        <ul class="nav navbar-nav">
+          
+              <li><a href="../intro/index.html">Introduction</a></li>
+              <li><a href="../tutorials/index.html">Tutorials</a></li>
+              <li><a href="index.html">Documentation</a></li>
+              <li><a href="../supplemental/index.html">Supplemental</a></li>
+          
+          
+          
+          
+        </ul>
+
+        
+          
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        
+        
+      </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">The class observable</a><ul>
+<li><a class="reference internal" href="#pyobs.observable"><code class="docutils literal notranslate"><span class="pre">observable</span></code></a><ul>
+<li><a class="reference internal" href="#pyobs.observable.add_syst_err"><code class="docutils literal notranslate"><span class="pre">observable.add_syst_err()</span></code></a></li>
+<li><a class="reference internal" href="#pyobs.observable.blocked"><code class="docutils literal notranslate"><span class="pre">observable.blocked()</span></code></a></li>
+<li><a class="reference internal" href="#pyobs.observable.covariance_matrix"><code class="docutils literal notranslate"><span class="pre">observable.covariance_matrix()</span></code></a></li>
+<li><a class="reference internal" href="#pyobs.observable.create"><code class="docutils literal notranslate"><span class="pre">observable.create()</span></code></a></li>
+<li><a class="reference internal" href="#pyobs.observable.create_from_cov"><code class="docutils literal notranslate"><span class="pre">observable.create_from_cov()</span></code></a></li>
+<li><a class="reference internal" href="#pyobs.observable.error"><code class="docutils literal notranslate"><span class="pre">observable.error()</span></code></a></li>
+<li><a class="reference internal" href="#pyobs.observable.error_breakdown"><code class="docutils literal notranslate"><span class="pre">observable.error_breakdown()</span></code></a></li>
+<li><a class="reference internal" href="#pyobs.observable.error_of_error"><code class="docutils literal notranslate"><span class="pre">observable.error_of_error()</span></code></a></li>
+<li><a class="reference internal" href="#pyobs.observable.peek"><code class="docutils literal notranslate"><span class="pre">observable.peek()</span></code></a></li>
+<li><a class="reference internal" href="#pyobs.observable.rename"><code class="docutils literal notranslate"><span class="pre">observable.rename()</span></code></a></li>
+<li><a class="reference internal" href="#pyobs.observable.rt"><code class="docutils literal notranslate"><span class="pre">observable.rt()</span></code></a></li>
+<li><a class="reference internal" href="#pyobs.observable.slice"><code class="docutils literal notranslate"><span class="pre">observable.slice()</span></code></a></li>
+<li><a class="reference internal" href="#pyobs.observable.tauint"><code class="docutils literal notranslate"><span class="pre">observable.tauint()</span></code></a></li>
+<li><a class="reference internal" href="#pyobs.observable.variance"><code class="docutils literal notranslate"><span class="pre">observable.variance()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form><div id="navbar-logo" style="margin:auto;text-align:center">
+	<img src="/pyobs/_images/pyobs-logo.png" alt="" width="200" />
+</div>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <section id="the-class-observable">
+<h1>The class observable<a class="headerlink" href="#the-class-observable" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyobs.observable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyobs.</span></span><span class="sig-name descname"><span class="pre">observable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orig=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description='unknown'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projector=&lt;function</span> <span class="pre">observable.&lt;lambda&gt;&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class defining an observable</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orig</strong> (<a class="reference internal" href="#pyobs.observable" title="pyobs.observable"><em>observable</em></a><em>, </em><em>optional</em>) – creates a copy of orig</p></li>
+<li><p><strong>description</strong> (<em>str</em><em>, </em><em>optional</em>) – description of the observable</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pyobs</span><span class="w"> </span><span class="kn">import</span> <span class="n">observable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">observable</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyobs.observable.add_syst_err">
+<span class="sig-name descname"><span class="pre">add_syst_err</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">err</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observable.add_syst_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a systematic error to the observable</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – label that uniquely identifies the syst. error</p></li>
+<li><p><strong>err</strong> (<em>array</em>) – array with the same dimensions of the observable
+with the systematic error</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.198638</span><span class="p">,</span> <span class="mf">0.403983</span><span class="p">,</span> <span class="mf">1.215960</span><span class="p">,</span> <span class="mf">1.607684</span><span class="p">,</span> <span class="mf">0.199049</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vec</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;vector&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vec</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+<span class="go">0.201(13)    0.399(26)    1.199(24)    1.603(47)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vec</span><span class="o">.</span><span class="n">add_syst_err</span><span class="p">(</span><span class="s1">&#39;syst.err&#39;</span><span class="p">,[</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.05</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+<span class="go">0.201(52)    0.399(56)    1.199(24)    1.603(47)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyobs.observable.blocked">
+<span class="sig-name descname"><span class="pre">blocked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observable.blocked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an observable with blocked/binned fluctuations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>blocks</strong> (<em>dict</em>) – dictionary where the key specifies the ensemble and
+the value the blocking strategy. If the ensemble was generated
+from a Monte Carlo chain, then an integer number is expected. If
+the ensemble is a master-field then a list of integers is expected.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>After the blocking procedure the knowledge of configuration indices is
+lost and replaced by an index running over the blocks/bins from 0 to the
+maximal value. To keep the analysis consistent, the same blocking procedure
+must be applied to all observables involved.</p>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obsA</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="go">1000</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obsA</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;EnsA&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obsAbin</span> <span class="o">=</span> <span class="n">obsA</span><span class="o">.</span><span class="n">blocked</span><span class="p">({</span><span class="s1">&#39;EnsA&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obsAbin</span><span class="o">.</span><span class="n">peek</span><span class="p">()</span> <span class="c1"># the 1000 configs are compressed to 50 bins of length 20</span>
+<span class="go">Observable with shape = (1,)</span>
+<span class="go"> - description: unknown</span>
+<span class="go"> - size: ... KB</span>
+<span class="go"> - mean: [...]</span>
+<span class="go"> - Ensemble EnsA</span>
+<span class="go">    - Replica 0 with ncnfg 50</span>
+<span class="go">         temporary additional memory required ... MB</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyobs.observable.covariance_matrix">
+<span class="sig-name descname"><span class="pre">covariance_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">errinfo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observable.covariance_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates the covariance matrix using a fixed window <cite>W</cite> for all observables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>errinfo</strong> (<em>dict</em>) – see the documentation of the <cite>error</cite> method. For each ensemblee
+the parameter <cite>W</cite> is used to define the summation window.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the covariance matrix and its error.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of two arrays</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obsA</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obsA</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;EnsA&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">((</span><span class="mi">8</span><span class="p">,)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">cm</span><span class="p">,</span> <span class="n">dcm</span><span class="p">]</span> <span class="o">=</span> <span class="n">obsA</span><span class="o">.</span><span class="n">covariance_matrix</span><span class="p">(</span><span class="n">errinfo</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;EnsA&#39;</span><span class="p">,</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">errinfo</span><span class="p">(</span><span class="n">W</span><span class="o">=</span><span class="mi">10</span><span class="p">)})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">pyobs</span><span class="o">.</span><span class="n">valerr</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span><span class="n">dcm</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyobs.observable.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">icnfg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observable.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an observable</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ename</strong> (<em>str</em>) – label of the ensemble</p></li>
+<li><p><strong>data</strong> (<em>array</em><em>, </em><em>list</em><em> of </em><em>arrays</em>) – the data generated from a single
+or multiple replica</p></li>
+<li><p><strong>icnfg</strong> (<em>array</em><em> of </em><em>ints</em><em> or </em><em>list</em><em> of </em><em>arrays</em><em> of </em><em>ints</em><em>, </em><em>optional</em>) – indices
+of the configurations corresponding to data; if not passed the
+measurements are assumed to be contiguous and to start from index 0</p></li>
+<li><p><strong>rname</strong> (<em>str</em><em> or </em><em>list</em><em> of </em><em>str</em><em>, </em><em>optional</em>) – identifier of the replica; if
+not passed integers from 0 are automatically assigned</p></li>
+<li><p><strong>shape</strong> (<em>tuple</em><em>, </em><em>optional</em>) – shape of the observable, data must be passed accordingly</p></li>
+<li><p><strong>lat</strong> (<em>list</em><em> of </em><em>ints</em><em>, </em><em>optional</em>) – the size of each dimension of the master-field;
+if passed data is assumed to be obtained from observables measured at different
+sites and <cite>icnfg</cite> is re-interpreted as the index labeling the sites; if <cite>icnfg</cite>
+is not passed data is assumed to be contiguous on all sites.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For data and icnfg array can mean either a list or a 1-D np.array.
+If the observable has already been created, calling create again will add
+a new replica to the same ensemble.</p>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.43</span><span class="p">,</span> <span class="mf">0.42</span><span class="p">,</span> <span class="mf">0.44</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">icnfg</span><span class="o">=</span> <span class="p">[</span>  <span class="mi">10</span><span class="p">,</span>   <span class="mi">11</span><span class="p">,</span>   <span class="mi">13</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;EnsembleA&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">icnfg</span><span class="o">=</span><span class="n">icnfg</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;matrix&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;EnsembleA&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.43</span><span class="p">,</span> <span class="mf">0.42</span><span class="p">,</span> <span class="mf">0.44</span><span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lat</span> <span class="o">=</span> <span class="p">[</span><span class="mi">64</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">32</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;test-mf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;EnsembleA&#39;</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">lat</span><span class="o">=</span><span class="n">lat</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyobs.observable.create_from_cov">
+<span class="sig-name descname"><span class="pre">create_from_cov</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">covariance</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observable.create_from_cov" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create observables based on covariance matrices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cname</strong> (<em>str</em>) – label that uniquely identifies the data set</p></li>
+<li><p><strong>value</strong> (<em>array</em>) – central value of the observable; only 1-D arrays are supported</p></li>
+<li><p><strong>covariance</strong> (<em>array</em>) – a 2-D covariance matrix; if <cite>covariance</cite> is a 1-D array of
+same length as <cite>value</cite>, a diagonal covariance matrix is assumed.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mpi</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;pion masses, charged and neutral&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mpi</span><span class="o">.</span><span class="n">create_from_cov</span><span class="p">(</span><span class="s1">&#39;mpi-pdg18&#39;</span><span class="p">,[</span><span class="mf">139.57061</span><span class="p">,</span><span class="mf">134.9770</span><span class="p">],[</span><span class="mf">0.00023</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="mf">0.0005</span><span class="o">**</span><span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">mpi</span><span class="p">)</span>
+<span class="go">139.57061(23)    134.97700(50)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyobs.observable.error">
+<span class="sig-name descname"><span class="pre">error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">errinfo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observable.error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate the error of the observable, by summing in quadrature
+the systematic errors with the statistical errors computed from
+all ensembles and master fields.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>errinfo</strong> (<em>dict</em><em>, </em><em>optional</em>) – dictionary containg one instance of
+the errinfo class for each ensemble/master-field. The errinfo
+class provides additional details for the automatic or manual
+windowing procedure in the Gamma method. If not passed default
+parameters are assumed.</p></li>
+<li><p><strong>plot</strong> (<em>bool</em><em>, </em><em>optional</em>) – if specified a plot is produced, for
+every element of the observable, and for every ensemble/master-field
+where the corresponding element has fluctuations. In addition
+one piechart plot is produced for every element, showing the
+contributions to the error from the various sources, only if there
+are multiple sources, ie several ensembles. It is recommended to use
+the plotting function only for observables with small dimensions.</p></li>
+<li><p><strong>pfile</strong> (<em>str</em><em>, </em><em>optional</em>) – if specified all plots produced with the flag
+<cite>plot</cite> are saved to disk, using <cite>pfile</cite> as base name with an additional
+suffix.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the central value and error of the observable.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of two arrays</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the errors are computed with the Gamma method, with the <cite>Stau</cite>
+parameter equal to 1.5. For master fields the error is computed
+using the master-field approach and the automatic windowing procedure
+requires the additional argument <cite>k</cite> (see main documentation), which
+by default is zero, but can be specified via the errinfo dictionary.
+Through the <cite>errinfo</cite> dictionary the user can treat every ensemble
+differently, as explained in the examples.</p>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obsA</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="s1">&#39;obsA&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obsA</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="n">dataA</span><span class="p">)</span> <span class="c1"># create the observable A from ensemble A</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">v</span><span class="p">,</span><span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="n">obsA</span><span class="o">.</span><span class="n">error</span><span class="p">()</span> <span class="c1"># collect central value and error in v,e</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">einfo</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="n">errinfo</span><span class="p">(</span><span class="n">Stau</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)}</span> <span class="c1"># specify non-standard Stau for ensemble A</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">_</span><span class="p">,</span><span class="n">e1</span><span class="p">]</span> <span class="o">=</span> <span class="n">obsA</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errinfo</span><span class="o">=</span><span class="n">einfo</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obsB</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">(</span><span class="s1">&#39;obsB&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obsB</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="n">dataB</span><span class="p">)</span> <span class="c1"># create the observable B from ensemble B</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obsC</span> <span class="o">=</span> <span class="n">obsA</span> <span class="o">*</span> <span class="n">obsB</span> <span class="c1"># derived observable with fluctuations from ensembles A,B</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">einfo</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="n">errinfo</span><span class="p">(</span><span class="n">Stau</span><span class="o">=</span><span class="mf">3.0</span><span class="p">),</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="n">errinfo</span><span class="p">(</span><span class="n">W</span><span class="o">=</span><span class="mi">30</span><span class="p">)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">v</span><span class="p">,</span><span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="n">obsC</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errinfo</span><span class="o">=</span><span class="n">einfo</span><span class="p">,</span><span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyobs.observable.error_breakdown">
+<span class="sig-name descname"><span class="pre">error_breakdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">errinfo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observable.error_breakdown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary with the squared error of each component.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyobs.observable.error_of_error">
+<span class="sig-name descname"><span class="pre">error_of_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">errinfo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observable.error_of_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the error of the error based on the analytic
+prediction obtained by U. Wolff.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>errinfo</strong> (<em>dict</em><em>, </em><em>optional</em>) – see the documentation of the <cite>error</cite>
+method.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the error of the error</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyobs.observable.peek">
+<span class="sig-name descname"><span class="pre">peek</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observable.peek" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display a brief summary of the content of the observable, including
+its memory footprint and requirements (for error computation), its
+description and ensemble/replica content</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">peek</span><span class="p">()</span>
+<span class="go">Observable with shape = (1, 4)</span>
+<span class="go"> - description: vector-test</span>
+<span class="go"> - created by mbruno at macthxbruno.fritz.box on Wed Aug 11 10:51:26 2021</span>
+<span class="go"> - size: 82 KB</span>
+<span class="go"> - mean: [[0.20007161 0.40085252 1.19902686 1.60184989]]</span>
+<span class="go"> - Ensemble A</span>
+<span class="go">    - Replica 0 with mask [0, 1, 2, 3] and ncnfg 500</span>
+<span class="go">         temporary additional memory required 0.015 MB</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyobs.observable.rename">
+<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dst</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observable.rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename ensembles and replica.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src</strong> (<em>string</em><em> or </em><em>tuple</em>) – if a string is passed all replica belonging to the
+ensembles defined by <cite>src</cite> are renamed into <cite>dst</cite>; if a tuple with two
+strings is passed, then the first element is taken as the ensemble tag,
+the second as the replica tag and only this replicum is renamed.</p></li>
+<li><p><strong>dst</strong> (<em>string</em><em> or </em><em>tuple</em>) – the new name for the ensembles and replica; the behavior
+is the same of <cite>src</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obsA</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obsA</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;EnsA&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">icnfg</span><span class="p">,</span> <span class="n">rname</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;r001&#39;</span><span class="p">,</span><span class="s1">&#39;r002&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obsA</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">&#39;EnsA&#39;</span><span class="p">,</span><span class="s1">&#39;EnsembleA&#39;</span><span class="p">)</span> <span class="c1"># rename both replica with the new ensemble tag</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obsA</span><span class="o">.</span><span class="n">rename</span><span class="p">((</span><span class="s1">&#39;EnsembleA&#39;</span><span class="p">,</span><span class="s1">&#39;r001&#39;</span><span class="p">),(</span><span class="s1">&#39;EnsA&#39;</span><span class="p">,</span><span class="s1">&#39;stream0&#39;</span><span class="p">))</span> <span class="c1"># rename only a single replica</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyobs.observable.rt">
+<span class="sig-name descname"><span class="pre">rt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observable.rt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes trivial tensor indices reducing the dimensionality of the observable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>axis</strong> (<em>int</em><em>, </em><em>list</em><em> or </em><em>array</em>) – axis to be considered for tensor removal.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>observable</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(10, 3, 1)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">rt</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(10, 3)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyobs.observable.slice">
+<span class="sig-name descname"><span class="pre">slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observable.slice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slices an N-D observable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*args</strong> – accepted arguments are lists, arrays, slices or integers
+with the indices used for the extraction. <cite>[]</cite> is interpreted
+as taking all elements along that given axis, like <cite>slice(None)</cite>.
+The number of input arguments must match the dimension of the
+observable.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the sliced N-D observable.
+Note that the number of dimensions does not change even
+when only a single coordinate is selected along a given axis.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyobs.observable" title="pyobs.observable">observable</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span> <span class="o">=</span> <span class="n">pyobs</span><span class="o">.</span><span class="n">observable</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;EnsA&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span><span class="o">.</span><span class="n">slice</span><span class="p">([</span><span class="mi">0</span><span class="p">],[],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span> <span class="c1"># returns an observable with shape = (1,3,3)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyobs.observable.tauint">
+<span class="sig-name descname"><span class="pre">tauint</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observable.tauint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates the integrated autocorrelation time and its error for every
+ensemble, with the automatic windowing procedure.</p>
+<p class="rubric">Notes</p>
+<p>To be added in future versions: support for arbitrary values of Stau</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyobs.observable.variance">
+<span class="sig-name descname"><span class="pre">variance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyobs.observable.variance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates the integrated autocorrelation function and its error for every
+ensemble.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>one key for each ensemble.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>For every ensemble a list of 3 arrays is returned, corresponding to the
+x-axis (MC time), the integrated autocorrelation function and its error.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2020-2024, Mattia Bruno.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
