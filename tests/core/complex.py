@@ -22,7 +22,9 @@ obsA_r.create('a', data_r, shape=(2,))
 obsA_i = pyobs.observable()
 obsA_i.create('a', data_i, shape=(2,))
 
-print(obsA_r, obsA_i)
+print(obsA_r.error())
+print(obsA_i.error())
+print(obsB.error())
 
 def check(A,B):
     b, db = B.error()

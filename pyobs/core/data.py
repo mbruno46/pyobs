@@ -26,8 +26,7 @@ __all__ = ["delta"]
 
 
 def is_int(x):
-    return isinstance(x, (int, np.int32, np.int64))
-
+    return pyobs.is_type(x, pyobs.types.INT)
 
 def expand_data(data, idx, shape):
     v = np.prod(shape)

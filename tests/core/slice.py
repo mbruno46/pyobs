@@ -62,7 +62,7 @@ obsB = pyobs.observable()
 obsB.create('B',data)
 [vB, eB] = obsB.error()
 
-obsC = pyobs.remove_tensor(pyobs.stack([obsA,obsB]))
+obsC = pyobs.stack([obsA,obsB]).rt()
 obsC.peek()
 [v,e] = obsC[0].error()
 assert abs(vA - v) < 1e-12

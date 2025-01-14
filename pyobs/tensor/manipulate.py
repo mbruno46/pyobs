@@ -74,7 +74,7 @@ def remove_tensor(x, axis=None):
        (10, 3)
     """
     Nd = len(x.shape)
-    if isinstance(axis, int):
+    if pyobs.is_type(axis, pyobs.types.INT):
         axis = [axis]
     if axis is None:
         selection = [True] * Nd

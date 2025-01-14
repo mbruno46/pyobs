@@ -134,11 +134,11 @@ class observable:
             self.ename.append(ename)
 
         pyobs.check_type(data, "data", list, np.ndarray)
-        if isinstance(data[0], (int, np.int32, np.int64)):
+        if pyobs.is_type(data[0], pyobs.types.INT):
             data = [np.array(data).astype(pyobs.int)]
-        elif isinstance(data[0], (float, np.float32, np.float64)):
+        elif pyobs.is_type(data[0], pyobs.types.FLOAT):
             data = [np.array(data).astype(pyobs.double)]
-        elif isinstance(data[0], (complex, np.complex64, np.complex128)):
+        elif pyobs.is_type(data[0], pyobs.types.COMPLEX):
             data = [np.array(data).astype(pyobs.complex)]
         else:
             pyobs.assertion(True, "Data type not supported")
@@ -147,11 +147,11 @@ class observable:
         nc = [len(data[ir]) // self.size for ir in range(R)]
         if rname is None:
             rname = list(range(R))
-        elif isinstance(rname, (str, int, np.int32, np.int64)):
+        elif pyobs.is_type(rname, str, pyobs.types.INT):
             rname = [rname]
         if icnfg is None:
             icnfg = [range(_nc) for _nc in nc]
-        elif isinstance(icnfg[0], (int, np.int32, np.int64)):
+        elif pyobs.is_type(icnfg[0], pyobs.types.INT):
             icnfg = [icnfg]
 
         pyobs.check_type(rname, "rname", list)
@@ -409,7 +409,7 @@ class observable:
         return transform(self, f)
 
     def __getitem__(self, args):
-        if isinstance(args, (int, np.int32, np.int64, slice, np.ndarray)):
+        if pyobs.is_type(args, pyobs.types.INT, slice, np.ndarray):
             args = [args]
         na = len(args)
         pyobs.assertion(na == len(self.shape), "Unexpected argument")
@@ -420,12 +420,12 @@ class observable:
         return transform(self, f)
 
     def __setitem__(self, args, yobs):
-        if isinstance(args, (int, np.int32, np.int64, slice, np.ndarray)):
+        if pyobs.is_type(args, pyobs.types.INT, slice, np.ndarray):
             args = [args]
         else:
             args = [
                 [a]
-                if isinstance(a, (int, np.int32, np.int64, slice, np.ndarray))
+                if pyobs.is_type(a, pyobs.types.INT, slice, np.ndarray)
                 else a
                 for a in args
             ]
@@ -454,6 +454,41 @@ class observable:
             )
             self.cdata[key].assign(submask, yobs.cdata[key])
 
+    def rt(self, axis=None):
+        """
+        Removes trivial tensor indices reducing the dimensionality of the observable.
+
+        Parameters:
+           axis (int, list or array): axis to be considered for tensor removal.
+
+        Returns:
+           observable
+
+        Examples:
+           >>> obs.shape
+           (10, 3, 1)
+           >>> obs.rt().shape
+           (10, 3)
+        """
+        ## duplicate of pyobs.remove_tensor, to be eventually deprecated
+        Nd = len(self.shape)
+        if axis is None:
+            selection = [True] * Nd
+        else:
+            selection = [False] * Nd
+            for a in pyobs.to_list(axis):
+                selection[a] = True
+                
+        new_shape = []
+        for mu in range(Nd):
+            if (self.shape[mu] == 1) and (selection[mu] is True):
+                continue
+            new_shape.append(self.shape[mu])
+        if not new_shape:
+            new_shape.append(1)
+        return pyobs.reshape(self, tuple(new_shape))
+        
+            
     ##################################
     # overloaded basic math operations
 
@@ -654,14 +689,18 @@ class observable:
            >>> einfo = {'A': errinfo(Stau=3.0), 'B': errinfo(W=30)}
            >>> [v,e] = obsC.error(errinfo=einfo,plot=True)
         """
-        [sigma, sigma_tot, _] = self.error_core(errinfo, plot, pfile)
+        def error_real(obs):
+            [sigma, sigma_tot, _] = obs.error_core(errinfo, plot, pfile)
 
-        if plot:  # pragma: no cover
-            h = [len(self.ename), len(self.cdata)]
-            if sum(h) > 1:
-                plot_piechart(self.description, sigma, sigma_tot.real)
-
-        return [self.mean, np.sqrt(sigma_tot)]
+            if plot:  # pragma: no cover
+                h = [len(obs.ename), len(obs.cdata)]
+                if sum(h) > 1:
+                    plot_piechart(obs.description, sigma, sigma_tot.real)
+            return sigma_tot
+        
+        if np.iscomplexobj(self.mean):
+            return [self.mean, np.sqrt(error_real(self.real())) + 1j*np.sqrt(error_real(self.imag()))]        
+        return [self.mean, np.sqrt(error_real(self))]
 
     def error_breakdown(self, errinfo={}):
         """

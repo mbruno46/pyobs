@@ -1,7 +1,7 @@
 #################################################################################
 #
 # utils.py: generic utility routines
-# Copyright (C) 2020 Mattia Bruno
+# Copyright (C) 2020-2025 Mattia Bruno
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -30,6 +30,8 @@ __all__ = [
     "PyobsError",
     "assertion",
     "check_type",
+    "types",
+    "is_type",
     "valerr",
     "tex_table",
     "slice_ndarray",
@@ -37,6 +39,7 @@ __all__ = [
     "array",
     "double_array",
     "int_array",
+    "to_list",
 ]
 
 
@@ -161,6 +164,13 @@ def check_type(obj, s, *t):
     if c == len(t):
         raise TypeError(f"Unexpected type for {s} [{t}]")
 
+class types:
+    INT = (int, numpy.int32, numpy.int64)
+    FLOAT = (float, numpy.float32, numpy.float64)
+    COMPLEX = (complex, numpy.complex64, numpy.complex128)
+
+def is_type(x, *args):
+    return isinstance(x, args)
 
 def slice_to_range(sl, n):
     return list(range(n)[sl])
@@ -203,7 +213,7 @@ def slice_ndarray(t, *args):
                 aa.append(range(s[ia]))
             else:
                 aa.append(a)
-        elif isinstance(a, (int, numpy.int32, numpy.int64)):
+        elif pyobs.is_type(a, pyobs.types.INT):
             aa.append([a])
         else:  # pragma: no cover
             raise PyobsError("slicing not understood")
@@ -233,3 +243,8 @@ def import_string(data):
         out = [core(s) for s in data]
         return numpy.array(out)
     return core(data)
+
+def to_list(x):
+    if numpy.isdim(x)==0:
+        return [x]
+    return list(x)
