@@ -477,6 +477,7 @@ def save(fname, *args):
             pyobs.assertion(
                 a.size == 1, "Only single observables can be stored in bdio format"
             )
+            pyobs.assert(numpy.iscomplex.obj(a.mean) is False, "Complex observables not supported")
             encode_bdio_observable(f, a)
             md5 = hashlib.md5(f.buf).digest()
             f.write_record(f.buf, 2)

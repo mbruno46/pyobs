@@ -176,7 +176,8 @@ def load(fname):
 
 def save(fname, obs):
     pyobs.assertion(len(obs.shape) == 1, "Only 1-D observables supported")
-
+    pyobs.assertion(numpy.iscomplexobj(obs.mean) is False, "Complex observables not supported")
+    
     def delta2array(key, delta):
         pyobs.assertion(
             len(delta.mask) == obs.size, "Observables with sub-masks not supported"

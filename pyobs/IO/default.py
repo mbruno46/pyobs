@@ -47,6 +47,7 @@ class delta_decoder:
 
     def decode(self, obj):
         out = pyobs.core.data.delta(obj["mask"], obj["idx"], lat=obj["lat"])
+        out.delta = out.delta.astype(obj["delta"].dtype)
         out.delta[:, :] = obj["delta"][:, :]
         return out
 

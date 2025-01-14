@@ -35,3 +35,21 @@ assert (test2['indices'] == [4,8])
 pyobs.memory.info()
 
 os.popen('rm ./test-io.pyobs')
+
+# complex case
+
+data = rng.markov_chain([2.31,3.14],[0.2**2,0.1**2],4.0,3000)
+test = pyobs.observable(description='save/load test')
+test.create('test',(1-2j)*data.flatten(),icnfg=range(0,3000*4,4),rname='rep1',shape=(2,))
+[v, e] = test.error()
+
+pyobs.save('./test-io.pyobs', test)
+
+test2 = pyobs.load('./test-io.pyobs')
+[v2, e2] = test2.error()
+
+assert numpy.all(v==v2)
+assert numpy.all(e==e2)
+
+os.popen('rm ./test-io.pyobs')
+
