@@ -1,7 +1,7 @@
 #################################################################################
 #
 # __init__.py: methods and functionalities of the library accessible to users
-# Copyright (C) 2020 Mattia Bruno
+# Copyright (C) 2025 Mattia Bruno
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,14 +19,47 @@
 #
 #################################################################################
 
-from . import random
+class empty_plt:
+    def figure(*args, **kwargs):
+        pass
+    
+    def plot(*args, **kwargs):
+        pass
 
-__all__ = ["random"]
+    def pie(*args, **kwargs):
+        pass
+    
+    def hist(*args, **kwargs):
+        pass
 
-from . import memory
+    def show(*args, **kwargs):
+        pass
 
-__all__.extend(["memory"])
+    def fill_between(*args, **kwargs):
+        pass
 
-from .plotter import plt
+    def xlabel(*args, **kwargs):
+        pass
+    
+    def ylabel(*args, **kwargs):
+        pass
+    
+    def title(*args, **kwargs):
+        pass
 
-__all__.extend(["plt"])
+    def xlim(*args, **kwargs):
+        pass
+
+    def ylim(*args, **kwargs):
+        pass
+
+    def legend(*args, **kwargs):
+        pass
+
+try:
+    import matplotlib.pyplot as plt
+    MATPLOTLIB = True
+except ImportError:
+    MATPLOTLIB = False
+
+plt = plt if MATPLOTLIB else empty_plt
