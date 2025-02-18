@@ -46,3 +46,6 @@ assert abs(a-v) < e
 
 # evaluate at several points
 yobs = fit.eval(numpy.arange(0.0,T,0.1), pars)
+
+# evaluate p-value
+print('pvalue = ', fit.pvalue(rng, corr, {'test': pyobs.errinfo(W=10)}, plot=True)[0:2])

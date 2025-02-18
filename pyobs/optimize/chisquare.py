@@ -1,7 +1,7 @@
 #################################################################################
 #
 # mfit.py: definition of mfit class and its properties
-# Copyright (C) 2020-2021 Mattia Bruno
+# Copyright (C) 2020-2025 Mattia Bruno, Rainer Sommer
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -22,6 +22,7 @@
 import numpy
 
 import pyobs
+from pyobs.misc import plt
 from .minimize import lm
 
 __all__ = ["mfit"]
@@ -162,18 +163,20 @@ class chisquare:
 
         w, v = numpy.linalg.eig(self.Hmat(pdict, p0))
         mask = w != 0
+        pyobs.assertion(sum(numpy.abs(w)>1e-16) == len(w), "Badly conditioned system")
         winv = w
         winv[mask] = 1 / w[mask]
         Hinv = v @ numpy.diag(winv) @ v.T
 
         PP = self.W - Wg.T @ Hinv @ Wg
         w, v = numpy.linalg.eig(PP)
+        self.PP = PP
 
         chiexp = yobs @ v
         _, ce, dce = chiexp.error_core(plot=plot, errinfo=errinfo, pfile=None)
         return w @ ce, w @ dce
-
-
+        
+        
 class mfit:
     r"""
     Class to perform fits to multiple observables, via the minimization
@@ -274,8 +277,8 @@ class mfit:
                 n += 1
         return res
 
-    @pyobs.log_timer("mfit")
-    def __call__(self, yobs, p0=None, min_search=None):
+    
+    def check_yobs(self, yobs):
         if len(self.csq) > 1:
             pyobs.check_type(yobs, "yobs", list)
         else:
@@ -285,6 +288,12 @@ class mfit:
             len(yobs) == len(self.csq),
             f"Unexpected number of observables for {len(self.csq)} fits",
         )
+        return yobs
+    
+    @pyobs.log_timer("mfit")
+    def __call__(self, yobs, p0=None, min_search=None):
+        yobs = self.check_yobs(yobs)
+        
         if p0 is None:
             p0 = [1.0] * len(self.pdict)
         if min_search is None:
@@ -321,20 +330,15 @@ class mfit:
             g.append(pyobs.gradient(Hinv @ tmp))
 
         self.c2 = res.fun
-        self.ce = 0.0
-        self.dce = 0.0
-        for i in range(len(self.csq)):
-            tmp = self.csq[i].chiexp(yobs[i], self.pdict, res.x, False, {})
-            self.ce += tmp[0]
-            self.dce += tmp[1] ** 2
-        self.dce = self.dce**0.5
+        pars = pyobs.derobs(yobs, res.x, g)
+        self.ce, self.dce = self.chiexp(yobs, pars)
 
         if pyobs.is_verbose("mfit"):
             print(f"chisquare = {self.c2}")
             print(f"chiexp    = {self.ce} +- {self.dce}")
             print(f"minimizer iterations = {res.nit}")
             print(f"minimizer status: {res.message}")
-        return pyobs.derobs(yobs, res.x, g)
+        return pars
 
     def chisquared(self, pars):
         res = 0.0
@@ -344,15 +348,8 @@ class mfit:
         return res
 
     def chiexp(self, yobs, pars, plot=False, errinfo={}):
-        if len(self.csq) > 1:
-            pyobs.check_type(yobs, "yobs", list)
-        else:
-            if isinstance(yobs, pyobs.observable):
-                yobs = [yobs]
-        pyobs.assertion(
-            len(yobs) == len(self.csq),
-            f"Unexpected number of observables for {len(self.csq)} fits",
-        )
+        yobs = self.check_yobs(yobs)
+        
         ce, dce = 0, 0
         for i in range(len(self.csq)):
             tmp = self.csq[i].chiexp(yobs[i], self.pdict, pars.mean, plot, errinfo)
@@ -360,6 +357,35 @@ class mfit:
             dce += tmp[1] ** 2
         return ce, dce**0.5
 
+    
+    def pvalue(self, rng, yobs, errinfo, plot=False, nmc=10000):
+        yobs = self.check_yobs(yobs)    
+
+        cexp = numpy.zeros(nmc)
+        for i in range(len(self.csq)):
+            n = self.csq[i].n
+            
+            C = yobs[i].covariance_matrix(errinfo)[0]
+            w, _ = numpy.linalg.eig(C @ self.csq[i].PP)
+            w -= self.c2 / n
+            
+            cexp += rng.sample_normal(n*nmc).reshape(nmc,n)**2 @ w
+        
+        th = numpy.array(cexp) < 0.0
+        p = 1.0 - numpy.mean(th)
+        dp = numpy.std(th,ddof=1)/(nmc)**0.5
+        
+        if plot:
+            plt.figure()
+            plt.title(f'p-value = {p:.2f} +- {dp:.2f}')
+            h = plt.hist(cexp + self.c2, density=True, bins=40, label='MC')
+            if h:
+                plt.plot([self.c2,self.c2], [0,max(h[0])], label=r'$\chi^2$')
+                plt.plot([self.ce,self.ce], [0,max(h[0])], label=r'$\chi_\mathrm{exp}$')
+            plt.legend()
+            
+        return [p, dp, cexp]
+    
     def eval(self, xax, pars):
         """
         Evaluates the function on a list of coordinates using the parameters

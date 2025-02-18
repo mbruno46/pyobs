@@ -24,12 +24,7 @@ import numpy
 from scipy import special
 import pyobs
 
-try:  # pragma: no cover
-    import matplotlib.pyplot as plt
-
-    MATPLOTLIB = True
-except ImportError:
-    MATPLOTLIB = False
+from pyobs.misc import plt
 
 
 def find_closest(arr, x0):
@@ -150,9 +145,6 @@ class variance:
         return [out0, out1]
 
     def plot(self, xlab, desc, ed, pfile):  # pragma: no cover
-        if not MATPLOTLIB:
-            return
-
         for a in range(self.size):
             plt.figure()
             plt.title(f"{desc}; {ed}; {a}")
@@ -188,9 +180,6 @@ class variance:
 
 
 def plot_piechart(desc, errs, tot):  # pragma: no cover
-    if not MATPLOTLIB:
-        pass
-
     n = numpy.reciprocal(tot)
     s = numpy.size(tot)
     x = []
