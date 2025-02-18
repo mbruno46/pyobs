@@ -61,7 +61,7 @@ class empty_plt:
 try:
     import matplotlib.pyplot as plt
 
-    MATPLOTLIB = True
+    MATPLOTLIB = True  # pragma: no cover
 except ImportError:
     MATPLOTLIB = False
 

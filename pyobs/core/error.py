@@ -144,7 +144,7 @@ class variance:
             out1[a] = self.var[i, 1] / self.N[i]
         return [out0, out1]
 
-    def plot(self, xlab, desc, ed, pfile):  # pragma: no cover
+    def plot(self, xlab, desc, ed, pfile):
         for a in range(self.size):
             plt.figure()
             plt.title(f"{desc}; {ed}; {a}")
@@ -179,7 +179,7 @@ class variance:
         return [self.x, self.cvar, dy]
 
 
-def plot_piechart(desc, errs, tot):  # pragma: no cover
+def plot_piechart(desc, errs, tot):
     n = numpy.reciprocal(tot)
     s = numpy.size(tot)
     x = []
