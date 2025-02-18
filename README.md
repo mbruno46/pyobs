@@ -25,7 +25,7 @@ Please also consider citing:
 
 ### Authors
 
-Copyright (C) 2020-2024, Mattia Bruno
+Copyright (C) 2020-2025, Mattia Bruno
 
 ## [Installation](https://mbruno46.github.io/pyobs/#installation)
 
