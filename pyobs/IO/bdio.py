@@ -478,7 +478,7 @@ def save(fname, *args):
                 a.size == 1, "Only single observables can be stored in bdio format"
             )
             pyobs.assertion(
-                numpy.iscomplex.obj(a.mean) is False,
+                numpy.iscomplexobj(a.mean) is False,
                 "Complex observables not supported",
             )
             encode_bdio_observable(f, a)
