@@ -52,3 +52,5 @@ assert numpy.fabs(e0[0] - e) < 1e-12
 [v,e] = (masses[1]*mpi).error()
 assert numpy.fabs(v0[1] - v) < 1e-12
 assert numpy.fabs(e0[1] - e) < 1e-12
+
+phi.error(plot=True)
