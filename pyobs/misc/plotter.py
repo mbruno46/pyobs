@@ -54,6 +54,9 @@ class empty_plt:
     def ylim(*args, **kwargs):
         pass
 
+    def axis(*args, **kwargs):
+        pass
+
     def legend(*args, **kwargs):
         pass
 
@@ -65,4 +68,5 @@ try:
 except ImportError:
     MATPLOTLIB = False
 
+MATPLOTLIB = False
 plt = plt if MATPLOTLIB else empty_plt
