@@ -163,7 +163,7 @@ class chisquare:
 
         w, v = numpy.linalg.eig(self.Hmat(pdict, p0))
         mask = w != 0
-        pyobs.assertion(sum(numpy.abs(w)>1e-16) == len(w), "Badly conditioned system")
+        pyobs.assertion(sum(numpy.abs(w) > 1e-16) == len(w), "Badly conditioned system")
         winv = w
         winv[mask] = 1 / w[mask]
         Hinv = v @ numpy.diag(winv) @ v.T
@@ -175,8 +175,8 @@ class chisquare:
         chiexp = yobs @ v
         _, ce, dce = chiexp.error_core(plot=plot, errinfo=errinfo, pfile=None)
         return w @ ce, w @ dce
-        
-        
+
+
 class mfit:
     r"""
     Class to perform fits to multiple observables, via the minimization
@@ -277,7 +277,6 @@ class mfit:
                 n += 1
         return res
 
-    
     def check_yobs(self, yobs):
         if len(self.csq) > 1:
             pyobs.check_type(yobs, "yobs", list)
@@ -289,11 +288,11 @@ class mfit:
             f"Unexpected number of observables for {len(self.csq)} fits",
         )
         return yobs
-    
+
     @pyobs.log_timer("mfit")
     def __call__(self, yobs, p0=None, min_search=None):
         yobs = self.check_yobs(yobs)
-        
+
         if p0 is None:
             p0 = [1.0] * len(self.pdict)
         if min_search is None:
@@ -349,7 +348,7 @@ class mfit:
 
     def chiexp(self, yobs, pars, plot=False, errinfo={}):
         yobs = self.check_yobs(yobs)
-        
+
         ce, dce = 0, 0
         for i in range(len(self.csq)):
             tmp = self.csq[i].chiexp(yobs[i], self.pdict, pars.mean, plot, errinfo)
@@ -357,35 +356,36 @@ class mfit:
             dce += tmp[1] ** 2
         return ce, dce**0.5
 
-    
     def pvalue(self, rng, yobs, errinfo, plot=False, nmc=10000):
-        yobs = self.check_yobs(yobs)    
+        yobs = self.check_yobs(yobs)
 
         cexp = numpy.zeros(nmc)
         for i in range(len(self.csq)):
             n = self.csq[i].n
-            
+
             C = yobs[i].covariance_matrix(errinfo)[0]
             w, _ = numpy.linalg.eig(C @ self.csq[i].PP)
             w -= self.c2 / n
-            
-            cexp += rng.sample_normal(n*nmc).reshape(nmc,n)**2 @ w
-        
+
+            cexp += rng.sample_normal(n * nmc).reshape(nmc, n) ** 2 @ w
+
         th = numpy.array(cexp) < 0.0
         p = 1.0 - numpy.mean(th)
-        dp = numpy.std(th,ddof=1)/(nmc)**0.5
-        
+        dp = numpy.std(th, ddof=1) / (nmc) ** 0.5
+
         if plot:
             plt.figure()
-            plt.title(f'p-value = {p:.2f} +- {dp:.2f}')
-            h = plt.hist(cexp + self.c2, density=True, bins=40, label='MC')
+            plt.title(f"p-value = {p:.2f} +- {dp:.2f}")
+            h = plt.hist(cexp + self.c2, density=True, bins=40, label="MC")
             if h:
-                plt.plot([self.c2,self.c2], [0,max(h[0])], label=r'$\chi^2$')
-                plt.plot([self.ce,self.ce], [0,max(h[0])], label=r'$\chi_\mathrm{exp}$')
+                plt.plot([self.c2, self.c2], [0, max(h[0])], label=r"$\chi^2$")
+                plt.plot(
+                    [self.ce, self.ce], [0, max(h[0])], label=r"$\chi_\mathrm{exp}$"
+                )
             plt.legend()
-            
+
         return [p, dp, cexp]
-    
+
     def eval(self, xax, pars):
         """
         Evaluates the function on a list of coordinates using the parameters

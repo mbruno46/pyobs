@@ -19,16 +19,17 @@
 #
 #################################################################################
 
+
 class empty_plt:
     def figure(*args, **kwargs):
         pass
-    
+
     def plot(*args, **kwargs):
         pass
 
     def pie(*args, **kwargs):
         pass
-    
+
     def hist(*args, **kwargs):
         pass
 
@@ -40,10 +41,10 @@ class empty_plt:
 
     def xlabel(*args, **kwargs):
         pass
-    
+
     def ylabel(*args, **kwargs):
         pass
-    
+
     def title(*args, **kwargs):
         pass
 
@@ -56,8 +57,10 @@ class empty_plt:
     def legend(*args, **kwargs):
         pass
 
+
 try:
     import matplotlib.pyplot as plt
+
     MATPLOTLIB = True
 except ImportError:
     MATPLOTLIB = False
