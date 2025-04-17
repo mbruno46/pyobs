@@ -40,6 +40,7 @@ __all__ = [
     "double_array",
     "int_array",
     "to_list",
+    "get_keys",
 ]
 
 
@@ -252,3 +253,11 @@ def to_list(x):
     if numpy.isdim(x) == 0:
         return [x]
     return list(x)
+
+def get_keys(obs, ename):
+    out = []
+    for key in list(obs.delta.keys()):
+        if key.split(":")[0] == ename:
+            out += [key]
+    return sorted(out)
+
