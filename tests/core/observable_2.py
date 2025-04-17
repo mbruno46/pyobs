@@ -54,3 +54,5 @@ print(dcm)
 print('cov matrix = \n',pyobs.valerr(cm,dcm))
 
 print(obsA[1].shape, pyobs.remove_tensor(obsA[1]).shape, pyobs.remove_tensor(obsA[1],axis=0).shape)
+
+obsA[1].inspect()

@@ -60,13 +60,8 @@ class empty_plt:
     def legend(*args, **kwargs):
         pass
 
-
+plt = empty_plt
 try:
     import matplotlib.pyplot as plt
-
-    MATPLOTLIB = True  # pragma: no cover
 except ImportError:
-    MATPLOTLIB = False
-
-MATPLOTLIB = False
-plt = plt if MATPLOTLIB else empty_plt
+    plt = empty_plt

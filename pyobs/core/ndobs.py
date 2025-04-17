@@ -370,7 +370,22 @@ class observable:
     def __repr__(self):  # pragma: no cover
         return self.__str__()
 
-    ##################################
+    def inspect(self, ename=None):
+        pyobs.assertion(self.size == 1, "Inspection of scalar observables only")
+        plt = pyobs.misc.plt
+        
+        enames = self.ename if ename is None else pyobs.to_list(ename)
+        for en in enames:
+            plt.figure()
+            plt.title(en)
+            for key in list(self.delta.keys()):
+                if key.split(":")[0] == en:
+                    d = self.delta[key]
+                    plt.plot(np.array(d.idx), d.delta.flatten(), label=key.split(":")[1])
+            plt.legend()
+            plt.show()
+
+    #################################
     # overloaded indicing and slicing
 
     def set_mean(self, mean):
