@@ -60,6 +60,7 @@ def two_point_correlator(op1, op2, axis=0, sources=False, separations=None):
             corr.create(
                 key.split(":")[0],
                 np.array(aux).flatten(),
+                rname=key.split(":")[1],
                 shape=(len(seps),) + op1.shape,
             )
         else:
