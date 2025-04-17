@@ -157,13 +157,14 @@ def trace(x, offset=0, axis1=0, axis2=1):
         description=f"trace for axes ({axis1,axis2}) of {x.description}",
     )
 
+
 def mean(x, axis=None):
     """
     Return the arithmetic mean along the specified axis.
 
     Parameters:
        x (obs): input observable
-       axis (int or tuple of ints, optional): axis or axes along which the 
+       axis (int or tuple of ints, optional): axis or axes along which the
            means are computed
 
     Returns:
@@ -174,4 +175,3 @@ def mean(x, axis=None):
     """
     norm = x.size if axis is None else numpy.prod(x.shape[axis])
     return pyobs.sum(x, axis=axis) / norm
-

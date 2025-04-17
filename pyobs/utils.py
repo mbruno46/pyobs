@@ -254,10 +254,10 @@ def to_list(x):
         return [x]
     return list(x)
 
+
 def get_keys(obs, ename):
     out = []
     for key in list(obs.delta.keys()):
         if key.split(":")[0] == ename:
             out += [key]
     return sorted(out)
-

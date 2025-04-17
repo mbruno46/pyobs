@@ -22,9 +22,15 @@
 import numpy as np
 import pyobs
 
+
 def two_point_correlator(op1, op2, axis=0, sources=False):
-    pyobs.assertion(len(op1.ename) == 1, "Operators should be measured on single ensemble")
-    pyobs.assertion(sorted(op1.ename) == sorted(op2.ename), "Ensemble tags from operators do not match")
+    pyobs.assertion(
+        len(op1.ename) == 1, "Operators should be measured on single ensemble"
+    )
+    pyobs.assertion(
+        sorted(op1.ename) == sorted(op2.ename),
+        "Ensemble tags from operators do not match",
+    )
     pyobs.assertion(op1.shape == op2.shape, "Shapes of operators do not match")
 
     k1 = pyobs.get_keys(op1, op1.ename[0])
@@ -37,21 +43,39 @@ def two_point_correlator(op1, op2, axis=0, sources=False):
 
         if sources:
             d = []
-            for op in [op1,op2]:
+            for op in [op1, op2]:
                 d += [op1.delta[key].delta.T.reshape((op.delta[key].n,) + op.shape)]
 
-            aux = np.zeros((d[0].shape[0],op1.shape[axis],) + op1.shape)
+            aux = np.zeros(
+                (
+                    d[0].shape[0],
+                    op1.shape[axis],
+                )
+                + op1.shape
+            )
             for dt in range(op1.shape[axis]):
-                aux[:,dt] = d[0] * np.roll(d[1], dt, axis=axis + 1)
+                aux[:, dt] = d[0] * np.roll(d[1], dt, axis=axis + 1)
 
-            corr.create(key.split(":")[0], np.array(aux).flatten(), shape=(op1.shape[axis],) + op1.shape)
+            corr.create(
+                key.split(":")[0],
+                np.array(aux).flatten(),
+                shape=(op1.shape[axis],) + op1.shape,
+            )
         else:
             aux = []
             for op in [op1, op2]:
                 d = op.delta[key].delta.T.reshape((op.delta[key].n,) + op.shape)
                 aux += [np.fft.fftn(d, axes=[axis + 1])]
 
-            tmp = np.fft.ifftn(aux[0] * np.conj(aux[1]), axes=[axis + 1]).real / op1.shape[axis]
-            corr.create(key.split(":")[0], tmp.flatten(), rname=key.split(":")[1], shape=op1.shape)
+            tmp = (
+                np.fft.ifftn(aux[0] * np.conj(aux[1]), axes=[axis + 1]).real
+                / op1.shape[axis]
+            )
+            corr.create(
+                key.split(":")[0],
+                tmp.flatten(),
+                rname=key.split(":")[1],
+                shape=op1.shape,
+            )
 
     return corr

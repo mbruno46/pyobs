@@ -79,9 +79,7 @@ class single_channel:
         qsq = q * q
         z00 = self.zeta00(qsq, 0)
         dz00 = self.zeta00(qsq, 1)
-        dphi = (
-            numpy.pi**1.5 * (z00 - 2 * qsq * dz00) / (numpy.pi**3 * qsq + z00**2)
-        )
+        dphi = numpy.pi**1.5 * (z00 - 2 * qsq * dz00) / (numpy.pi**3 * qsq + z00**2)
         return dphi * E * self.L / (8 * numpy.pi * self.pstar(E))
 
     # tan(phi(E)) = q* Pi^(3/2)/z00(q^2) = tan(delta(E(q)))

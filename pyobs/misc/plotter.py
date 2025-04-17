@@ -60,6 +60,7 @@ class empty_plt:
     def legend(*args, **kwargs):
         pass
 
+
 plt = empty_plt
 try:
     import matplotlib.pyplot as plt
