@@ -23,7 +23,7 @@ import numpy as np
 import pyobs
 
 
-def two_point_correlator(op1, op2, axis=0, sources=False):
+def two_point_correlator(op1, op2, axis=0, sources=False, separations=None):
     pyobs.assertion(
         len(op1.ename) == 1, "Operators should be measured on single ensemble"
     )
@@ -42,6 +42,7 @@ def two_point_correlator(op1, op2, axis=0, sources=False):
         pyobs.assertion(op1.delta[key].idx == op2.delta[key].idx, "")
 
         if sources:
+            seps = range(op1.shape[axis]) if separations is None else separations
             d = []
             for op in [op1, op2]:
                 d += [op1.delta[key].delta.T.reshape((op.delta[key].n,) + op.shape)]
@@ -49,17 +50,17 @@ def two_point_correlator(op1, op2, axis=0, sources=False):
             aux = np.zeros(
                 (
                     d[0].shape[0],
-                    op1.shape[axis],
+                    len(seps),
                 )
                 + op1.shape
             )
-            for dt in range(op1.shape[axis]):
-                aux[:, dt] = d[0] * np.roll(d[1], dt, axis=axis + 1)
+            for i, dt in enumerate(seps):
+                aux[:, i] = d[0] * np.roll(d[1], dt, axis=axis + 1)
 
             corr.create(
                 key.split(":")[0],
                 np.array(aux).flatten(),
-                shape=(op1.shape[axis],) + op1.shape,
+                shape=(len(seps),) + op1.shape,
             )
         else:
             aux = []
