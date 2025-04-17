@@ -345,7 +345,9 @@ class observable:
                         else (self.delta[key].vol() + 1) * 8.0
                     )
                     m = (mm > m) * mm + (mm <= m) * m
-            pyobs.message(f"         temporary additional memory required {m/1024.**2:.2g} MB")
+            pyobs.message(
+                f"         temporary additional memory required {m / 1024.**2:.2g} MB"
+            )
 
         for cd in self.cdata:
             pyobs.message(f" - Data {cd} with cov. matrix {self.cdata[cd].cov.shape}")

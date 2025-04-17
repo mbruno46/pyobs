@@ -45,7 +45,7 @@ def save(fname, obs):
         json.dump(obs, f, indent=2, default=__encoder__)
     dt += time.time()
     b = pyobs.memory.book[id(obs)]
-    pyobs.message(f"Written {b/1024.**2:g} MB at {b/dt/1024.**2:g} MB/s")
+    pyobs.message(f"Written {b / 1024.**2:g} MB at {b / dt / 1024.**2:g} MB/s")
 
 
 def load(fname):

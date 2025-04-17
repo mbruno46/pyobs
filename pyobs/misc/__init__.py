@@ -20,13 +20,9 @@
 #################################################################################
 
 from . import random
-
-__all__ = ["random"]
-
 from . import memory
-
-__all__.extend(["memory"])
-
 from .plotter import plt
 
+__all__ = ["random"]
+__all__.extend(["memory"])
 __all__.extend(["plt"])

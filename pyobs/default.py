@@ -63,16 +63,14 @@ def log_timer(tag):
             result = func(*args, **kwargs)
             t1 = time.time()
             if is_verbose(tag):
-                print(f"{tag} executed in {t1-t0:g} secs")
+                print(f"{tag} executed in {t1 - t0:g} secs")
             return result
 
         return wrapper
 
     return decorator
 
-start = time.time()
-def message(*args, **kwargs):
-    dt = time.time() - start
-    head = f"[pyobs] : "
-    print(head + " ".join(map(str,args)), **kwargs)
 
+def message(*args, **kwargs):
+    head = "[pyobs] : "
+    print(head + " ".join(map(str, args)), **kwargs)

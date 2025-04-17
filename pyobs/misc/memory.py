@@ -57,9 +57,9 @@ def rm(obj):
 def get(obj):
     size = book[id(obj)]
     if size > MB:
-        return f"{size/MB:.0f} MB"
+        return f"{size / MB:.0f} MB"
     else:
-        return f"{size/1024.:.0f} KB"
+        return f"{size / 1024.:.0f} KB"
 
 
 def info():
@@ -73,13 +73,13 @@ def info():
     for k in book.keys():
         size = book[k]
         tot_size += size
-        pyobs.message(f" {n}) observable with size {size/MB:g} MB")
+        pyobs.message(f" {n}) observable with size {size / MB:g} MB")
         n += 1
 
     if tot_size > MB:
-        pyobs.message(f" - TOTAL {tot_size/MB:.0f} MB\n")
+        pyobs.message(f" - TOTAL {tot_size / MB:.0f} MB\n")
     else:
-        pyobs.message(f" - TOTAL {tot_size/1024.:.0f} KB\n")
+        pyobs.message(f" - TOTAL {tot_size / 1024.:.0f} KB\n")
 
 
 def available():
@@ -97,8 +97,8 @@ def available():
         raise NotImplementedError()
 
     if bb > GB:
-        pyobs.message(f" - Available memory {bb/GB:.2f} GB\n")
+        pyobs.message(f" - Available memory {bb / GB:.2f} GB\n")
     else:  # pragma: no cover
-        pyobs.message(f" - Available memory {bb/MB:.0f} MB\n")
+        pyobs.message(f" - Available memory {bb / MB:.0f} MB\n")
 
     return bb

@@ -154,7 +154,7 @@ def trace(x, offset=0, axis1=0, axis2=1):
         [x],
         new_mean,
         [g],
-        description=f"trace for axes ({axis1,axis2}) of {x.description}",
+        description=f"trace for axes ({axis1, axis2}) of {x.description}",
     )
 
 

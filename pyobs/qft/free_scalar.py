@@ -36,7 +36,7 @@ def Cphiphi(t, m, p, T, L, N=1):
 
 
 def Cphiphi_string(t, m, p, T, L):
-    omega = f"acosh(0.5*{m}**2 + 2*sin({p*numpy.pi/L})**2+1)"
+    omega = f"acosh(0.5*{m}**2 + 2*sin({p * numpy.pi / L})**2+1)"
     den = f"2*sinh({omega})"
     num = f"exp(-{omega}*abs({t})) + exp(-{omega}*abs({T}-{t})) + exp(-{omega}*abs({T}+{t}))"
     return f"({num})/({den})"
