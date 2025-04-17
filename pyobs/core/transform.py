@@ -58,9 +58,9 @@ def transform(obs, f):
         d = obs.delta[key]
         idx_subset_mask, idx_mask = indices_isin(subset_mask, d.mask)
         if pyobs.is_verbose("transform"):
-            print("\ntransform debugging")
-            print("subset_mask", subset_mask, f"{key}->mask", d.mask)
-            print("idx_subset_mask", idx_subset_mask, "idx_mask", idx_mask)
+            pyobs.message("\ntransform debugging")
+            pyobs.message("subset_mask", subset_mask, f"{key}->mask", d.mask)
+            pyobs.message("idx_subset_mask", idx_subset_mask, "idx_mask", idx_mask)
         if len(idx_subset_mask) > 0:
             res.delta[key] = d[idx_mask]
             res.delta[key].mask = idx_subset_mask

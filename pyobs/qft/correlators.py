@@ -52,7 +52,7 @@ def two_point_correlator(op1, op2, axis=0, sources=False, separations=None):
                     d[0].shape[0],
                     len(seps),
                 )
-                + op1.shape
+                + op1.shape, dtype=d[0].dtype
             )
             for i, dt in enumerate(seps):
                 aux[:, i] = d[0] * np.roll(d[1], dt, axis=axis + 1)
@@ -70,7 +70,7 @@ def two_point_correlator(op1, op2, axis=0, sources=False, separations=None):
                 aux += [np.fft.fftn(d, axes=[axis + 1])]
 
             tmp = (
-                np.fft.ifftn(aux[0] * np.conj(aux[1]), axes=[axis + 1]).real
+                np.fft.ifftn(aux[0] * np.conj(aux[1]), axes=[axis + 1])
                 / op1.shape[axis]
             )
             corr.create(

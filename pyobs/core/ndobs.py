@@ -178,7 +178,6 @@ class observable:
             mean_old = np.copy(
                 self.mean.flatten()
             )  # np.reshape(self.mean, (self.size,))
-            print(N0, mean_old, sum(nc), mean_data)
             self.mean = (N0 * mean_old + sum(nc) * mean_data) / (N0 + sum(nc))
             shift = sum(nc) * (mean_old - mean_data) / (N0 + sum(nc))
             for key in self.delta:
@@ -323,34 +322,34 @@ class observable:
                     temporary additional memory required 0.015 MB
 
         """
-        print(f"Observable with shape = {self.shape}")
-        print(f" - description: {self.description}")
-        print(f" - created by {self.www[0]} at {self.www[1]} on {self.www[2]}")
-        print(f" - size: {pyobs.memory.get(self)}")
-        print(f" - mean: {self.mean}")
+        pyobs.message(f"Observable with shape = {self.shape}")
+        pyobs.message(f" - description: {self.description}")
+        pyobs.message(f" - created by {self.www[0]} at {self.www[1]} on {self.www[2]}")
+        pyobs.message(f" - size: {pyobs.memory.get(self)}")
+        pyobs.message(f" - mean: {self.mean}")
 
         for name in self.ename:
-            print(f" - Ensemble {name}")
+            pyobs.message(f" - Ensemble {name}")
             m = 0
             for key in self.delta:
                 rn = key.split(":")
                 if rn[0] == name:
                     outstr = f'    - {"Replica" if self.delta[key].lat is None else "Master-field"} {rn[1]}'
                     outstr = f'{outstr} with {f"ncnfg {self.delta[key].n}" if self.delta[key].lat is None else f"lattice {self.delta[key].lat}"}'
-                    print(outstr)
+                    pyobs.message(outstr)
                     outstr = f"      index field {self.delta[key].idx}"
-                    print(outstr)
+                    pyobs.message(outstr)
                     mm = (
                         self.delta[key].ncnfg() * 8.0 * 2.0
                         if self.delta[key].lat is None
                         else (self.delta[key].vol() + 1) * 8.0
                     )
                     m = (mm > m) * mm + (mm <= m) * m
-            print(f"         temporary additional memory required {m/1024.**2:.2g} MB")
+            pyobs.message(f"         temporary additional memory required {m/1024.**2:.2g} MB")
 
         for cd in self.cdata:
-            print(f" - Data {cd} with cov. matrix {self.cdata[cd].cov.shape}")
-        print("")
+            pyobs.message(f" - Data {cd} with cov. matrix {self.cdata[cd].cov.shape}")
+        pyobs.message("")
 
     def __str__(self):
         [v, e] = self.error()

@@ -43,7 +43,7 @@ class generator:
         elif isinstance(seed, (int, numpy.int32, numpy.int64)):
             _seed = numpy.uint32(seed)
         self.seed = _seed
-        print(f"Random generator initialized with seed = {self.seed} [{seed}]")
+        pyobs.message(f"Random generator initialized with seed = {self.seed} [{seed}]")
         numpy.random.seed(self.seed)
         self.state = numpy.random.get_state()
 

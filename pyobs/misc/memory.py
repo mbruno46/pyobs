@@ -20,6 +20,7 @@
 #################################################################################
 
 import sys, os, numpy
+import pyobs
 
 book = {}
 MB = 1024.0**2
@@ -67,18 +68,18 @@ def info():
     amount memory used by `pyobs`
     """
     tot_size = 0
-    print("pyobs allocated memory:")
+    pyobs.message("pyobs allocated memory:")
     n = 1
     for k in book.keys():
         size = book[k]
         tot_size += size
-        print(f" {n}) observable with size {size/MB:g} MB")
+        pyobs.message(f" {n}) observable with size {size/MB:g} MB")
         n += 1
 
     if tot_size > MB:
-        print(f" - TOTAL {tot_size/MB:.0f} MB\n")
+        pyobs.message(f" - TOTAL {tot_size/MB:.0f} MB\n")
     else:
-        print(f" - TOTAL {tot_size/1024.:.0f} KB\n")
+        pyobs.message(f" - TOTAL {tot_size/1024.:.0f} KB\n")
 
 
 def available():
@@ -96,8 +97,8 @@ def available():
         raise NotImplementedError()
 
     if bb > GB:
-        print(f" - Available memory {bb/GB:.2f} GB\n")
+        pyobs.message(f" - Available memory {bb/GB:.2f} GB\n")
     else:  # pragma: no cover
-        print(f" - Available memory {bb/MB:.0f} MB\n")
+        pyobs.message(f" - Available memory {bb/MB:.0f} MB\n")
 
     return bb

@@ -261,7 +261,7 @@ class mfit:
         """
         Prints the list of parameters
         """
-        print("Parameters : " + ", ".join([key for key in self.pdict.keys()]))
+        pyobs.message("Parameters : " + ", ".join([key for key in self.pdict.keys()]))
 
     def __add__(self, mf):
         res = self.copy()
@@ -333,10 +333,10 @@ class mfit:
         self.ce, self.dce = self.chiexp(yobs, pars)
 
         if pyobs.is_verbose("mfit"):
-            print(f"chisquare = {self.c2}")
-            print(f"chiexp    = {self.ce} +- {self.dce}")
-            print(f"minimizer iterations = {res.nit}")
-            print(f"minimizer status: {res.message}")
+            pyobs.message(f"chisquare = {self.c2}")
+            pyobs.message(f"chiexp    = {self.ce} +- {self.dce}")
+            pyobs.message(f"minimizer iterations = {res.nit}")
+            pyobs.message(f"minimizer status: {res.message}")
         return pars
 
     def chisquared(self, pars):

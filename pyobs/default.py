@@ -27,6 +27,7 @@ __all__ = [
     "is_verbose",
     "set_verbose",
     "log_timer",
+    "message",
     "complex",
     "double",
     "int",
@@ -68,3 +69,10 @@ def log_timer(tag):
         return wrapper
 
     return decorator
+
+start = time.time()
+def message(*args, **kwargs):
+    dt = time.time() - start
+    head = f"[pyobs] : "
+    print(head + " ".join(map(str,args)), **kwargs)
+
