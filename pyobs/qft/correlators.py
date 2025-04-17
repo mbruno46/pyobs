@@ -40,7 +40,7 @@ def two_point_correlator(op1, op2, axis=0):
             d = op.delta[key].delta.T.reshape((op.delta[key].n,) + op.shape)
             aux += [np.fft.fftn(d, axes=[axis + 1])]
 
-            tmp = np.fft.ifftn(aux[0] * np.conj(aux[1]), axes=[axis + 1]).real / op1.shape[axis]
-            corr.create(key.split(":")[0], tmp.flatten(), rname=key.split(":")[1], shape=op1.shape)
+        tmp = np.fft.ifftn(aux[0] * np.conj(aux[1]), axes=[axis + 1]).real / op1.shape[axis]
+        corr.create(key.split(":")[0], tmp.flatten(), rname=key.split(":")[1], shape=op1.shape)
         
     return corr
