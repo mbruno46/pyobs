@@ -22,7 +22,7 @@
 import numpy
 import pyobs
 
-__all__ = ["einsum", "sum", "cumsum", "trace"]
+__all__ = ["einsum", "sum", "mean", "cumsum", "trace"]
 
 
 def einsum(subscripts, *operands):
@@ -156,3 +156,22 @@ def trace(x, offset=0, axis1=0, axis2=1):
         [g],
         description=f"trace for axes ({axis1,axis2}) of {x.description}",
     )
+
+def mean(x, axis=None):
+    """
+    Return the arithmetic mean along the specified axis.
+
+    Parameters:
+       x (obs): input observable
+       axis (int or tuple of ints, optional): axis or axes along which the 
+           means are computed
+
+    Returns:
+       obs: the mean of the observable along the given axis.
+
+    Examples:
+       >>> mean = pyobs.mean(obs)
+    """
+    norm = x.size if axis is None else numpy.prod(x.shape[axis])
+    return pyobs.sum(x, axis=axis) / norm
+

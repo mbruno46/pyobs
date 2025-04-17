@@ -31,7 +31,7 @@ p2 = omat @ omat.mean
 assert numpy.any(abs(v1-v2) < 1e-10)
 assert numpy.any(abs(e1-e2) < 1e-10)
 
-for f in ['sum']:
+for f in ['sum','cumsum','mean']:
     [v0, e0] = pyobs.__dict__[f](omat,axis=0).error()
     func = lambda x: numpy.__dict__[f](x,axis=0)
     mean = func(omat.mean)
