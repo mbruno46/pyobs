@@ -21,3 +21,4 @@
 
 from . import free_scalar
 from . import finite_volume
+from . import correlators
