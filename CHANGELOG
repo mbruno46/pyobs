@@ -14,7 +14,7 @@ Added
 Fixed
  * BDIO format has bug for python>=3.10
 
-[1.5.3] - 19.02.2025
+[1.5.3] - 18.04.2025
 ++++++++++++++++++++
 
 Added
@@ -22,9 +22,12 @@ Added
  * added conj method to observable class
  * temporary class `complex_observable` migrated to tests
  * added p-value for non correlated fits
+ * added pyobs.mean, rt, inspection of Monte Carlo history
+ * added qft/correlators
 Fixed
  * minor bugs
- * added internal backend to matplotlib 
+ * added internal backend to matplotlib
+ * added internal messaging
 
 [1.5.1] - 15.11.2024
 ++++++++++++++++++++
