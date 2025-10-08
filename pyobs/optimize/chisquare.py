@@ -170,8 +170,7 @@ class chisquare:
         # Hinv = v @ numpy.diag(winv) @ v.T
         
         w, v = numpy.linalg.eig(self.Hmat(pdict, p0))
-        winv = w + 1e-16
-        Hinv = v @ numpy.diag(1 / w) @ v.T
+        Hinv = v @ numpy.diag(1 / (w + 1e-16)) @ v.T
 
         PP = self.W - Wg.T @ Hinv @ Wg
         w, v = numpy.linalg.eig(PP)
