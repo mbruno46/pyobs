@@ -334,8 +334,11 @@ class mfit:
 
         self.c2 = res.fun
         pars = pyobs.derobs(yobs, res.x, g)
-        self.ce, self.dce = self.chiexp(yobs, pars)
-
+        try:
+            self.ce, self.dce = self.chiexp(yobs, pars)
+        except:
+            self.ce, self.dce = None, None
+            
         if pyobs.is_verbose("mfit"):
             pyobs.message(f"chisquare = {self.c2}")
             pyobs.message(f"chiexp    = {self.ce} +- {self.dce}")
