@@ -161,12 +161,17 @@ class chisquare:
     def chiexp(self, yobs, pdict, p0, plot, errinfo):
         Wg = self.gvec(pdict, p0)
 
+        ### OLD VERSION
+        # w, v = numpy.linalg.eig(self.Hmat(pdict, p0))
+        # mask = w != 0
+        # pyobs.assertion(sum(numpy.abs(w) > 1e-16) == len(w), "Badly conditioned system")
+        # winv = w
+        # winv[mask] = 1 / w[mask]
+        # Hinv = v @ numpy.diag(winv) @ v.T
+        
         w, v = numpy.linalg.eig(self.Hmat(pdict, p0))
-        mask = w != 0
-        pyobs.assertion(sum(numpy.abs(w) > 1e-16) == len(w), "Badly conditioned system")
-        winv = w
-        winv[mask] = 1 / w[mask]
-        Hinv = v @ numpy.diag(winv) @ v.T
+        winv = w + 1e-16
+        Hinv = v @ numpy.diag(1 / w) @ v.T
 
         PP = self.W - Wg.T @ Hinv @ Wg
         w, v = numpy.linalg.eig(PP)
