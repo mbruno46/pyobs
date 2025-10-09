@@ -168,7 +168,7 @@ class chisquare:
         # winv = w
         # winv[mask] = 1 / w[mask]
         # Hinv = v @ numpy.diag(winv) @ v.T
-        
+
         w, v = numpy.linalg.eig(self.Hmat(pdict, p0))
         Hinv = v @ numpy.diag(1 / (w + 1e-16)) @ v.T
 
@@ -188,8 +188,8 @@ class mfit:
 
     .. math:: \chi^2 = r^T W r \quad\,,\quad r_i = y_i - \phi(\{p\},\{x_i\})
 
-    with :math:`\phi` the model function, :math:`p_{\\alpha}` the model
-    parameters (:math:`\\alpha=1,\dots,N_{\\alpha}`) and :math:`x_i^\mu`
+    with :math:`\phi` the model function, :math:`p_{\alpha}` the model
+    parameters (:math:`\alpha=1,\dots,N_{\alpha}`) and :math:`x_i^\mu`
     the kinematic coordinates (:math:`i=1,\dots,N` corresponds to the
     i-th kinematical point, and :math:`\mu` labels the dimensions).
     The matrix :math:`W` defines the metric of the :math:`\chi^2` function.
@@ -217,10 +217,17 @@ class mfit:
           implies that `f` must be defined using `x` as first and unique
           kinematic variable.
 
-    Notes:
+    Note:
        Once created the class must be called with at least one argument given by
        the observables corresponding to the data points :math:`y_i`. See examples
        below.
+
+    Note:
+       Activate verbosity via `pyobs.set_verbose("mfit")` to obtain additional
+       information on stdout.
+
+    Note:
+       When possible the class attempts the calculation of the expected :math:`\chi^2`.
 
     Examples:
        >>> xax=[1,2,3,4]
@@ -338,7 +345,7 @@ class mfit:
             self.ce, self.dce = self.chiexp(yobs, pars)
         except:
             self.ce, self.dce = None, None
-            
+
         if pyobs.is_verbose("mfit"):
             pyobs.message(f"chisquare = {self.c2}")
             pyobs.message(f"chiexp    = {self.ce} +- {self.dce}")
