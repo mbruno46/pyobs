@@ -41,7 +41,7 @@ def indices_isin(a, b):
     if idx_a.size == 0:
         return [], []
     # idx_b = indices of elements of b that are present in a preserving the order a
-    idx_b = numpy.arange(len(b))[numpy.in1d(b, a)]
+    idx_b = numpy.arange(len(b))[numpy.isin(b, a)]
     mask = numpy.array(a)[idx_a, None] == numpy.array(b)[idx_b]
     idx_b_2 = numpy.stack([idx_b] * len(idx_a))[mask]
     return list(idx_a), list(idx_b_2)

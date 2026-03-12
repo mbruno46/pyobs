@@ -14,6 +14,11 @@ Added
 Fixed
  * BDIO format has bug for python>=3.10
 
+[1.5.4] - in preparation
+
+Fixed
+ * more stable chiexp calculation
+
 [1.5.3] - 18.04.2025
 ++++++++++++++++++++
 
