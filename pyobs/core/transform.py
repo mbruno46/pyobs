@@ -37,7 +37,7 @@ from .cdata import cdata
 
 def indices_isin(a, b):
     # idx_a = indices of elements of a that are present in b preserving the order a
-    idx_a = numpy.arange(len(a))[numpy.in1d(a, b)]
+    idx_a = numpy.arange(len(a))[numpy.isin(a, b)]
     if idx_a.size == 0:
         return [], []
     # idx_b = indices of elements of b that are present in a preserving the order a
