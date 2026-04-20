@@ -170,13 +170,15 @@ class chisquare:
         # Hinv = v @ numpy.diag(winv) @ v.T
 
         w, v = numpy.linalg.eigh(self.Hmat(pdict, p0))
-        if sum(numpy.abs(w) > 1e-16) == len(w):
-            pyobs.message("Badly conditioned system in calculation of chiexp")
+        if sum(numpy.abs(w) > 1e-16) != len(w):
+            pyobs.message(f"Badly conditioned system in calculation of chiexp {w}")
         Hinv = v @ numpy.diag(1 / (w + 1e-16)) @ v.T
         PP = self.W - Wg.T @ Hinv @ Wg
         w, v = numpy.linalg.eigh(PP)
         self.PP = PP
 
+        # PP = sum_i |v_i> w_i <v_i|
+        # <dy| PP | dy> = sum_i (<dy|v_i>)^2 w_i
         chiexp = yobs @ v
         _, ce, dce = chiexp.error_core(plot=plot, errinfo=errinfo, pfile=None)
         return w @ ce, w @ dce
