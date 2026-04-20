@@ -11,6 +11,7 @@ Python documentation
    optimize 
    misc
    io
+   map
 
 Indices and tables
 ------------------
