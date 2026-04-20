@@ -18,7 +18,6 @@ for name in ['a', 'b','c']:
         obs.append(_o, tag0=name, tag1=p)
         obs_ref.append(_o)
 
-obs.peek()
 print(obs)
 
 i=0

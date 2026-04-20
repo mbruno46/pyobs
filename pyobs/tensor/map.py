@@ -42,8 +42,10 @@ class TensorMap:
         for t in tags:
             setattr(self, t, [])
         self._data = {}
-        self._keys_fmt = [dict() for _ in range(self.ndim)]
+        self._keys = [[] for _ in range(self.ndim)]
 
+        self.__repr__ = self.__str__
+        
     def append(self, obj, *args, **kwargs):
         if len(args)==0:
             pyobs.assertion(len(kwargs)==self.ndim, f"Expected {self.ndim} kwargs")
@@ -59,10 +61,10 @@ class TensorMap:
         self._data[key] = obj
         
         for i, k in enumerate(key):
-            _tag = getattr(self, self.tags[i])
-            if not k in _tag:
-                _tag.append(k)
-            self._keys_fmt[i][k] = reordered_tags[i]
+            if not k in self._keys[i]:
+                self._keys[i].append(k)
+                getattr(self, self.tags[i]).append(reordered_tags[i])
+            # [i][k] = reordered_tags[i]
             
     def __getitem__(self, key):
         if not isinstance(key, tuple):
@@ -74,7 +76,7 @@ class TensorMap:
         for i, k in enumerate(key):
             _k = make_key(k)
             if _k == slice(None):
-                norm_key.append(self._keys_fmt[i])
+                norm_key.append(self._keys[i])
             else:
                 norm_key.append({_k})
 
@@ -90,18 +92,12 @@ class TensorMap:
         out = [""]
         for key, obj in self._data.items():
             for i, k in enumerate(key):
-                out.append(f" - {self.tags[i]}: {self._keys_fmt[i][k]}")
+                j = self._keys[i].index(k)
+                out.append(f" - {self.tags[i]}: {getattr(self, self.tags[i])[j]}")
             out.append(str(obj))
         return "\n".join(out)
 
-    def __repr__(self):
-        return self.__str__()
         
-    def iter(self, axis):
-        return iter(self._keys_fmt[axis].values())
-
-    def tag(self, axis):
-        return [t for t in self.iter(axis)]
         
 def tensormap(*args):
     return TensorMap(*args)
