@@ -22,10 +22,8 @@
 import pyobs
 import numpy as np
 
-__all__ = [
-    "TensorMap",
-    "tensormap"
-]
+__all__ = ["TensorMap", "tensormap"]
+
 
 def make_key(x):
     if isinstance(x, np.ndarray):
@@ -33,6 +31,7 @@ def make_key(x):
     elif isinstance(x, list):
         return tuple(x)
     return x
+
 
 class TensorMap:
     """
@@ -56,6 +55,7 @@ class TensorMap:
        >>> print(tm)
        ...
     """
+
     def __init__(self, *tags):
         self.ndim = len(tags)
         self._tags = tags
@@ -66,11 +66,11 @@ class TensorMap:
         self._keys = [[] for _ in range(self.ndim)]
 
         self.__repr__ = self.__str__
-        
+
     def append(self, obj, *args, **kwargs):
         """
         Insert an object with associated tags.
-    
+
         Parameters
         ----------
         obj : any
@@ -80,29 +80,31 @@ class TensorMap:
             the dimensionality of the TensorMap. The order is assumed to match
             the order of the tags passed in the constructor.
         *kwargs : tuple
-            A sequence of tags, one per axis with key=value pairs. 
-            The number of tags must match the dimensionality of the TensorMap.            
+            A sequence of tags, one per axis with key=value pairs.
+            The number of tags must match the dimensionality of the TensorMap.
         """
-        
-        if len(args)==0:
-            pyobs.assertion(len(kwargs)==self.ndim, f"Expected {self.ndim} kwargs")
-        elif len(args)==self.ndim:
-            if len(kwargs)>0:
-                print(f'Warning : {kwargs} ignored')
+
+        if len(args) == 0:
+            pyobs.assertion(len(kwargs) == self.ndim, f"Expected {self.ndim} kwargs")
+        elif len(args) == self.ndim:
+            if len(kwargs) > 0:
+                print(f"Warning : {kwargs} ignored")
             kwargs = {self._tags[i]: args[i] for i in range(self.ndim)}
         else:
-            pyobs.PyobsError(f'Expected either arguments or keyword arguments, not both!')
+            pyobs.PyobsError(
+                f"Expected either arguments or keyword arguments, not both!"
+            )
 
         reordered_tags = [kwargs[t] for t in self._tags]
         key = tuple(make_key(t) for t in reordered_tags)
         self._data[key] = obj
-        
+
         for i, k in enumerate(key):
             if not k in self._keys[i]:
                 self._keys[i].append(k)
                 getattr(self, self._tags[i]).append(reordered_tags[i])
             # [i][k] = reordered_tags[i]
-            
+
     def __getitem__(self, key):
         if not isinstance(key, tuple):
             key = (key,)
@@ -122,9 +124,8 @@ class TensorMap:
             if all(tags[i] in norm_key[i] for i in range(self.ndim)):
                 result.append(obj)
 
-        return result[0] if len(result)==1 else result
+        return result[0] if len(result) == 1 else result
 
-                    
     def __str__(self):
         out = [""]
         for key, obj in self._data.items():
@@ -134,7 +135,6 @@ class TensorMap:
             out.append(str(obj))
         return "\n".join(out)
 
-        
-        
+
 def tensormap(*args):
     return TensorMap(*args)
