@@ -22,3 +22,11 @@ Formatting of arrays
 .. autofunction:: import_string
 .. autofunction:: tex_table
 .. autofunction:: slice_ndarray
+
+Tensor Map
+----------
+
+.. currentmodule:: pyobs
+
+.. autoclass:: TensorMap
+   :members:
