@@ -1,6 +1,7 @@
 import pyobs
 import os
 import numpy
+import time
 
 rng = pyobs.random.generator('io')
 data = rng.markov_chain([2.31,3.14],[0.2**2,0.1**2],4.0,3000)
@@ -35,6 +36,7 @@ assert (test2['indices'] == [4,8])
 pyobs.memory.info()
 
 os.popen('rm ./test-io.pyobs')
+time.sleep(1)
 
 # complex case
 
@@ -52,4 +54,22 @@ assert numpy.all(v==v2)
 assert numpy.all(e==e2)
 
 os.popen('rm ./test-io.pyobs')
+time.sleep(1)
 
+# tensor map
+
+tm = pyobs.tensormap('c', 's')
+for x in range(4):
+    for y in range(4):
+        tm.append(x*x+y*y, c=numpy.array([x,y]), s=str(4*x))
+
+pyobs.save('./test-io.pyobs', tm)
+
+tm2 = pyobs.load('./test-io.pyobs')
+for _c in tm.c:
+    for _s in tm.s:
+        assert tm2[_c, _s] == tm[_c, _s]
+
+del tm, tm2
+
+os.popen('rm ./test-io.pyobs')

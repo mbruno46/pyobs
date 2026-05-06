@@ -126,6 +126,15 @@ class TensorMap:
 
         return result[0] if len(result) == 1 else result
 
+    def __setitem__(self, key, value):
+        if not isinstance(key, tuple):
+            key = (key,)
+        if len(key) != self.ndim:
+            raise ValueError(f"Need {self.ndim} indices")
+
+        key = tuple(make_key(t) for t in key)
+        self._data[key] = value
+       
     def __str__(self):
         out = [""]
         for key, obj in self._data.items():
@@ -135,6 +144,29 @@ class TensorMap:
             out.append(str(obj))
         return "\n".join(out)
 
+    def encode(self):
+        data = []
+        for key, value in self._data.items():
+            original_tags = []
+            for i, k in enumerate(key):
+                j = self._keys[i].index(k)
+                original_tags.append(getattr(self, self._tags[i])[j])
+
+            data.append({
+                "tags": original_tags,
+                "value": value
+            })
+
+        return {
+            "__pyobs.tensor.map.TensorMap__": {
+                "tags": self._tags,
+                "data": data
+            }
+        }
+
+    def decode(self, data):
+        for item in data:
+            self.append(item["value"], *item["tags"])
 
 def tensormap(*args):
     return TensorMap(*args)
