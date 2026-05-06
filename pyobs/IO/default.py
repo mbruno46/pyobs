@@ -73,14 +73,18 @@ class tensormap_decoder:
         self.type = "pyobs.tensor.map.TensorMap"
 
     def decode(self, obj):
-        out = pyobs.TensorMap(*obj['tags'])
-        out.decode(obj['data'])
+        out = pyobs.TensorMap(*obj["tags"])
+        out.decode(obj["data"])
         return out
-    
+
+
 def save(fname, *args):
     args = [arg.encode() if isinstance(arg, pyobs.TensorMap) else arg for arg in args]
     bison.save(fname, *args)
 
 
 def load(fname):
-    return bison.load(fname, decoder=[observable_decoder, delta_decoder, cdata_decoder, tensormap_decoder])
+    return bison.load(
+        fname,
+        decoder=[observable_decoder, delta_decoder, cdata_decoder, tensormap_decoder],
+    )

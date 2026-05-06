@@ -92,7 +92,7 @@ class TensorMap:
             kwargs = {self._tags[i]: args[i] for i in range(self.ndim)}
         else:
             pyobs.PyobsError(
-                f"Expected either arguments or keyword arguments, not both!"
+                "Expected either arguments or keyword arguments, not both!"
             )
 
         reordered_tags = [kwargs[t] for t in self._tags]
@@ -100,7 +100,7 @@ class TensorMap:
         self._data[key] = obj
 
         for i, k in enumerate(key):
-            if not k in self._keys[i]:
+            if k not in self._keys[i]:
                 self._keys[i].append(k)
                 getattr(self, self._tags[i]).append(reordered_tags[i])
             # [i][k] = reordered_tags[i]
@@ -134,7 +134,7 @@ class TensorMap:
 
         key = tuple(make_key(t) for t in key)
         self._data[key] = value
-       
+
     def __str__(self):
         out = [""]
         for key, obj in self._data.items():
@@ -152,21 +152,14 @@ class TensorMap:
                 j = self._keys[i].index(k)
                 original_tags.append(getattr(self, self._tags[i])[j])
 
-            data.append({
-                "tags": original_tags,
-                "value": value
-            })
+            data.append({"tags": original_tags, "value": value})
 
-        return {
-            "__pyobs.tensor.map.TensorMap__": {
-                "tags": self._tags,
-                "data": data
-            }
-        }
+        return {"__pyobs.tensor.map.TensorMap__": {"tags": self._tags, "data": data}}
 
     def decode(self, data):
         for item in data:
             self.append(item["value"], *item["tags"])
+
 
 def tensormap(*args):
     return TensorMap(*args)
