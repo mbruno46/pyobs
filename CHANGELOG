@@ -12,12 +12,12 @@ Added
  * exponential tail
 
 Fixed
- * BDIO format has bug for python>=3.10
+ * BDIO format has bug for python>=3.10 (see tests failures, for now removed from test suite)
 
 [1.5.4] - in preparation
 
 Added
- * added tensormap class
+ * added tensormap class, including IO
 
 Fixed
  * more stable chiexp calculation
