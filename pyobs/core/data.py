@@ -155,7 +155,7 @@ class delta:
         pyobs.assertion(
             len(submask) == len(rd.mask), "Dimensions do not match in assignment"
         )
-        a = np.nonzero(np.in1d(self.mask, submask))[0]
+        a = np.nonzero(np.isin(self.mask, submask))[0]
         self.delta[a, :] = rd.delta
 
     def ncnfg(self):
