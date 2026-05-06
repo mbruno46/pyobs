@@ -66,7 +66,7 @@ class cdata:
         pyobs.assertion(
             len(submask) == cd.size, "Dimensions do not match in assignment"
         )
-        a = numpy.nonzero(numpy.in1d(self.mask, submask))[0]
+        a = numpy.nonzero(numpy.isin(self.mask, submask))[0]
         self.grad[a, :] = cd.grad
 
     def cholesky(self):
