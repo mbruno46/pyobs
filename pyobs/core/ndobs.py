@@ -448,12 +448,13 @@ class observable:
 
         if self.mean[tuple(args)].size == 1:
             pyobs.assertion(yobs.size == 1, "set item : dimensions do not match")
+            self.mean[tuple(args)] = np.asarray(yobs.mean).item()
         else:
             pyobs.assertion(
                 self.mean[tuple(args)].shape == yobs.shape,
                 "set item : dimensions do not match",
             )
-        self.mean[tuple(args)] = yobs.mean
+            self.mean[tuple(args)] = yobs.mean
 
         idx = np.arange(self.size).reshape(self.shape)[tuple(args)]
         submask = idx.flatten()
