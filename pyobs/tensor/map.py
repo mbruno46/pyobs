@@ -90,7 +90,7 @@ class TensorMap:
             if len(kwargs) > 0:
                 print(f"Warning : {kwargs} ignored")
             kwargs = {self._tags[i]: args[i] for i in range(self.ndim)}
-        else: # pragma: no cover
+        else:  # pragma: no cover
             pyobs.PyobsError(
                 "Expected either arguments or keyword arguments, not both!"
             )
@@ -107,7 +107,7 @@ class TensorMap:
     def __getitem__(self, key):
         if not isinstance(key, tuple):
             key = (key,)
-        if len(key) != self.ndim: # pragma: no cover
+        if len(key) != self.ndim:  # pragma: no cover
             raise ValueError(f"Need {self.ndim} indices")
 
         norm_key = []
@@ -128,7 +128,7 @@ class TensorMap:
     def __setitem__(self, key, value):
         if not isinstance(key, tuple):
             key = (key,)
-        if len(key) != self.ndim: # pragma: no cover
+        if len(key) != self.ndim:  # pragma: no cover
             raise ValueError(f"Need {self.ndim} indices")
 
         key = tuple(make_key(t) for t in key)

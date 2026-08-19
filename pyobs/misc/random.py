@@ -132,11 +132,10 @@ class generator:
         pref = numpy.sqrt(N / (2 * (couplings**2 @ taus)))
 
         if numpy.ndim(cov) == 1:
-            Q = numpy.diag(numpy.sqrt(cov))
+            out = mu + pref * rn * numpy.sqrt(cov)
         else:
             [w, v] = numpy.linalg.eig(cov)
             Q = numpy.diag(numpy.sqrt(w)) @ v.T
+            out = mu + (pref * rn) @ Q
 
-        if na == 1:
-            return (mu + (pref * rn) @ Q).reshape((N,))
-        return mu + (pref * rn) @ Q
+        return out.reshape((N,)) if na == 1 else out

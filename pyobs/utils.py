@@ -87,19 +87,35 @@ def valerr(value, error, significant_digits=2):
     """
 
     d = significant_digits - 1
+    iscomplex = numpy.iscomplexobj(value)
 
     def core(v, e):
-        if e == 0:
-            return f"{v:g}"
-        exp = int(numpy.floor(numpy.log10(e)) - d)
-        if exp < 0:
-            out = f"%.{-exp}f" % v
-            if (exp + d) >= 0:
-                out += f"(%.{-exp}f)" % (e * 10 ** -(exp + d))
-            else:
-                out += f"({e * 10 ** -(exp):.0f})"
+        if iscomplex:
+            v = [v.real, v.imag]
+            e = [e.real, e.imag]
         else:
-            out = f"{v:.0f}({e:.0f})"
+            v = [v]
+            e = [e]
+
+        out = ""
+        for isim, (vi, ei) in enumerate(zip(v, e)):
+            out += "+" if vi >= 0.0 else "-"
+
+            exp = numpy.floor(numpy.log10(ei if ei != 0.0 else 1.0)) - d
+            if numpy.isfinite(exp):
+                exp = int(exp)
+                if exp < 0:
+                    out += f"%.{-exp}f" % numpy.abs(vi)
+                    if (exp + d) >= 0:
+                        out += f"(%.{-exp}f)" % (ei * 10 ** -(exp + d))
+                    else:
+                        out += f"({ei * 10 ** -(exp):.0f})"
+                else:
+                    out += f"{numpy.abs(vi):.0f}({ei:.0f})"
+            else:
+                out += f"{numpy.abs(vi):g}({ei})"
+            out += "i" if isim else ""
+
         return out
 
     if numpy.ndim(value) == 0:
@@ -138,7 +154,7 @@ def tex_table(mat, fmt=None):
 
     assertion(numpy.ndim(mat) == 2, "textable supports only 2D arrays")
 
-    (n, m) = numpy.shape(mat)
+    n, m = numpy.shape(mat)
     fmt = [".2f"] * m if fmt is None else fmt
 
     outstr = []

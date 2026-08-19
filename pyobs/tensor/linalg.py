@@ -141,6 +141,8 @@ def eigLR(x):
     l = l[idx]
     w = w[:, idx]
 
+    is_complex = numpy.iscomplexobj(l) or numpy.iscomplexobj(v) or numpy.iscomplexobj(w)
+
     # d l_n = (w_n, dA v_n) / (w_n, v_n)
     gl = pyobs.gradient(
         lambda x: numpy.diag(w.T.conj() @ x @ v) / numpy.diag(w.T.conj() @ v), x.mean
@@ -149,7 +151,7 @@ def eigLR(x):
     # d v_n = sum_{m \neq n} (w_m, dA v_n) / (l_n - l_m) w_m
     def gradv(y):
         tmp = w.T.conj() @ y @ v
-        gv = numpy.zeros(x.shape)
+        gv = numpy.zeros(x.shape, dtype=complex if is_complex else float)
         for n in range(x.shape[0]):
             for m in range(x.shape[1]):
                 if n != m:
@@ -161,7 +163,7 @@ def eigLR(x):
     # d w_n = sum_{m \neq n} (v_m, dA^T w_n) / (l_n - l_m) v_m
     def gradw(y):
         tmp = v.T.conj() @ y.T @ w
-        gw = numpy.zeros(x.shape)
+        gw = numpy.zeros(x.shape, dtype=complex if is_complex else float)
         for n in range(x.shape[0]):
             for m in range(x.shape[1]):
                 if n != m:

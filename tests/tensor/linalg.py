@@ -11,6 +11,8 @@ omat = pyobs.observable()
 omat.create('test',data.flatten(),shape=(2,2))
 [v, e] = omat.error()
 print(pyobs.valerr(v,e))
+complexomat = pyobs.observable() 
+complexomat.create('test complex', data.flatten() + 0.1j*data.flatten(), shape=(2,2))
 
 #check inverse
 def func(x):
@@ -36,13 +38,13 @@ g0 = pyobs.gradient(g)
 assert numpy.all(numpy.fabs(v0-v1) < 1e-12)
 assert numpy.all(numpy.fabs(e0-e1) < 1e-10)
 
-g = pyobs.num_grad(omat, func)
+g = pyobs.num_grad(complexomat, func)
 g0 = pyobs.gradient(g)
-[v0, e0] = pyobs.derobs([omat], func(omat.mean), [g0]).error()
-[v1, e1] = (pyobs.linalg.eigLR(omat)[0]).error()
+[v0, e0] = pyobs.derobs([complexomat], func(complexomat.mean), [g0]).error()
+[v1, e1] = (pyobs.linalg.eigLR(complexomat)[0]).error()
 
-assert numpy.all(numpy.fabs(v0-v1) < 1e-12)
-assert numpy.all(numpy.fabs(e0-e1) < 1e-10)
+assert numpy.all(numpy.abs(v0-v1) < 1e-12)
+assert numpy.all(numpy.abs(e0-e1) < 1e-10)
 
 # check right eigenvectors, both symmetric and non-symmetric cases
 def func(x):

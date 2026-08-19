@@ -262,7 +262,11 @@ def stack(obs, axis=0):
         arr0 = [numpy.zeros(obs[i].shape) for i in range(0, j)]
         arr1 = [numpy.zeros(obs[i].shape) for i in range(j + 1, len(obs))]
         grads += [
-            pyobs.gradient(lambda x: f(arr0 + [x] + arr1), obs[j].mean, gtype="full")
+            pyobs.gradient(
+                lambda x, arr0=arr0, arr1=arr1: f(arr0 + [x] + arr1),
+                obs[j].mean,
+                gtype="full",
+            )
         ]
     return pyobs.derobs(obs, f(arr), grads)
 

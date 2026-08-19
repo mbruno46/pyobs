@@ -72,6 +72,8 @@ def conv_ND(data, idx, lat, xmax, a=0, b=None):
     for index in [a, b]:
         if index is not None:
             f = np.max(data[index, :])
+            if f == 0.0:  # if fluctuations vanish, replace by 0 / 1
+                f = 1.0
             rescale *= f
             aux += [create_fft_data(data[index, :] / f, idx, shape, fft_ax)]
 
@@ -141,7 +143,7 @@ class delta:
             res.delta = pyobs.array(self.delta, self.delta.dtype)
         else:
             res = delta(self.mask, self.idx, lat=self.lat)
-            res.delta = pyobs.double_array(second(self.delta))
+            res.delta = pyobs.array(second(self.delta), second(self.delta).dtype)
         return res
 
     def __getitem__(self, args):
@@ -198,7 +200,7 @@ class delta:
         # takes into accounts holes present in d.delta but absent in self.delta
         rescale_delta = self.n / d.n
 
-        if (np.iscomplexobj(grad.grad)) or (np.iscomplexobj(d.delta)):
+        if grad.is_complex() or np.iscomplexobj(d.delta):
             self.delta = self.delta.astype(pyobs.complex)
         grad.apply(self.delta, self.mask, jlist, d.delta * rescale_delta, d.mask)
 

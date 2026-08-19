@@ -51,7 +51,10 @@ def update(obj):
 
 
 def rm(obj):
-    del book[id(obj)]
+    try:
+        del book[id(obj)]
+    except:
+        pass
 
 
 def get(obj):

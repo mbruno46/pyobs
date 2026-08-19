@@ -39,8 +39,12 @@ class variance:
         z = (D) * 0.5
         self.OmegaD = numpy.pi ** (z) / special.gamma(z) * 2
 
-        (s, xmax) = numpy.shape(g)
-        mask = numpy.sum(abs(g / g[:, 0][:, None]), axis=0) > 1e-15
+        s, xmax = numpy.shape(g)
+        g0 = g[:, 0][:, None]
+        g0 = numpy.where(g0 != 0.0, g0, 1.0)  # if fluctuation vanish identically
+        mask = numpy.sum(abs(g / g0), axis=0) > 1e-15  # now safe 0 / 1
+        mask[0] = True  # always keep first, so the arrays are non-empty
+
         idx = numpy.arange(len(mask))[mask]
         self.x = [i for i in (idx if fold else numpy.sqrt(idx))]
 
@@ -74,6 +78,7 @@ class variance:
             if self.cvar[a, 0] == 0.0:
                 i = 0
             else:
+                i = 0
                 for i in range(1, len(self.x)):
                     if self.g(i, a) > 0:
                         break
@@ -87,7 +92,9 @@ class variance:
             self.var[a, 0] = self.cvar[a, i]
             self.var[a, 1] = self.cvar[a, i] * self.stat_relerr(self.x[i], a)
 
-            if self.xopt[a] == self.x[-1]:  # pragma: no cover
+            if (
+                self.xopt[a] == self.x[-1] and self.cvar[a, 0] != 0.0
+            ):  # pragma: no cover
                 print(
                     f"Warning: automatic window failed for obs {a}, using {self.xopt[a]}"
                 )

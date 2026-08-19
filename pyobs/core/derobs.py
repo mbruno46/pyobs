@@ -128,7 +128,7 @@ def num_grad(x, f, eps=2e-4):
 
     f0 = f(x0)
     m = numpy.size(f0)
-    df = pyobs.double_array((m, n), zeros=True)
+    df = pyobs.array((m, n), zeros=True, type=f0.dtype)
 
     for i in range(n):
         dx[i] = 1.0
@@ -153,7 +153,7 @@ def num_hess(x0, f, eps=2e-4):
     m = numpy.size(f0)
     n = numpy.size(x0)
 
-    ddf = pyobs.double_array((m, n, n), zeros=True)
+    ddf = pyobs.array((m, n, n), zeros=True, type=f0.dtype)
     for i in range(m):
         for j in range(n):
             ddf[i, j, :] = num_grad(x0, lambda x: num_grad(x, f)[i, j])[0]

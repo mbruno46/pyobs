@@ -106,22 +106,38 @@ class complex_observable:
         )
         self.mean = self.real.mean + 1j * self.imag.mean
 
-    def unary_derobs(self, func, grad):
+    def unary_derobs(self, func, grad, grad_zbar=None):
         mean = func(self.mean)
         if not type(mean) in (tuple, list):
-            mean = [mean]
+            mean = [mean]            
 
         out = []
         for i, m in enumerate(mean):
-            g_re = [
-                pyobs.gradient(lambda x: grad[i](mean, x).real, self.real.mean),
-                pyobs.gradient(lambda x: -grad[i](mean, x).imag, self.imag.mean),
-            ]
+            # if grad_zbar is None: 
+                # grad_zbar = [lambda mean, x: 0*grad[i](mean, x) for i in range(len(mean))]
+                # defining grad_zbar here would be the better way to write this cause it would remove the duplicate code below 
+                # but we want keep the holo branch to explicitly show case that it is wrong in general
+            
+            if grad_zbar is None: 
+                g_re = [
+                    pyobs.gradient(lambda x, i=i:  grad[i](mean, x).real, self.real.mean),
+                    pyobs.gradient(lambda x, i=i: -grad[i](mean, x).imag, self.imag.mean),
+                ]
 
-            g_im = [
-                pyobs.gradient(lambda x: grad[i](mean, x).imag, self.real.mean),
-                pyobs.gradient(lambda x: grad[i](mean, x).real, self.imag.mean),
-            ]
+                g_im = [
+                    pyobs.gradient(lambda x, i=i: grad[i](mean, x).imag, self.real.mean),
+                    pyobs.gradient(lambda x, i=i: grad[i](mean, x).real, self.imag.mean),
+                ]
+            else:
+                g_re = [
+                    pyobs.gradient(lambda x, i=i: ( grad[i](mean, x) + grad_zbar[i](mean, x)).real, self.real.mean),
+                    pyobs.gradient(lambda x, i=i: (-grad[i](mean, x) + grad_zbar[i](mean, x)).imag, self.imag.mean),
+                ]
+
+                g_im = [
+                    pyobs.gradient(lambda x, i=i: ( grad[i](mean, x) + grad_zbar[i](mean, x)).imag, self.real.mean), 
+                    pyobs.gradient(lambda x, i=i: ( grad[i](mean, x) - grad_zbar[i](mean, x)).real, self.imag.mean), 
+                ]
 
             re = pyobs.derobs([self.real, self.imag], m.real, g_re)
             im = pyobs.derobs([self.real, self.imag], m.imag, g_im)
@@ -131,6 +147,9 @@ class complex_observable:
         if len(out) == 1:
             return out[0]
         return out
+    
+    def __add__(self, y): 
+        return complex_observable(self.real + y.real, self.imag + y.imag)
 
     def __matmul__(self, y):
         pyobs.assertion(
@@ -229,3 +248,16 @@ for i in [0,1]:
 for B,A in zip([obsC.inv().real, obsC.inv().imag], 
                [pyobs.linalg.inv(obsB).real(), pyobs.linalg.inv(obsB).imag()]):
     check(A,B)
+
+print(f"pyobs.observable=\n{obsB}")
+print(f"complex_observable=\n{obsC}")
+
+obsC_derconj = obsC.unary_derobs(lambda x: x.conj(), [lambda mean, x: x.conj()])
+obsC_createconj = complex_observable(obsA_r, -obsA_i)
+
+print(f"pyobs.observable: z + z*=\n{obsB + obsB.conj()}")
+print(f"complex_observable (unary_derobs): z + z*=\n{obsC + obsC_derconj}")
+print(f"complex_observable (created): z + z*=\n{obsC + obsC_createconj}")
+
+obsC_derconj = obsC.unary_derobs(lambda x: x.conj(), [lambda mean, x: 0*x], grad_zbar=[lambda mean, x: x])
+print(f"complex_observable (derobs+gradzbar): z + z*=\n{obsC + obsC_derconj}")

@@ -46,13 +46,13 @@ def einsum(subscripts, *operands):
         if not isinstance(operands[i], pyobs.observable):
             continue
 
-        def f(x):
-            return numpy.einsum(
-                subscripts,
-                *[means[j] for j in range(i)],
-                x,
-                *[means[j] for j in range(i + 1, len(operands))],
-            )
+        # need to bind i for matrix free gradient mode (usual gradient evaluates f directly during the loop over i, whereas gradient free stores it and evaluates g(...) later)
+        f = lambda x, i=i: numpy.einsum(
+            subscripts,
+            *[means[j] for j in range(i)],
+            x,
+            *[means[j] for j in range(i + 1, len(operands))],
+        )
 
         grads.append(
             pyobs.gradient(f, operands[i].mean)
