@@ -374,6 +374,29 @@ class mfit:
         return ce, dce**0.5
 
     def pvalue(self, rng, yobs, errinfo, plot=False, nmc=10000):
+        """
+        Computes the p-value of the fit from the distribution of the
+        chi-square under the null hypothesis.
+
+        The test statistic is compared with the quadratic form
+        :math:`\\sum_i \\lambda_i z_i^2`, where :math:`z` are standard normal
+        variates, :math:`\\lambda_i` are the eigenvalues of :math:`C W_P` with
+        :math:`C` the covariance matrix of the data and :math:`W_P` the
+        projector of the fit, and the sum runs over the n data points of every
+        fit. For a correct covariance and a linear model this form follows a
+        chi-square distribution with n - p degrees of freedom.
+
+        Parameters:
+           rng (generator): random generator providing normal variates
+           yobs (obs,list): the observables used in the fit
+           errinfo (dict): see the `error` method; forwarded to
+              `covariance_matrix`
+           plot (bool): plots the distribution of the test statistic
+           nmc (int): number of Monte Carlo samples
+
+        Returns:
+           list: the p-value, its Monte Carlo error and the sampled statistic
+        """
         yobs = self.check_yobs(yobs)
 
         cexp = numpy.zeros(nmc)
@@ -381,19 +404,20 @@ class mfit:
             n = self.csq[i].n
 
             C = yobs[i].covariance_matrix(errinfo)[0]
-            w, _ = numpy.linalg.eig(C @ self.csq[i].PP)
-            w -= self.c2 / n
+            M = C @ self.csq[i].PP
+            w, _ = numpy.linalg.eig(M)
+            w = pyobs.real_spectrum(w, M, "pvalue eigenvalues")
 
             cexp += rng.sample_normal(n * nmc).reshape(nmc, n) ** 2 @ w
 
-        th = numpy.array(cexp) < 0.0
+        th = numpy.array(cexp) < self.c2
         p = 1.0 - numpy.mean(th)
         dp = numpy.std(th, ddof=1) / (nmc) ** 0.5
 
         if plot:
             plt.figure()
             plt.title(f"p-value = {p:.2f} +- {dp:.2f}")
-            h = plt.hist(cexp + self.c2, density=True, bins=40, label="MC")
+            h = plt.hist(cexp, density=True, bins=40, label="MC")
             if h:
                 plt.plot([self.c2, self.c2], [0, max(h[0])], label=r"$\chi^2$")
                 plt.plot(
