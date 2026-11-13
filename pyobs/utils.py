@@ -39,6 +39,8 @@ __all__ = [
     "array",
     "double_array",
     "int_array",
+    "real_spectrum",
+    "real_eigenvectors",
     "to_list",
     "get_keys",
 ]
@@ -52,6 +54,79 @@ def array(arg, type, zeros=False):
 
 def double_array(arg, zeros=False):
     return array(arg, pyobs.double, zeros)
+
+
+def _real_cast(a, scale, n, name):
+    """Casts an array whose imaginary part is roundoff only to real."""
+    a = numpy.asarray(a)
+    if not numpy.iscomplexobj(a):
+        return a
+    tol = 32.0 * n * numpy.finfo(numpy.float64).eps * scale
+    imax = numpy.max(numpy.abs(a.imag)) if a.size else 0.0
+    assertion(
+        numpy.isfinite(scale) and numpy.isfinite(imax) and imax <= tol,
+        f"Complex {name}: max |imag| = {imax:g} exceeds the roundoff "
+        f"tolerance {tol:g} (32 N eps scale = 32*{n}*eps*{scale:g}). "
+        "Observables are real-valued, so a genuinely complex quantity is not "
+        "supported.",
+    )
+    return a.real
+
+
+def real_spectrum(w, matrix, name="eigenvalues"):
+    """
+    Casts an array of eigenvalues known to be real to a real array.
+
+    Parameters:
+       w (array): complex or real array of eigenvalues computed from `matrix`
+       matrix (array): the matrix whose eigenvalues are `w`
+       name (str): label used in the error message
+
+    Returns:
+       array: real array of eigenvalues
+
+    Notes:
+       `numpy.linalg.eig` returns complex arrays for every real input since
+       NumPy 2.0, even when the spectrum is real; only `numpy.linalg.eigvalsh`
+       and `numpy.linalg.eigh` are documented to return real arrays. When the
+       spectrum is real analytically (the matrix is symmetric, or similar to a
+       symmetric one by congruence), the imaginary parts are roundoff only.
+
+       The accepted tolerance is the backward error of the eigenvalue problem:
+       eigenvalues move by at most ||dA||_2 (Bauer-Fike, with equality for the
+       normal matrices arising here), while forming `matrix` costs
+       O(N eps ||matrix||_2). A genuinely complex spectrum is rejected, since
+       observables are real-valued.
+    """
+    w = numpy.atleast_1d(w)
+    if not numpy.iscomplexobj(w):
+        return w
+    n = numpy.shape(matrix)[0] if numpy.ndim(matrix) == 2 else len(w)
+    return _real_cast(w, numpy.linalg.norm(matrix, 2), n, name)
+
+
+def real_eigenvectors(v, name="eigenvectors"):
+    """
+    Casts eigenvectors known to be real to a real array.
+
+    Parameters:
+       v (array): complex or real array of (unit norm) eigenvectors
+       name (str): label used in the error message
+
+    Returns:
+       array: real array of eigenvectors
+
+    Notes:
+       `numpy.linalg.eig` stores the real eigenvectors of a real matrix with a
+       real spectrum in a complex array; the imaginary part is roundoff only.
+       The tolerance is the roundoff bound used by `real_spectrum`, scaled by
+       the largest eigenvector component.
+    """
+    v = numpy.asarray(v)
+    if not numpy.iscomplexobj(v):
+        return v
+    scale = numpy.max(numpy.abs(v)) if v.size else 0.0
+    return _real_cast(v, scale, numpy.shape(v)[0], name)
 
 
 def int_array(arg, zeros=False):
