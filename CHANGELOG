@@ -13,6 +13,15 @@ Added
 
 Fixed
  * BDIO format has bug for python>=3.10 (see tests failures, for now removed from test suite)
+ * `numpy.linalg.eig` returns complex arrays for real input since NumPy 2.0; mfit.pvalue,
+   linalg.eig and linalg.eigLR raised UFuncOutputCastingError on real matrices with a real
+   spectrum. Spectra and eigenvectors that are real up to roundoff are now cast back to real
+   (pyobs.real_spectrum, pyobs.real_eigenvectors); a genuinely complex spectrum is rejected
+   with a PyobsError instead of being silently truncated.
+ * mfit.pvalue compared the sampled quadratic form with 0 after subtracting chi2/n from every
+   eigenvalue, which is not the null distribution of the test statistic and returned p = 0 for
+   chi2 >= n. The sampled quadratic form is now compared with chi2 directly, recovering the
+   chi-square distribution with n - p degrees of freedom for a correct covariance and linear model.
 
 [1.5.4] - in preparation
 

@@ -84,6 +84,10 @@ def eig(x):
         raise pyobs.PyobsError("Unexpected non-symmetric matrix: user eigLR")
 
     [w, v] = numpy.linalg.eig(x.mean)
+    if not numpy.iscomplexobj(x.mean):
+        # numpy.linalg.eig returns complex arrays for real input since NumPy 2.0
+        w = pyobs.real_spectrum(w, x.mean, "eig eigenvalues")
+        v = pyobs.real_eigenvectors(v, "eig eigenvectors")
 
     # d l_n = (v_n, dA v_n)
     gw = pyobs.gradient(lambda x: numpy.diag(v.T.conj() @ x @ v), x.mean)
@@ -133,10 +137,17 @@ def eigLR(x):
 
     # left and right eigenvectors
     [l, v] = numpy.linalg.eig(x.mean)
+    if not numpy.iscomplexobj(x.mean):
+        # numpy.linalg.eig returns complex arrays for real input since NumPy 2.0
+        l = pyobs.real_spectrum(l, x.mean, "eigLR eigenvalues")
+        v = pyobs.real_eigenvectors(v, "eigLR right eigenvectors")
     idx = numpy.argsort(l)
     v = v[:, idx]
 
     [l, w] = numpy.linalg.eig(x.mean.T)
+    if not numpy.iscomplexobj(x.mean):
+        l = pyobs.real_spectrum(l, x.mean.T, "eigLR eigenvalues")
+        w = pyobs.real_eigenvectors(w, "eigLR left eigenvectors")
     idx = numpy.argsort(l)
     l = l[idx]
     w = w[:, idx]
